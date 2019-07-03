@@ -19,4 +19,8 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Authentication.Data\Authentication.Data.csproj" />
+  </ItemGroup>
+
 </Project>

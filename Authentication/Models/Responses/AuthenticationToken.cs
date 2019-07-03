@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Authentication.Models.Responses
 {
-    public class AuthenticationResponse
+    public class AuthenticationToken
     {
         public string Token { get; set; }
     }
