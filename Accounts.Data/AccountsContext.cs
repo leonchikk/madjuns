@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Authentication.Data
+namespace Accounts.Data
 {
-    public class AuthenticationContext: DbContext
+    public class AccountsContext : DbContext
     {
     }
 }

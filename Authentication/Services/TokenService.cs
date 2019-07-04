@@ -1,5 +1,4 @@
-﻿using Authentication.Data.Models;
-using Authentication.Interfaces;
+﻿using Authentication.Interfaces;
 using Authentication.Models.Responses;
 using System;
 using System.Collections.Generic;
@@ -10,7 +9,7 @@ namespace Authentication.Services
 {
     public class TokenService : ITokenService
     {
-        public AuthenticationToken CreateToken(User user)
+        public AuthenticationToken CreateToken()
         {
             throw new NotImplementedException();
         }
