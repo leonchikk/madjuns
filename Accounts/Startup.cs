@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Accounts.Data;
+using EasyNetQ;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,6 +29,7 @@ namespace Accounts
         {
             services.AddMvc();
             services.AddDbContext<AccountsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("local")));
+            services.AddSingleton(RabbitHutch.CreateBus($"host={Configuration.GetSection("RabbitMqHost").Value}"));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
