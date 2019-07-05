@@ -11,4 +11,8 @@
     <PackageReference Include="EasyNetQ" Version="3.5.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Accounts.Data\Accounts.Data.csproj" />
+  </ItemGroup>
+
 </Project>
