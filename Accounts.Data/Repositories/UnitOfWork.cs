@@ -1,4 +1,5 @@
-﻿using Common.Core.Interfaces;
+﻿using Accounts.Data.Entities;
+using Common.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,10 +10,12 @@ namespace Accounts.Data.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AccountsContext _dbContext;
+        public readonly IRepository<Account> AccountsRepository;
 
-        public UnitOfWork(AccountsContext dbContext)
+        public UnitOfWork(AccountsContext dbContext, IRepository<Account> accountsRepository)
         {
             _dbContext = dbContext;
+            AccountsRepository = accountsRepository;
         }
 
         public void Dispose()
