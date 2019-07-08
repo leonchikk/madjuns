@@ -1,8 +1,7 @@
 ﻿using Authentication.Data.Entities;
+using Authentication.Data.Interfaces;
 using Common.Core.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Authentication.Data.Repositories
@@ -10,7 +9,7 @@ namespace Authentication.Data.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AuthenticationContext _dbContext;
-        public readonly IRepository<User> UsersRepository;
+        public IRepository<User> UsersRepository { get; }
 
         public UnitOfWork(AuthenticationContext dbContext, IRepository<User> usersRepository)
         {

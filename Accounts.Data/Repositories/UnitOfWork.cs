@@ -1,4 +1,5 @@
 ﻿using Accounts.Data.Entities;
+using Accounts.Data.Interfaces;
 using Common.Core.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace Accounts.Data.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AccountsContext _dbContext;
-        public readonly IRepository<Account> AccountsRepository;
+        public IRepository<Account> AccountsRepository { get; }
 
         public UnitOfWork(AccountsContext dbContext, IRepository<Account> accountsRepository)
         {
