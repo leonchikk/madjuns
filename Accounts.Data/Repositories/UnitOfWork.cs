@@ -8,9 +8,22 @@ namespace Accounts.Data.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        public Task SaveAsync()
+        private readonly AccountsContext _dbContext;
+
+        public UnitOfWork(AccountsContext dbContext)
         {
-            throw new NotImplementedException();
+            _dbContext = dbContext;
+        }
+
+        public void Dispose()
+        {
+            _dbContext.Dispose();
+            GC.SuppressFinalize(this);
+        }
+
+        public async Task SaveAsync()
+        {
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

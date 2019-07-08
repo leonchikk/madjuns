@@ -8,9 +8,22 @@ namespace Authentication.Data.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        public Task SaveAsync()
+        private readonly AuthenticationContext _dbContext;
+
+        public UnitOfWork(AuthenticationContext dbContext)
         {
-            throw new NotImplementedException();
+            _dbContext = dbContext;
+        }
+
+        public void Dispose()
+        {
+            _dbContext.Dispose();
+            GC.SuppressFinalize(this);
+        }
+
+        public async Task SaveAsync()
+        {
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

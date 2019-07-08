@@ -5,7 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace DocumentLight.Core.Interfaces
+namespace Common.Core.Interfaces
 {
     public interface IRepository<T> where T : BaseEntity
     {

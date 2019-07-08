@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Common.Core.Interfaces
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork: IDisposable
     {
         Task SaveAsync();
     }
