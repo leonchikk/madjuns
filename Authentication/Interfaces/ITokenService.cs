@@ -1,4 +1,5 @@
-﻿using Authentication.Models.Responses;
+﻿using Authentication.Data.Entities;
+using Authentication.Models.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,6 @@ namespace Authentication.Interfaces
 {
     public interface ITokenService
     {
-        AuthenticationToken CreateToken();
+        AuthenticationToken CreateToken(User user);
     }
 }

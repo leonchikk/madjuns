@@ -1,6 +1,8 @@
 ﻿using Authentication.Data;
 using Authentication.Data.Interfaces;
 using Authentication.Data.Repositories;
+using Authentication.Interfaces;
+using Authentication.Services;
 using Common.Core.Interfaces;
 using EasyNetQ;
 using Microsoft.AspNetCore.Builder;
@@ -27,6 +29,8 @@ namespace Authentication
             services.AddSingleton(RabbitHutch.CreateBus($"host={Configuration.GetSection("RabbitMqHost").Value}"));
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<ITokenService, TokenService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

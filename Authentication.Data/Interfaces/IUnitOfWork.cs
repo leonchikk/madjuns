@@ -9,7 +9,7 @@ namespace Authentication.Data.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        IRepository<User> UsersRepository { get; };
+        IRepository<User> UsersRepository { get; }
         Task SaveAsync();
     }
 }
