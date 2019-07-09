@@ -6,6 +6,6 @@ namespace Authentication.Interfaces
 {
     public interface IAuthenticationService
     {
-        Task<AuthenticationToken> LoginAsync(AuthenticationRequest request);
+        AuthenticationToken Login(AuthenticationRequest request);
     }
 }
