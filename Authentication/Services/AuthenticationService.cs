@@ -16,15 +16,11 @@ namespace Authentication.Services
     public class AuthenticationService : IAuthenticationService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IBus _serviceBus;
         private readonly ITokenService _tokenService;
 
-        public AuthenticationService(IUnitOfWork unitOfWork, IBus serviceBus)
+        public AuthenticationService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _serviceBus = serviceBus;
-
-            _serviceBus.Subscribe<UserCreatedEvent>(Guid.NewGuid().ToString(), async msg => await AddNewUserAsync(msg));
         }
 
         public AuthenticationToken Login(AuthenticationRequest request)
@@ -35,19 +31,6 @@ namespace Authentication.Services
                 throw new Exception("Incorrect email or password!");
 
             return _tokenService.CreateToken(user);
-        }
-
-        private async Task AddNewUserAsync(UserCreatedEvent createdEvent)
-        {
-            await _unitOfWork.UsersRepository.AddAsync(new User
-            {
-                Email = createdEvent.Email,
-                Id = createdEvent.UserId,
-                Password = createdEvent.Password,
-                UserName = createdEvent.UserName
-            });
-
-            await _unitOfWork.SaveAsync();
         }
     }
 }

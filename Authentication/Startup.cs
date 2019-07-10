@@ -1,6 +1,7 @@
 ﻿using Authentication.Data;
 using Authentication.Data.Interfaces;
 using Authentication.Data.Repositories;
+using Authentication.Extensions;
 using Authentication.Interfaces;
 using Authentication.Services;
 using Common.Core.Interfaces;
@@ -48,6 +49,7 @@ namespace Authentication
                 app.UseHsts();
             }
 
+            app.UseServiceBusListener();
             app.UseHttpsRedirection();
             app.UseMvc();
         }

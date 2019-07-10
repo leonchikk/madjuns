@@ -19,8 +19,4 @@
     <ProjectReference Include="..\Authentication.Data\Authentication.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-  </ItemGroup>
-
 </Project>
