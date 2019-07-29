@@ -14,9 +14,10 @@ namespace Auth.Controllers
         private readonly IAccountService _accountService;
         private readonly IAuthenticationService _authenticationService;
 
-        public AuthController(IAccountService accountService)
+        public AuthController(IAccountService accountService, IAuthenticationService authenticationService)
         {
             _accountService = accountService;
+            _authenticationService = authenticationService;
         }
 
         [HttpPost("sign-up")]
