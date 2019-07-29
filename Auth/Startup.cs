@@ -3,6 +3,8 @@ using Auth.Data.Interfaces;
 using Auth.Data.Repositories;
 using Auth.Interfaces;
 using Auth.Services;
+using Authentication.Interfaces;
+using Authentication.Services;
 using Common.Core.Interfaces;
 using EasyNetQ;
 using Microsoft.AspNetCore.Builder;
@@ -32,6 +34,8 @@ namespace Auth
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<ITokenService, TokenService>();
 
             services.AddSwaggerGen(c =>
             {
