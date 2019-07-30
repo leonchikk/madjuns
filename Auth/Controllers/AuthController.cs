@@ -13,18 +13,21 @@ namespace Auth.Controllers
     {
         private readonly IAccountService _accountService;
         private readonly IAuthenticationService _authenticationService;
+        private readonly ITokenService _tokenService;
 
-        public AuthController(IAccountService accountService, IAuthenticationService authenticationService)
+        public AuthController(IAccountService accountService, IAuthenticationService authenticationService,
+            ITokenService tokenService)
         {
             _accountService = accountService;
             _authenticationService = authenticationService;
+            _tokenService = tokenService;
         }
 
         [HttpPost("sign-up")]
-        public async Task<IActionResult> SignUp(CreateUserRequest request)
+        public async Task<IActionResult> SignUp(CreateAccountRequest request)
         {
-            await _accountService.CreateUserAsync(request);
-            return Ok();
+            var account = await _accountService.CreateUserAsync(request);
+            return Ok(_tokenService.CreateToken(account));
         }
 
         [HttpPost("sign-in")]

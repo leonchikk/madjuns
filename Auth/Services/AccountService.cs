@@ -21,9 +21,9 @@ namespace Auth.Services
             _serviceBus = serviceBus;
         }
 
-        public async Task CreateUserAsync(CreateUserRequest request)
+        public async Task<Account> CreateUserAsync(CreateAccountRequest request)
         {
-            var newUser = new Account
+            var newAccount = new Account
             {
                 Id = Guid.NewGuid(),
                 Age = request.Age,
@@ -33,19 +33,21 @@ namespace Auth.Services
                 UserName = request.UserName
             };
 
-            await _unitOfWork.AccountsRepository.AddAsync(newUser);
+            await _unitOfWork.AccountsRepository.AddAsync(newAccount);
             await _unitOfWork.SaveAsync();
 
             await _serviceBus.PublishAsync
             (
                 new UserCreatedEvent
                 {
-                    UserId = newUser.Id,
-                    Email = newUser.Email,
-                    Password = newUser.Password,
-                    UserName = newUser.UserName
+                    UserId = newAccount.Id,
+                    Email = newAccount.Email,
+                    Password = newAccount.Password,
+                    UserName = newAccount.UserName
                 }
             );
+
+            return newAccount;
         }
     }
 }

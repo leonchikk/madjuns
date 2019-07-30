@@ -2,7 +2,7 @@
 
 namespace Auth.Models.Requests
 {
-    public class CreateUserRequest
+    public class CreateAccountRequest
     {
         public string UserName { get; set; }
         public string Email { get; set; }
