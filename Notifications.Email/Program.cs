@@ -1,4 +1,11 @@
-﻿using System;
+﻿using Common.Core.Events;
+using EasyNetQ;
+using Microsoft.Extensions.Configuration;
+using Notifications.Email.Interfaces;
+using Notifications.Email.Services;
+using System;
+using System.IO;
+using System.Net.Mail;
 
 namespace Notifications.Email
 {
@@ -6,7 +13,15 @@ namespace Notifications.Email
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+
+            IConfigurationRoot configuration = builder.Build();
+            IEmailService emailService = new EmailService(configuration);
+            var messageBus = RabbitHutch.CreateBus($"host={configuration.GetSection("RabbitMqHost").Value}");
+
+            messageBus.Subscribe<SendMailEvent>(Guid.NewGuid().ToString(), msg => emailService.SendMail(new MailAddress(msg.To), msg.Body));
         }
     }
 }
