@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Auth.Data.Migrations
 {
@@ -15,6 +15,7 @@ namespace Auth.Data.Migrations
                     Email = table.Column<string>(nullable: true),
                     UserName = table.Column<string>(nullable: true),
                     BirthDay = table.Column<DateTime>(nullable: false),
+                    Age = table.Column<int>(nullable: false),
                     Password = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
