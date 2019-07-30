@@ -6,6 +6,7 @@ using Common.Core.Events;
 using Common.Core.Helpers;
 using EasyNetQ;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Auth.Services
@@ -23,6 +24,11 @@ namespace Auth.Services
 
         public async Task<Account> CreateUserAsync(CreateAccountRequest request)
         {
+            var isAccountExist = _unitOfWork.AccountsRepository.FindBy(a => a.Email == request.Email).Any();
+
+            if (isAccountExist)
+                throw new Exception("User with that email already exists!");
+
             var newAccount = new Account
             {
                 Id = Guid.NewGuid(),
