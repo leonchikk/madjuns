@@ -20,6 +20,11 @@ namespace Auth.Data.Repositories
             DbSet = _dbContext.Set<T>();
         }
 
+        public bool Any(Expression<Func<T, bool>> predicate)
+        {
+            return DbSet.Any(predicate);
+        }
+
         public T Add(T obj)
         {
             DbSet.Add(obj);
@@ -42,6 +47,11 @@ namespace Auth.Data.Repositories
         {
             T obj = await DbSet.FirstAsync(x => x.Id == id);
             DbSet.Remove(obj);
+        }
+
+        public bool Contains(T entity)
+        {
+            return DbSet.FirstOrDefault(t => t == entity) != null;
         }
 
         public IQueryable<T> FindBy(Expression<Func<T, bool>> predicate)

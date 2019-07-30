@@ -9,9 +9,12 @@ namespace Common.Core.Interfaces
 {
     public interface IRepository<T> where T : BaseEntity
     {
+        bool Any(Expression<Func<T, bool>> predicate);
+
         T Add(T obj);
         T Update(T obj);
         void Delete(Guid id);
+        bool Contains(T entity);
 
         Task<T> AddAsync(T obj);
         Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> obj);
