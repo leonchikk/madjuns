@@ -24,7 +24,7 @@ namespace Auth.Services
 
         public async Task<Account> CreateUserAsync(CreateAccountRequest request)
         {
-            var isAccountExist = _unitOfWork.AccountsRepository.FindBy(a => a.Email == request.Email).Any();
+            var isAccountExist = _unitOfWork.AccountsRepository.Any(a => a.Email == request.Email);
 
             if (isAccountExist)
                 throw new Exception("User with that email already exists!");

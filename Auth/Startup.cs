@@ -2,6 +2,7 @@
 using Auth.Data.Interfaces;
 using Auth.Data.Repositories;
 using Auth.Interfaces;
+using Auth.Middlewares;
 using Auth.Services;
 using Authentication.Interfaces;
 using Authentication.Services;
@@ -74,6 +75,7 @@ namespace Auth
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Core API");
             });
 
+            app.UseMiddleware<ExceptionMiddleware>();
             app.UseHttpsRedirection();
             app.UseMvc();
         }
