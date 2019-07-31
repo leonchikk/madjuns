@@ -29,15 +29,7 @@ namespace Auth.Services
             if (isAccountExist)
                 throw new Exception("User with that email already exists!");
 
-            var newAccount = new Account
-            {
-                Id = Guid.NewGuid(),
-                Age = request.Age,
-                BirthDay = request.BirthDay,
-                Email = request.Email,
-                Password = CryptographyHelper.EncryptString(request.Password),
-                UserName = request.UserName
-            };
+            var newAccount = new Account(request.Email, request.Password, request.UserName, request.BirthDay);
 
             await _unitOfWork.AccountsRepository.AddAsync(newAccount);
             await _unitOfWork.SaveAsync();
