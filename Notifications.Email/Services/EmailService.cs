@@ -16,11 +16,13 @@ namespace Notifications.Email.Services
         public EmailService(IConfiguration configuration)
         {
             _configuration = configuration;
-
             _smtpClient = new SmtpClient("smtp.gmail.com", 587)
             {
+                DeliveryMethod = SmtpDeliveryMethod.Network,
                 Credentials = new NetworkCredential(_configuration.GetSection("SmtpClientSettings:UserName").Value, _configuration.GetSection("SmtpClientSettings:Password").Value),
-                EnableSsl = true
+                UseDefaultCredentials = false,
+                EnableSsl = true,
+                Timeout = 20000
             };
         }
 

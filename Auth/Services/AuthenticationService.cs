@@ -13,9 +13,10 @@ namespace Authentication.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly ITokenService _tokenService;
 
-        public AuthenticationService(IUnitOfWork unitOfWork)
+        public AuthenticationService(IUnitOfWork unitOfWork, ITokenService tokenService)
         {
             _unitOfWork = unitOfWork;
+            _tokenService = tokenService;
         }
 
         public AuthenticationToken Login(AuthenticationRequest request)
@@ -24,6 +25,9 @@ namespace Authentication.Services
 
             if (account == null)
                 throw new Exception("Incorrect email or password!");
+
+            if (!account.IsEmailVerified)
+                throw new Exception("Account has not verified yet!");
 
             return _tokenService.CreateToken(account);
         }

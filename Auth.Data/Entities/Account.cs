@@ -16,7 +16,10 @@ namespace Auth.Data.Entities
             UserName = username;
             BirthDay = birthDay;
             IsEmailVerified = false;
+            VerifyEmailToken = Guid.NewGuid().ToString();
         }
+
+        public void VerifyEmail() => IsEmailVerified = true;
 
         public string Email { get; set; }
 
@@ -25,6 +28,8 @@ namespace Auth.Data.Entities
         public DateTime BirthDay { get; set; }
 
         public bool IsEmailVerified { get; set; }
+
+        public string VerifyEmailToken { get; private set; }
 
         public string Password { get; set; }
     }

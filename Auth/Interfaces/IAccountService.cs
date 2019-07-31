@@ -7,5 +7,6 @@ namespace Auth.Interfaces
     public interface IAccountService
     {
         Task<Account> CreateUserAsync(CreateAccountRequest request);
+        Task VerifyEmailAsync(VerifyEmailRequest request);
     }
 }

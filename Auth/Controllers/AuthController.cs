@@ -35,5 +35,12 @@ namespace Auth.Controllers
         {
             return Ok(_authenticationService.Login(request));
         }
+
+        [HttpPost("verify-email")]
+        public async Task<IActionResult> VerifyEmail([FromQuery] VerifyEmailRequest request)
+        {
+            await _accountService.VerifyEmailAsync(request);
+            return Redirect(request.RedirectUrl);
+        }
     }
 }
