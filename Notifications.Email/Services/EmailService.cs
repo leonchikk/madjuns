@@ -18,11 +18,8 @@ namespace Notifications.Email.Services
             _configuration = configuration;
             _smtpClient = new SmtpClient("smtp.gmail.com", 587)
             {
-                DeliveryMethod = SmtpDeliveryMethod.Network,
                 Credentials = new NetworkCredential(_configuration.GetSection("SmtpClientSettings:UserName").Value, _configuration.GetSection("SmtpClientSettings:Password").Value),
-                UseDefaultCredentials = false,
-                EnableSsl = true,
-                Timeout = 20000
+                EnableSsl = true
             };
         }
 
@@ -30,8 +27,8 @@ namespace Notifications.Email.Services
         {
             var msg = new MailMessage
             {
-                From = new MailAddress(_configuration.GetSection("SmtpClientSettings:UserName").Value, "DocumentCRM"),
-                Subject = "Email verification",
+                From = new MailAddress(_configuration.GetSection("SmtpClientSettings:UserName").Value, "MadJuns"),
+                Subject = "Notification",
                 Body = body,
                 BodyEncoding = Encoding.UTF8,
                 IsBodyHtml = true
