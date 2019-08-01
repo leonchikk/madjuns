@@ -8,5 +8,7 @@ namespace Auth.Interfaces
     {
         Task<Account> CreateUserAsync(CreateAccountRequest request);
         Task VerifyEmailAsync(VerifyEmailRequest request);
+        Task ForgotPasswordAsync(ForgotPasswordRequest request);
+        Task ResetPasswordAsync(ResetPasswordRequest request);
     }
 }

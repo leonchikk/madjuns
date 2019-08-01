@@ -46,16 +46,40 @@ namespace Auth.Services
                     { "redirectUrl", request.RedirectUrl }
                 });
 
-            await _serviceBus.PublishAsync
-            (
-                new SendMailEvent
-                {
-                    To = request.Email,
-                    Body = callbackUrl
-                }
-            );
+            await PublishEmailEvent(newAccount.Email, callbackUrl);
 
             return newAccount;
+        }
+
+        public async Task ForgotPasswordAsync(ForgotPasswordRequest request)
+        {
+            var account = _unitOfWork.AccountsRepository.FindBy(a => a.Email == request.Email).FirstOrDefault();
+
+            if (account == null)
+                throw new Exception("Account with that email does not exist!");
+
+            account.GenerateForgotPasswordToken();
+            await _unitOfWork.SaveAsync();
+
+            var callbackUrl = UrlHelper.AddUrlParameters(
+               url: request.RedirectUrl,
+               parameters: new Dictionary<string, string>
+               {
+                    { "token", account.ForgotPasswordToken }
+               });
+
+            await PublishEmailEvent(account.Email, callbackUrl);
+        }
+
+        public async Task ResetPasswordAsync(ResetPasswordRequest request)
+        {
+            var account = _unitOfWork.AccountsRepository.FindBy(a => a.ForgotPasswordToken == request.ForgotPasswordToken).FirstOrDefault();
+
+            if (account == null)
+                throw new Exception("Account with that token does not exist!");
+
+            account.ChangePassword(request.Password);
+            await _unitOfWork.SaveAsync();
         }
 
         public async Task VerifyEmailAsync(VerifyEmailRequest request)
@@ -70,6 +94,18 @@ namespace Auth.Services
 
             account.VerifyEmail();
             await _unitOfWork.SaveAsync();
+        }
+
+        private async Task PublishEmailEvent(string to, string body)
+        {
+            await _serviceBus.PublishAsync
+            (
+                new SendMailEvent
+                {
+                    To = to,
+                    Body = body
+                }
+            );
         }
     }
 }

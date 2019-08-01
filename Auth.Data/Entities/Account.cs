@@ -17,9 +17,18 @@ namespace Auth.Data.Entities
             BirthDay = birthDay;
             IsEmailVerified = false;
             VerifyEmailToken = Guid.NewGuid().ToString();
+            ForgotPasswordToken = null;
         }
 
         public void VerifyEmail() => IsEmailVerified = true;
+
+        public void ChangePassword(string password)
+        {
+            Password = CryptographyHelper.EncryptString(password);
+            ForgotPasswordToken = null;
+        }
+
+        public void GenerateForgotPasswordToken() => ForgotPasswordToken = Guid.NewGuid().ToString();
 
         public string Email { get; set; }
 
@@ -30,6 +39,8 @@ namespace Auth.Data.Entities
         public bool IsEmailVerified { get; set; }
 
         public string VerifyEmailToken { get; private set; }
+
+        public string ForgotPasswordToken { get; set; }
 
         public string Password { get; set; }
     }

@@ -13,21 +13,18 @@ namespace Auth.Controllers
     {
         private readonly IAccountService _accountService;
         private readonly IAuthenticationService _authenticationService;
-        private readonly ITokenService _tokenService;
 
-        public AuthController(IAccountService accountService, IAuthenticationService authenticationService,
-            ITokenService tokenService)
+        public AuthController(IAccountService accountService, IAuthenticationService authenticationService)
         {
             _accountService = accountService;
             _authenticationService = authenticationService;
-            _tokenService = tokenService;
         }
 
         [HttpPost("sign-up")]
         public async Task<IActionResult> SignUp(CreateAccountRequest request)
         {
-            var account = await _accountService.CreateUserAsync(request);
-            return Ok(_tokenService.CreateToken(account));
+            await _accountService.CreateUserAsync(request);
+            return Ok();
         }
 
         [HttpPost("sign-in")]
@@ -41,6 +38,20 @@ namespace Auth.Controllers
         {
             await _accountService.VerifyEmailAsync(request);
             return Redirect(request.RedirectUrl);
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
+        {
+            await _accountService.ForgotPasswordAsync(request);
+            return Ok();
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+        {
+            await _accountService.ResetPasswordAsync(request);
+            return Ok();
         }
     }
 }
