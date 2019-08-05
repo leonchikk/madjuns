@@ -1,4 +1,5 @@
 ﻿using Auth.Core.Entities;
+using Auth.Core.Enumerations;
 using Auth.Core.Interfaces;
 using Auth.Interfaces;
 using Auth.Models.Requests;
@@ -35,7 +36,7 @@ namespace Auth.Services
                 throw new Exception("Account with that email already exists!");
             }
 
-            var newAccount = new Account(request.Email, request.Password, request.UserName, request.BirthDay);
+            var newAccount = new Account(request.Email, request.Password, request.UserName, request.BirthDay, SystemRoles.User);
 
             await _unitOfWork.AccountsRepository.AddAsync(newAccount);
             await _unitOfWork.SaveAsync();
