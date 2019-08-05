@@ -1,4 +1,4 @@
-﻿using Auth.Data.Entities;
+﻿using Auth.Core.Entities;
 using Authentication.Interfaces;
 using Authentication.Models.Responses;
 using Microsoft.Extensions.Configuration;
@@ -22,9 +22,9 @@ namespace Authentication.Services
 
         public AuthenticationToken CreateToken(Account account)
         {
-            var identity = GetIdentity(account);
+            ClaimsIdentity identity = GetIdentity(account);
 
-            var jwt = new JwtSecurityToken(
+            JwtSecurityToken jwt = new JwtSecurityToken(
                     issuer: _configuration.GetSection("Authentication:Issuer").Value,
                     audience: _configuration.GetSection("Authentication:Audience").Value,
                     notBefore: DateTime.UtcNow,
@@ -33,7 +33,7 @@ namespace Authentication.Services
                     signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration.GetSection("Authentication:Key").Value)),
                                                                                                                             SecurityAlgorithms.HmacSha256));
 
-            var encodedJwt = "Bearer " + new JwtSecurityTokenHandler().WriteToken(jwt);
+            string encodedJwt = "Bearer " + new JwtSecurityTokenHandler().WriteToken(jwt);
 
             return new AuthenticationToken
             {
@@ -43,7 +43,7 @@ namespace Authentication.Services
 
         private static ClaimsIdentity GetIdentity(Account account)
         {
-            var claims = new List<Claim>
+            List<Claim> claims = new List<Claim>
                 {
                    new Claim("Email", account.Email)
                 };

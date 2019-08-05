@@ -1,5 +1,5 @@
-﻿using Auth.Data.Entities;
-using Auth.Data.Interfaces;
+﻿using Auth.Core.Entities;
+using Auth.Core.Interfaces;
 using Common.Core.Interfaces;
 using System;
 using System.Threading.Tasks;

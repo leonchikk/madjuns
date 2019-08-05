@@ -1,4 +1,4 @@
-﻿using Auth.Data.Entities;
+﻿using Auth.Core.Entities;
 using Authentication.Models.Responses;
 
 namespace Authentication.Interfaces

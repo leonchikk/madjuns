@@ -2,7 +2,7 @@
 using Common.Core.Models;
 using System;
 
-namespace Auth.Data.Entities
+namespace Auth.Core.Entities
 {
     public class Account : BaseEntity
     {
@@ -20,7 +20,10 @@ namespace Auth.Data.Entities
             ForgotPasswordToken = null;
         }
 
-        public void VerifyEmail() => IsEmailVerified = true;
+        public void VerifyEmail()
+        {
+            IsEmailVerified = true;
+        }
 
         public void ChangePassword(string password)
         {
@@ -28,7 +31,10 @@ namespace Auth.Data.Entities
             ForgotPasswordToken = null;
         }
 
-        public void GenerateForgotPasswordToken() => ForgotPasswordToken = Guid.NewGuid().ToString();
+        public void GenerateForgotPasswordToken()
+        {
+            ForgotPasswordToken = Guid.NewGuid().ToString();
+        }
 
         public string Email { get; set; }
 

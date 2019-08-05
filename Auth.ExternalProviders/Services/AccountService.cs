@@ -1,9 +1,8 @@
-﻿using Auth.Data.Entities;
+﻿using Auth.Core.Entities;
+using Auth.Core.Interfaces;
 using Auth.ExternalProviders.Interfaces.Internal;
-using Auth.ExternalProviders.Interfaces.Public;
 using Auth.ExternalProviders.Models;
 using Common.Core.Interfaces;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,20 +10,20 @@ namespace Auth.ExternalProviders.Services
 {
     internal class AccountService : Interfaces.Public.IExternalAuthProvider
     {
-        private readonly IRepository<Account> _accountRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ITokenService _tokenService;
         private readonly IVkAuthProvider _vkAuthProvider;
         private readonly IGoogleAuthProvider _googleAuthProvider;
         private readonly IFacebookAuthProvider _facebookAuthProvider;
 
 
-        public AccountService(IRepository<Account> accountRepository,
+        public AccountService(IUnitOfWork unitOfWork,
             ITokenService tokenService,
             IVkAuthProvider vkAuthProvider,
             IGoogleAuthProvider googleAuthProvider,
             IFacebookAuthProvider facebookAuthProvider)
         {
-            _accountRepository = accountRepository;
+            _unitOfWork = unitOfWork;
             _vkAuthProvider = vkAuthProvider;
             _googleAuthProvider = googleAuthProvider;
             _facebookAuthProvider = facebookAuthProvider;
@@ -33,29 +32,30 @@ namespace Auth.ExternalProviders.Services
 
         public async Task<AuthorizationToken> FacebookLoginAsync(ProviderToken providerResource)
         {
-            var facebookUser = await _facebookAuthProvider.GetAccountInfoAsync(providerResource.Token);
+            ProviderUser facebookUser = await _facebookAuthProvider.GetAccountInfoAsync(providerResource.Token);
             return await CreateTokenAsync(facebookUser);
         }
 
         public async Task<AuthorizationToken> GoogleLoginAsync(ProviderToken providerResource)
         {
-            var googleUser = await _googleAuthProvider.GetAccountInfoAsync(providerResource.Token);
+            ProviderUser googleUser = await _googleAuthProvider.GetAccountInfoAsync(providerResource.Token);
             return await CreateTokenAsync(googleUser);
         }
 
         public async Task<AuthorizationToken> VkLoginAsync(ProviderToken providerResource)
         {
-            var vkUser = await _vkAuthProvider.GetAccountInfoAsync(providerResource.Token);
+            ProviderUser vkUser = await _vkAuthProvider.GetAccountInfoAsync(providerResource.Token);
             return await CreateTokenAsync(vkUser);
         }
 
         private async Task<AuthorizationToken> CreateTokenAsync(ProviderUser providerUser)
         {
-            var domainUser =  _accountRepository.FindBy(a => a.ProviderId == providerUser.ProviderId).FirstOrDefault();
+            var domainUser = _unitOfWork.AccountsRepository.FindBy(a => a.ProviderId == providerUser.ProviderId).FirstOrDefault();
 
             if (domainUser == null)
             {
-                domainUser = await _accountRepository.AddAsync(domainUser);
+                domainUser = await _unitOfWork.AccountsRepository.AddAsync(domainUser);
+                await _unitOfWork.SaveAsync();
             }
 
             return _tokenService.CreateToken(domainUser);

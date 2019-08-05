@@ -1,9 +1,9 @@
-﻿using Auth.Data.Entities;
+﻿using Auth.Core.Entities;
 using Common.Core.Interfaces;
 using System;
 using System.Threading.Tasks;
 
-namespace Auth.Data.Interfaces
+namespace Auth.Core.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {

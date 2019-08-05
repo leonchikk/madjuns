@@ -23,11 +23,13 @@ namespace Auth.ExternalProviders.Providers
 
         protected async Task<T> GetAsync<T>(string accessToken, string endpoint = null, string args = null)
         {
-            var response = await _httpClient.GetAsync($"{endpoint}?access_token={accessToken}&{args}");
+            HttpResponseMessage response = await _httpClient.GetAsync($"{endpoint}?access_token={accessToken}&{args}");
             if (!response.IsSuccessStatusCode)
+            {
                 return default;
+            }
 
-            var result = await response.Content.ReadAsStringAsync();
+            string result = await response.Content.ReadAsStringAsync();
 
             return JsonConvert.DeserializeObject<T>(result);
         }

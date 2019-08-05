@@ -1,4 +1,4 @@
-﻿using Auth.Data.Entities;
+﻿using Auth.Core.Entities;
 using Auth.ExternalProviders.Models;
 
 namespace Auth.ExternalProviders.Interfaces.Internal

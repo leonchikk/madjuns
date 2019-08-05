@@ -1,5 +1,5 @@
-﻿using Auth.Data;
-using Auth.Data.Interfaces;
+﻿using Auth.Core.Interfaces;
+using Auth.Data;
 using Auth.Data.Repositories;
 using Auth.Interfaces;
 using Auth.Middlewares;
@@ -43,7 +43,7 @@ namespace Auth
             {
                 c.SwaggerDoc("v1", new Info { Title = "Core API", Description = "Swagger Core API" });
 
-                var security = new Dictionary<string, IEnumerable<string>>
+                Dictionary<string, IEnumerable<string>> security = new Dictionary<string, IEnumerable<string>>
                 {
                     {"Bearer", new string[] { }},
                 };

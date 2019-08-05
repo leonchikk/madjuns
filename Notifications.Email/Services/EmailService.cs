@@ -23,7 +23,7 @@ namespace Notifications.Email.Services
 
         public void SendMail(MailAddress to, string body)
         {
-            var msg = new MailMessage
+            MailMessage msg = new MailMessage
             {
                 From = new MailAddress(_configuration.GetSection("SmtpClientSettings:UserName").Value, "MadJuns"),
                 Subject = "Notification",

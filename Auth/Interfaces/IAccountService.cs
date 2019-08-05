@@ -1,4 +1,4 @@
-﻿using Auth.Data.Entities;
+﻿using Auth.Core.Entities;
 using Auth.Models.Requests;
 using System.Threading.Tasks;
 

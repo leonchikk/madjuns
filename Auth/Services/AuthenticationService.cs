@@ -1,4 +1,4 @@
-﻿using Auth.Data.Interfaces;
+﻿using Auth.Core.Interfaces;
 using Authentication.Interfaces;
 using Authentication.Models.Requests;
 using Authentication.Models.Responses;
@@ -24,10 +24,14 @@ namespace Authentication.Services
             var account = _unitOfWork.AccountsRepository.FindBy(x => x.Email == request.Email && x.Password == CryptographyHelper.EncryptString(request.Password)).FirstOrDefault();
 
             if (account == null)
+            {
                 throw new Exception("Incorrect email or password!");
+            }
 
             if (!account.IsEmailVerified)
+            {
                 throw new Exception("Account has not verified yet!");
+            }
 
             return _tokenService.CreateToken(account);
         }

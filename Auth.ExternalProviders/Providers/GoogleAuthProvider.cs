@@ -11,12 +11,14 @@ namespace Auth.ExternalProviders.Providers
 
         public async Task<ProviderUser> GetAccountInfoAsync(string providerToken)
         {
-            var result = await GetAsync<dynamic>(providerToken);
+            dynamic result = await GetAsync<dynamic>(providerToken);
 
             if (result == null)
+            {
                 throw new Exception("User from this token not exist");
+            }
 
-            var account = new ProviderUser()
+            ProviderUser account = new ProviderUser()
             {
                 Email = result.email,
                 FirstName = result.given_name,

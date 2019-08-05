@@ -7,16 +7,18 @@ namespace Auth.ExternalProviders.Providers
 {
     internal class VkAuthProvider : BaseProvider, IVkAuthProvider
     {
-        public VkAuthProvider(): base("https://api.vk.com/") { }
+        public VkAuthProvider() : base("https://api.vk.com/") { }
 
         public async Task<ProviderUser> GetAccountInfoAsync(string providerToken)
         {
-            var result = await GetAsync<dynamic>(providerToken, "method/users.get", "v=5.95&fields=photo_100");
+            dynamic result = await GetAsync<dynamic>(providerToken, "method/users.get", "v=5.95&fields=photo_100");
 
             if (result == null)
+            {
                 throw new Exception("User from this token not exist");
+            }
 
-            var account = new ProviderUser()
+            ProviderUser account = new ProviderUser()
             {
                 ProviderId = result["response"].First["id"],
                 FirstName = result["response"].First["first_name"],
