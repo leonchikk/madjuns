@@ -86,7 +86,7 @@ namespace Auth.Services
         {
             var account = _unitOfWork.AccountsRepository.FindBy(a => a.VerifyEmailToken == request.Token).FirstOrDefault();
 
-            if(account == null)
+            if (account == null)
                 throw new Exception("Account does not exist!");
 
             if (account.IsEmailVerified)

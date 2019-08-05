@@ -36,6 +36,8 @@ namespace Auth.Data.Entities
 
         public DateTime BirthDay { get; set; }
 
+        public string ProviderId { get; set; }
+
         public bool IsEmailVerified { get; set; }
 
         public string VerifyEmailToken { get; private set; }

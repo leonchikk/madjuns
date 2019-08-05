@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Notifications.Email.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Mail;
 using System.Text;

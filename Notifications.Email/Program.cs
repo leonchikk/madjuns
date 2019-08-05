@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Notifications.Email.Interfaces;
 using Notifications.Email.Services;
 using System;
-using System.IO;
 using System.Net.Mail;
 
 namespace Notifications.Email
