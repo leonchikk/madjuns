@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AssemblyName>MadJuns.Infrastructure</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

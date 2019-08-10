@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Leonchikk</authors>
+    <owners>Leonchikk</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Infrastructure library for madjuns project</description>
+    <copyright>Copyright 2019</copyright>
+  </metadata>
+</package>
