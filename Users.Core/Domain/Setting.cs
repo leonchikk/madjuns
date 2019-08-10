@@ -2,9 +2,8 @@
 
 namespace Users.Core.Domain
 {
-    public class Settings : BaseEntity
+    public class Setting : BaseEntity
     {
         public string Name { get; set; }
-        public int Setting { get; set; }
     }
 }
