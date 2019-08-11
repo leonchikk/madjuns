@@ -35,7 +35,7 @@ namespace Users.Data
                 entity.HasMany(e => e.Subscribers);
                 entity.HasMany(e => e.BlackList);
                 entity.HasOne(e => e.Profile);
-                entity.HasOne(e => e.Settings);
+                entity.HasMany(e => e.Settings);
             });
 
             modelBuilder.Entity<Address>(entity =>

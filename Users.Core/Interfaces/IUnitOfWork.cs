@@ -10,6 +10,10 @@ namespace Users.Core.Interfaces
     public interface IUnitOfWork
     {
         IRepository<User> UsersRepository { get; }
+        IRepository<Profile> ProfilesRepository { get; }
+        IRepository<Setting> SettingsRepository { get; }
+        IRepository<UserSetting> UserSettingsRepository { get; }
+
         Task SaveAsync();
     }
 }

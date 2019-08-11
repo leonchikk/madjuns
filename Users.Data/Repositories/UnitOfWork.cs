@@ -11,11 +11,24 @@ namespace Users.Data.Repositories
     {
         private readonly UsersContext _dbContext;
         public IRepository<User> UsersRepository { get; }
+        public IRepository<Profile> ProfilesRepository { get; }
+        public IRepository<Setting> SettingsRepository { get; }
+        public IRepository<UserSetting> UserSettingsRepository { get; }
 
-        public UnitOfWork(UsersContext dbContext, IRepository<User> usersRepository)
+        public UnitOfWork
+        (
+            UsersContext dbContext, 
+            IRepository<User> usersRepository,
+            IRepository<Profile> profilesRepository,
+            IRepository<Setting> settingsRepository,
+            IRepository<UserSetting> userSettingsRepository
+        )
         {
             _dbContext = dbContext;
             UsersRepository = usersRepository;
+            ProfilesRepository = profilesRepository;
+            SettingsRepository = settingsRepository;
+            UserSettingsRepository = userSettingsRepository;
         }
 
         public void Dispose()
