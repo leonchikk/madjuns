@@ -20,33 +20,62 @@ namespace Users.API.Services
             _serviceBus = serviceBus;
         }
 
-        public async Task DeleteUserAsync(Guid Id)
+        public async Task DeleteUserAsync(Guid id)
         {
-            throw new NotImplementedException();
+            await _unitOfWork.UsersRepository.DeleteAsync(id);
         }
 
-        public async Task<UserResponseModel> GetUserByIdAsync(Guid Id)
+        public async Task<UserResponseModel> GetUserByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var user = _unitOfWork.UsersRepository.FindBy(u => u.Id == id);
+
+            if (user == null)
+                throw new Exception("User with that id does not exist");
+
+            //TODO Make mapper
+            return new UserResponseModel();
         }
 
-        public async Task<ProfileResponseModel> GetUserProfileAsync(Guid Id)
+        public async Task<ProfileResponseModel> GetUserProfileAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var user = _unitOfWork.UsersRepository.FindBy(u => u.Id == id);
+
+            if (user == null)
+                throw new Exception("User with that id does not exist");
+
+            //TODO Make mapper
+            return new ProfileResponseModel();
         }
 
         public async Task<IEnumerable<UserResponseModel>> GetUsers()
         {
+            var users = _unitOfWork.UsersRepository.GetAll();
+
+            //TODO Make mapper
             throw new NotImplementedException();
         }
 
-        public async Task<ProfileResponseModel> GetUserSettingsAsync(Guid Id)
+        public async Task<ProfileResponseModel> GetUserSettingsAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var user = _unitOfWork.UsersRepository.FindBy(u => u.Id == id);
+
+            if (user == null)
+                throw new Exception("User with that id does not exist");
+
+            //TODO Make mapper
+            return new ProfileResponseModel();
         }
 
-        public async Task<UserResponseModel> UpdateUserAsync(UpdateUserRequest request)
+        public async Task<UserResponseModel> UpdateUserAsync(Guid id, UpdateUserRequest request)
         {
+            var user = _unitOfWork.UsersRepository.FindBy(u => u.Id == id);
+
+            if (user == null)
+                throw new Exception("User with that id does not exist");
+
+            //TODO User update method
+            //TODO Make mapper
+
             throw new NotImplementedException();
         }
     }

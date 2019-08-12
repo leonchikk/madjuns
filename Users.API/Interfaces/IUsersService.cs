@@ -13,7 +13,7 @@ namespace Users.API.Interfaces
         Task<UserResponseModel> GetUserByIdAsync(Guid Id);
         Task<ProfileResponseModel> GetUserProfileAsync(Guid Id);
         Task<ProfileResponseModel> GetUserSettingsAsync(Guid Id);
-        Task<UserResponseModel> UpdateUserAsync(UpdateUserRequest request);
+        Task<UserResponseModel> UpdateUserAsync(Guid id, UpdateUserRequest request);
         Task DeleteUserAsync(Guid Id);
     }
 }
