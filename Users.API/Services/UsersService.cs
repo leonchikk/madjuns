@@ -1,82 +1,95 @@
-﻿using EasyNetQ;
+﻿using AutoMapper;
+using EasyNetQ;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Users.API.Interfaces;
 using Users.API.Models.Requests;
 using Users.API.Models.Responses;
 using Users.Core.Interfaces;
+using UserProfile = Users.Core.Domain.Profile;
 
 namespace Users.API.Services
 {
     public class UsersService : IUsersService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IBus _serviceBus;
+        public IUnitOfWork UnitOfWork { get; set; }
+        public IBus ServiceBus { get; set; }
+        public IMapper Mapper { get; set; }
 
-        public UsersService(IUnitOfWork unitOfWork, IBus serviceBus)
+        public UsersService(IUnitOfWork unitOfWork, IBus serviceBus, IMapper mapper)
         {
-            _unitOfWork = unitOfWork;
-            _serviceBus = serviceBus;
+            UnitOfWork = unitOfWork;
+            ServiceBus = serviceBus;
+            Mapper = mapper;
         }
 
         public async Task DeleteUserAsync(Guid id)
         {
-            await _unitOfWork.UsersRepository.DeleteAsync(id);
+            //TODO Make UserDeleteEvent
+            await UnitOfWork.UsersRepository.DeleteAsync(id);
+            await UnitOfWork.SaveAsync();
         }
 
-        public async Task<UserResponseModel> GetUserByIdAsync(Guid id)
+        public UserResponseModel GetUserById(Guid id)
         {
-            var user = _unitOfWork.UsersRepository.FindBy(u => u.Id == id);
+            var user = UnitOfWork.UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
 
             if (user == null)
+            {
                 throw new Exception("User with that id does not exist");
+            }
 
-            //TODO Make mapper
-            return new UserResponseModel();
+            return Mapper.Map<UserResponseModel>(user);
         }
 
-        public async Task<ProfileResponseModel> GetUserProfileAsync(Guid id)
+        public ProfileResponseModel GetUserProfile(Guid id)
         {
-            var user = _unitOfWork.UsersRepository.FindBy(u => u.Id == id);
+            var user = UnitOfWork.UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
 
             if (user == null)
+            {
                 throw new Exception("User with that id does not exist");
+            }
 
-            //TODO Make mapper
-            return new ProfileResponseModel();
+            return Mapper.Map<ProfileResponseModel>(user.Profile);
         }
 
-        public async Task<IEnumerable<UserResponseModel>> GetUsers()
+        public IEnumerable<UserResponseModel> GetUsers()
         {
-            var users = _unitOfWork.UsersRepository.GetAll();
+            var users = UnitOfWork.UsersRepository.GetAll();
 
-            //TODO Make mapper
-            throw new NotImplementedException();
+            return Mapper.Map<IEnumerable<UserResponseModel>>(users);
         }
 
-        public async Task<ProfileResponseModel> GetUserSettingsAsync(Guid id)
+        public IEnumerable<SettingResponseModel> GetUserSettings(Guid id)
         {
-            var user = _unitOfWork.UsersRepository.FindBy(u => u.Id == id);
+            var user = UnitOfWork.UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
 
             if (user == null)
+            {
                 throw new Exception("User with that id does not exist");
+            }
 
-            //TODO Make mapper
-            return new ProfileResponseModel();
+            return Mapper.Map<IEnumerable<SettingResponseModel>>(user.Settings);
         }
 
         public async Task<UserResponseModel> UpdateUserAsync(Guid id, UpdateUserRequest request)
         {
-            var user = _unitOfWork.UsersRepository.FindBy(u => u.Id == id);
+            var user = UnitOfWork.UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
 
             if (user == null)
+            {
                 throw new Exception("User with that id does not exist");
+            }
 
-            //TODO User update method
-            //TODO Make mapper
+            var profile = Mapper.Map<UserProfile>(request.Profile);
+            user.Update(profile);
 
-            throw new NotImplementedException();
+            await UnitOfWork.SaveAsync();
+
+            return Mapper.Map<UserResponseModel>(user);
         }
     }
 }

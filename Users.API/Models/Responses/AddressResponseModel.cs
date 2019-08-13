@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Users.API.Models.Responses
+﻿namespace Users.API.Models.Responses
 {
     public class AddressResponseModel
     {

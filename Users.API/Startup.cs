@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Common.Core.Interfaces;
+﻿using Common.Core.Interfaces;
 using EasyNetQ;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Users.API.Extensions;
 using Users.API.Interfaces;
 using Users.API.Services;
 using Users.Core.Interfaces;
@@ -35,6 +31,7 @@ namespace Users.API
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IUsersService, UsersService>();
+            services.ConfigureAutoMapper();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

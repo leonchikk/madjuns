@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Users.API.Models.Requests
+﻿namespace Users.API.Models.Requests
 {
     public class UpdateUserRequest
     {
+        //TODO Add model for updating user settings
+        public UpdateProfileRequest Profile { get; set; }
     }
 }
