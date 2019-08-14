@@ -32,6 +32,7 @@ namespace Users.API
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IUsersService, UsersService>();
             services.ConfigureAutoMapper();
+            services.AddSwaggerDocumentation();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -40,6 +41,8 @@ namespace Users.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwaggerDocumentation();
         }
     }
 }
