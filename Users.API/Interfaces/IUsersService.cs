@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common.Core.Events;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Users.API.Models.Requests;
@@ -8,6 +9,7 @@ namespace Users.API.Interfaces
 {
     public interface IUsersService: IBaseService
     {
+        Task<UserResponseModel> CreateUserAsync(UserCreatedEvent createdEvent);
         IEnumerable<UserResponseModel> GetUsers();
         UserResponseModel GetUserById(Guid Id);
         ProfileResponseModel GetUserProfile(Guid Id);

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Common.Core.Events;
 using EasyNetQ;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using Users.API.Interfaces;
 using Users.API.Models.Requests;
 using Users.API.Models.Responses;
+using Users.Core.Domain;
 using Users.Core.Interfaces;
 using UserProfile = Users.Core.Domain.Profile;
 
@@ -86,6 +88,16 @@ namespace Users.API.Services
 
             var profile = Mapper.Map<UserProfile>(request.Profile);
             user.Update(profile);
+
+            await UnitOfWork.SaveAsync();
+
+            return Mapper.Map<UserResponseModel>(user);
+        }
+
+        public async Task<UserResponseModel> CreateUserAsync(UserCreatedEvent createdEvent)
+        {
+            var user = new User(createdEvent.UserId, new UserProfile() { Email = createdEvent.Email });
+            UnitOfWork.UsersRepository.Add(user);
 
             await UnitOfWork.SaveAsync();
 
