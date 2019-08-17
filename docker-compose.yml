@@ -1,4 +1,4 @@
-version: '3.5'
+version: '3.0'
 
 services:
   rabbit-mq:
@@ -10,17 +10,6 @@ services:
       - 15672:15672
       - 5672:5672
       
-  docker-db:
-    ports:
-      - 1433:1433
-    networks:
-      - ngrok-net
-    image: "mcr.microsoft.com/mssql/server"
-    container_name: docker-db
-    environment:
-        SA_PASSWORD: "MyPassword001"
-        ACCEPT_EULA: "Y"
-      
   ngrok:
     ports:
       - 4040:4040
@@ -29,10 +18,10 @@ services:
     stdin_open: true
     tty: true
     environment:
-        TARGET_HOST: "192.168.99.100"
-        TARGET_PORT: 27015
+        TARGET_HOST: "192.168.0.106"
+        TARGET_PORT: 27014
       
-  document-light-api:
+  auth-api:
     ports:
       - 27015:27015
     networks:
@@ -40,23 +29,43 @@ services:
     environment:
       ASPNETCORE_URLS: http://+:27015
       ASPNETCORE_ENVIRONMENT: Development
-    image: "document-light"
-    container_name: document-light-api
-    depends_on:
-      - docker-db
+      RabbitMqHost: "192.168.0.106"
+      'ConnectionStrings:local': "Server=192.168.0.106,1433;Database=AuthContext;User=MadJuns;Password=100895;"
       
-  template-light-api:
+    image: "auth-api"
+    container_name: auth-api
+    depends_on:
+      - rabbit-mq
+      
+  email-notifications:
     ports:
-      - 5000:5000
+      - 27016:27016
     networks:
       - ngrok-net
     environment:
-      ASPNETCORE_URLS: http://+:27015
-      ASPNETCORE_ENVIRONMENT: Development
-    image: "template-light"
-    container_name: template-light-api
+      RabbitMqHost: "192.168.0.106"
+      
+    image: "email-notifications"
+    container_name: email-notifications
     depends_on:
-      - docker-db
+      - rabbit-mq
+    
+  users-api:
+    ports:
+      - 27017:27017
+    networks:
+      - ngrok-net
+    environment:
+      ASPNETCORE_URLS: http://+:27017
+      ASPNETCORE_ENVIRONMENT: Development
+      RabbitMqHost: "192.168.0.106"
+      'ConnectionStrings:local': "Server=192.168.0.106,1433;Database=UsersContext;User=MadJuns;Password=100895;"
+      
+    image: "users-api"
+    container_name: users-api
+    depends_on:
+      - rabbit-mq
+    
 networks:
   ngrok-net:
     external: true

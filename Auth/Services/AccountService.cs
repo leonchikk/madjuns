@@ -51,6 +51,16 @@ namespace Auth.Services
 
             await PublishEmailEvent(newAccount.Email, callbackUrl);
 
+            await _serviceBus.PublishAsync
+            (
+                new UserCreatedEvent
+                {
+                    Email = newAccount.Email,
+                    UserId = newAccount.Id,
+                    UserName = newAccount.UserName
+                }
+            );
+
             return newAccount;
         }
 

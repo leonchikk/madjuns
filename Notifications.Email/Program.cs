@@ -14,12 +14,18 @@ namespace Notifications.Email
         {
             IConfigurationBuilder builder = new ConfigurationBuilder()
                 .SetBasePath(Environment.CurrentDirectory)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables();
 
             IConfigurationRoot configuration = builder.Build();
             IEmailService emailService = new EmailService(configuration);
 
+            System.Console.WriteLine("---------------------------------------------------------");
+            System.Console.WriteLine($"host={configuration.GetSection("RabbitMqHost").Value}");
+            System.Console.WriteLine("---------------------------------------------------------");
+
             IBus messageBus = RabbitHutch.CreateBus($"host={configuration.GetSection("RabbitMqHost").Value}");
+
 
             messageBus.Subscribe<SendMailEvent>(Guid.NewGuid().ToString(), msg => emailService.SendMail(new MailAddress(msg.To), msg.Body));
         }

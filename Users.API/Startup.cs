@@ -33,6 +33,7 @@ namespace Users.API
             services.AddTransient<IUsersService, UsersService>();
             services.ConfigureAutoMapper();
             services.AddSwaggerDocumentation();
+            services.AddSingleton<ServiceBusListener>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -43,6 +44,7 @@ namespace Users.API
             }
 
             app.UseSwaggerDocumentation();
+            app.UseServiceBusListener();
         }
     }
 }
