@@ -21,12 +21,12 @@ namespace Notifications.Email.Services
             };
         }
 
-        public void SendMail(MailAddress to, string body)
+        public void SendMail(MailAddress to, string subject, string body)
         {
             MailMessage msg = new MailMessage
             {
                 From = new MailAddress(_configuration.GetSection("SmtpClientSettings:UserName").Value, "MadJuns"),
-                Subject = "Notification",
+                Subject = subject,
                 Body = body,
                 BodyEncoding = Encoding.UTF8,
                 IsBodyHtml = true

@@ -1,7 +1,7 @@
 ﻿using Authentication.Models.Requests;
 using Authentication.Models.Responses;
 
-namespace Authentication.Interfaces
+namespace Authentication.API.Interfaces
 {
     public interface IAuthenticationService
     {

@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Auth", "Auth", "{69B66E8F-A53B-4379-96B7-E10E6B48F70E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth", "Auth\Auth.csproj", "{3C85F422-9C30-4D5E-BFD8-BC7F26FDD267}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.API", "Auth.API\Auth.API.csproj", "{3C85F422-9C30-4D5E-BFD8-BC7F26FDD267}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{6299F28E-E288-44EE-B3CF-6A00836FE701}"
 EndProject
@@ -29,11 +29,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.Core", "Auth.Core\Auth
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Users", "Users", "{81CED806-EDEE-4F74-84EF-317E0E0FF1A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Users.API", "Users.API\Users.API.csproj", "{0806AEC2-E9EF-4C80-855F-228FC2DEE5AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.API", "Users.API\Users.API.csproj", "{0806AEC2-E9EF-4C80-855F-228FC2DEE5AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Users.Core", "Users.Core\Users.Core.csproj", "{1A5602F9-9963-44DE-96A0-4D27259775C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Core", "Users.Core\Users.Core.csproj", "{1A5602F9-9963-44DE-96A0-4D27259775C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Users.Data", "Users.Data\Users.Data.csproj", "{D6D0EA53-2FA6-4CD5-90CE-6AF2680D16D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Data", "Users.Data\Users.Data.csproj", "{D6D0EA53-2FA6-4CD5-90CE-6AF2680D16D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

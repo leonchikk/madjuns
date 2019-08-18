@@ -1,8 +1,8 @@
 ﻿using Auth.Core.Entities;
-using Auth.Models.Requests;
+using Auth.API.Models.Requests;
 using System.Threading.Tasks;
 
-namespace Auth.Interfaces
+namespace Auth.API.Interfaces
 {
     public interface IAccountService
     {

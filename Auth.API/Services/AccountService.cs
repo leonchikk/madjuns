@@ -1,8 +1,8 @@
 ﻿using Auth.Core.Entities;
 using Auth.Core.Enumerations;
 using Auth.Core.Interfaces;
-using Auth.Interfaces;
-using Auth.Models.Requests;
+using Auth.API.Interfaces;
+using Auth.API.Models.Requests;
 using Common.Core.Events;
 using Common.Core.Helpers;
 using EasyNetQ;
@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Auth.Services
+namespace Auth.API.Services
 {
     public class AccountService : IAccountService
     {
@@ -49,7 +49,7 @@ namespace Auth.Services
                     { "redirectUrl", request.RedirectUrl }
                 });
 
-            await PublishEmailEvent(newAccount.Email, callbackUrl);
+            await PublishEmailEvent("Verify account", newAccount.Email, callbackUrl);
 
             await _serviceBus.PublishAsync
             (
@@ -83,7 +83,7 @@ namespace Auth.Services
                     { "token", account.ForgotPasswordToken }
                });
 
-            await PublishEmailEvent(account.Email, callbackUrl);
+            await PublishEmailEvent("Change password", account.Email, callbackUrl);
         }
 
         public async Task ResetPasswordAsync(ResetPasswordRequest request)
@@ -117,12 +117,13 @@ namespace Auth.Services
             await _unitOfWork.SaveAsync();
         }
 
-        private async Task PublishEmailEvent(string to, string body)
+        private async Task PublishEmailEvent(string subject, string to, string body)
         {
             await _serviceBus.PublishAsync
             (
                 new SendMailEvent
                 {
+                    Subject = subject,
                     To = to,
                     Body = body
                 }

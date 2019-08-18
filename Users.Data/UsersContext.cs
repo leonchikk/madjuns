@@ -31,9 +31,6 @@ namespace Users.Data
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.HasMany(e => e.Friends);
-                entity.HasMany(e => e.Subscribers);
-                entity.HasMany(e => e.BlackList);
                 entity.HasOne(e => e.Profile);
                 entity.HasMany(e => e.Settings);
             });

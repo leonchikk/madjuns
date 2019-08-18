@@ -1,5 +1,5 @@
 ﻿using Auth.Core.Entities;
-using Authentication.Interfaces;
+using Authentication.API.Interfaces;
 using Authentication.Models.Responses;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

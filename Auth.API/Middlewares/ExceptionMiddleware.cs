@@ -4,7 +4,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace Auth.Middlewares
+namespace Auth.API.Middlewares
 {
     public class ExceptionMiddleware
     {

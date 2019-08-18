@@ -27,7 +27,7 @@ namespace Notifications.Email
             IBus messageBus = RabbitHutch.CreateBus($"host={configuration.GetSection("RabbitMqHost").Value}");
 
 
-            messageBus.Subscribe<SendMailEvent>(Guid.NewGuid().ToString(), msg => emailService.SendMail(new MailAddress(msg.To), msg.Body));
+            messageBus.Subscribe<SendMailEvent>(Guid.NewGuid().ToString(), msg => emailService.SendMail(new MailAddress(msg.To), msg.Subject, msg.Body));
         }
     }
 }

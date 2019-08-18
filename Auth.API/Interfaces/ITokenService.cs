@@ -1,7 +1,7 @@
 ﻿using Auth.Core.Entities;
 using Authentication.Models.Responses;
 
-namespace Authentication.Interfaces
+namespace Authentication.API.Interfaces
 {
     public interface ITokenService
     {

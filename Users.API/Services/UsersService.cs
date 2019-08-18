@@ -96,7 +96,12 @@ namespace Users.API.Services
 
         public async Task<UserResponseModel> CreateUserAsync(UserCreatedEvent createdEvent)
         {
-            var user = new User(createdEvent.UserId, new UserProfile() { Email = createdEvent.Email });
+            var user = new User(createdEvent.UserId, new UserProfile()
+            {
+                Email = createdEvent.Email,
+                UserName = createdEvent.UserName
+            });
+
             UnitOfWork.UsersRepository.Add(user);
 
             await UnitOfWork.SaveAsync();

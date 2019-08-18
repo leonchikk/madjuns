@@ -1,11 +1,11 @@
-﻿using Auth.Interfaces;
-using Auth.Models.Requests;
-using Authentication.Interfaces;
+﻿using Auth.API.Interfaces;
+using Auth.API.Models.Requests;
+using Authentication.API.Interfaces;
 using Authentication.Models.Requests;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace Auth.Controllers
+namespace Auth.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -1,4 +1,4 @@
-﻿namespace Auth.Models.Requests
+﻿namespace Auth.API.Models.Requests
 {
     public class ForgotPasswordRequest
     {

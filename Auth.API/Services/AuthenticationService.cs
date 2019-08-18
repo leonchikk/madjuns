@@ -1,12 +1,12 @@
 ﻿using Auth.Core.Interfaces;
-using Authentication.Interfaces;
+using Authentication.API.Interfaces;
 using Authentication.Models.Requests;
 using Authentication.Models.Responses;
 using Common.Core.Helpers;
 using System;
 using System.Linq;
 
-namespace Authentication.Services
+namespace Authentication.API.Services
 {
     public class AuthenticationService : IAuthenticationService
     {

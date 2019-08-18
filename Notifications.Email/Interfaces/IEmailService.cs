@@ -4,6 +4,6 @@ namespace Notifications.Email.Interfaces
 {
     public interface IEmailService
     {
-        void SendMail(MailAddress to, string body);
+        void SendMail(MailAddress to, string subject, string body);
     }
 }

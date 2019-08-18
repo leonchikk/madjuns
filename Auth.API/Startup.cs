@@ -1,10 +1,11 @@
-﻿using Auth.Core.Interfaces;
+﻿using Auth.API.Interfaces;
+using Auth.API.Middlewares;
+using Auth.API.Services;
+using Auth.Core.Interfaces;
 using Auth.Data;
 using Auth.Data.Repositories;
-using Auth.Interfaces;
-using Auth.Middlewares;
-using Auth.Services;
-using Authentication.Interfaces;
+using Authentication.API.Interfaces;
+using Authentication.API.Services;
 using Authentication.Services;
 using Common.Core.Interfaces;
 using EasyNetQ;
