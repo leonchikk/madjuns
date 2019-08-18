@@ -6,9 +6,6 @@ services:
     container_name: rabbit-mq
     networks:
       - ngrok-net
-    ports:
-      - 15672:15672
-      - 5672:5672
       
   ngrok:
     ports:
@@ -29,7 +26,7 @@ services:
     environment:
       ASPNETCORE_URLS: http://+:27015
       ASPNETCORE_ENVIRONMENT: Development
-      RabbitMqHost: "192.168.0.106"
+      RabbitMqHost: "rabbit-mq"
       'ConnectionStrings:local': "Server=192.168.0.106,1433;Database=AuthContext;User=MadJuns;Password=100895;"
       
     image: "auth-api"
@@ -43,7 +40,7 @@ services:
     networks:
       - ngrok-net
     environment:
-      RabbitMqHost: "192.168.0.106"
+      RabbitMqHost: "rabbit-mq"
       
     image: "email-notifications"
     container_name: email-notifications
@@ -58,7 +55,7 @@ services:
     environment:
       ASPNETCORE_URLS: http://+:27017
       ASPNETCORE_ENVIRONMENT: Development
-      RabbitMqHost: "192.168.0.106"
+      RabbitMqHost: "rabbit-mq"
       'ConnectionStrings:local': "Server=192.168.0.106,1433;Database=UsersContext;User=MadJuns;Password=100895;"
       
     image: "users-api"
@@ -68,4 +65,4 @@ services:
     
 networks:
   ngrok-net:
-    external: true
+    external: false
