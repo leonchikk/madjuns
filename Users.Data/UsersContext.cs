@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Users.Core.Domain;
 
 namespace Users.Data
@@ -24,6 +22,9 @@ namespace Users.Data
         public virtual DbSet<Profile> Profiles { get; set; }
         public virtual DbSet<Setting> Settings { get; set; }
         public virtual DbSet<UserSetting> UserSettings { get; set; }
+        public virtual DbSet<UserFriend> UserFriends { get; set; }
+        public virtual DbSet<UserSubscriber> UserSubscribers { get; set; }
+        public virtual DbSet<BlockedUser> UserBlackList { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -33,6 +34,9 @@ namespace Users.Data
                 entity.HasKey(e => e.Id);
                 entity.HasOne(e => e.Profile);
                 entity.HasMany(e => e.Settings);
+                entity.HasMany(e => e.Friends);
+                entity.HasMany(e => e.Subscribers);
+                entity.HasMany(e => e.BlackList);
             });
 
             modelBuilder.Entity<Address>(entity =>
@@ -57,6 +61,27 @@ namespace Users.Data
                 entity.HasKey(e => e.Id);
                 entity.HasOne(e => e.Setting);
                 entity.HasOne(e => e.User);
+            });
+
+            modelBuilder.Entity<UserFriend>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne(e => e.FirstUser);
+                entity.HasOne(e => e.SecondUser);
+            });
+
+            modelBuilder.Entity<UserSubscriber>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne(e => e.User);
+                entity.HasOne(e => e.Subscriber);
+            });
+
+            modelBuilder.Entity<BlockedUser>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne(e => e.User);
+                entity.HasOne(e => e.BannedUser);
             });
         }
     }
