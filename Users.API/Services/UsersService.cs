@@ -98,6 +98,7 @@ namespace Users.API.Services
         {
             var user = new User(createdEvent.UserId, new UserProfile()
             {
+                Id = Guid.NewGuid(),
                 Email = createdEvent.Email,
                 UserName = createdEvent.UserName
             });
