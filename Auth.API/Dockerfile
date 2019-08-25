@@ -8,4 +8,4 @@ EXPOSE 27015
 COPY ./publish /publish
 WORKDIR /publish
 
-ENTRYPOINT ["dotnet", "Auth.dll"]
+ENTRYPOINT ["dotnet", "Auth.API.dll"]

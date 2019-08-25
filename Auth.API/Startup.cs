@@ -1,4 +1,6 @@
-﻿using Auth.API.Interfaces;
+﻿using Auth.API;
+using Auth.API.Extensions;
+using Auth.API.Interfaces;
 using Auth.API.Middlewares;
 using Auth.API.Services;
 using Auth.Core.Interfaces;
@@ -58,6 +60,7 @@ namespace Auth
                 });
                 c.AddSecurityRequirement(security);
             });
+            services.AddSingleton<ServiceBusListener>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -80,6 +83,7 @@ namespace Auth
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseHttpsRedirection();
             app.UseMvc();
+            app.UseServiceBusListener();
         }
     }
 }

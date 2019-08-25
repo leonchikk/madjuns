@@ -29,8 +29,19 @@ namespace Users.API.Services
 
         public async Task DeleteUserAsync(Guid id)
         {
-            //TODO Make UserDeleteEvent
-            await UnitOfWork.UsersRepository.DeleteAsync(id);
+            var user = UnitOfWork.UsersRepository.FindBy(u => u.AccountId == id).FirstOrDefault();
+
+            if (user == null)
+            {
+                throw new Exception("User with that account id does not exist");
+            }
+
+            await ServiceBus.PublishAsync(new UserDeletedEvent
+            {
+                AcountId = id
+            });
+
+            user.IsDeleted = true;
             await UnitOfWork.SaveAsync();
         }
 

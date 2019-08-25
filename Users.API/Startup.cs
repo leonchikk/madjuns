@@ -45,6 +45,7 @@ namespace Users.API
 
             app.UseSwaggerDocumentation();
             app.UseServiceBusListener();
+            app.UseMvc();
         }
     }
 }

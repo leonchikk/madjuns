@@ -64,6 +64,19 @@ namespace Auth.API.Services
             return newAccount;
         }
 
+        public async Task DeleteUserAsync(Guid id)
+        {
+            var account = _unitOfWork.AccountsRepository.FindBy(a => a.Id == id).FirstOrDefault();
+
+            if (account == null)
+            {
+                throw new Exception("Account with that email does not exist!");
+            }
+
+            account.IsDeleted = true;
+            await _unitOfWork.SaveAsync();
+        }
+
         public async Task ForgotPasswordAsync(ForgotPasswordRequest request)
         {
             var account = _unitOfWork.AccountsRepository.FindBy(a => a.Email == request.Email).FirstOrDefault();
