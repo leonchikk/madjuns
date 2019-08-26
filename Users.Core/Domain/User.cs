@@ -17,8 +17,7 @@ namespace Users.Core.Domain
 
         public User(Guid accountId, Profile profile)
         {
-            Id = new Guid();
-            AccountId = accountId;
+            Id = accountId;
             Profile = profile;
             Settings = new HashSet<UserSetting>();
             Friends = new HashSet<UserFriend>();
@@ -26,7 +25,6 @@ namespace Users.Core.Domain
             BlackList = new HashSet<BlockedUser>();
         }
 
-        public Guid AccountId { get; set; }
         public Profile Profile { get; set; }
         public ICollection<UserSetting> Settings { get; set; }
         public ICollection<UserFriend> Friends { get; set; }

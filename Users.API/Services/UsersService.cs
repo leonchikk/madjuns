@@ -29,7 +29,7 @@ namespace Users.API.Services
 
         public async Task DeleteUserAsync(Guid id)
         {
-            var user = UnitOfWork.UsersRepository.FindBy(u => u.AccountId == id).FirstOrDefault();
+            var user = UnitOfWork.UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
 
             if (user == null)
             {
