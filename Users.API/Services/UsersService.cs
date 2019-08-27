@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Common.Core.Events;
+using Common.Core.Interfaces;
 using EasyNetQ;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,6 @@ using Users.API.Interfaces;
 using Users.API.Models.Requests;
 using Users.API.Models.Responses;
 using Users.Core.Domain;
-using Users.Core.Interfaces;
 using UserProfile = Users.Core.Domain.Profile;
 
 namespace Users.API.Services
@@ -20,16 +20,19 @@ namespace Users.API.Services
         public IBus ServiceBus { get; set; }
         public IMapper Mapper { get; set; }
 
-        public UsersService(IUnitOfWork unitOfWork, IBus serviceBus, IMapper mapper)
+        private IRepository<User> UsersRepository { get; set; }
+
+        public UsersService(IUnitOfWork unitOfWork, IBus serviceBus, IMapper mapper, IRepository<User> usersRepository)
         {
             UnitOfWork = unitOfWork;
             ServiceBus = serviceBus;
             Mapper = mapper;
+            UsersRepository = usersRepository;
         }
 
         public async Task DeleteUserAsync(Guid id)
         {
-            var user = UnitOfWork.UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
+            var user = UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
 
             if (user == null)
             {
@@ -42,12 +45,12 @@ namespace Users.API.Services
             });
 
             user.IsDeleted = true;
-            await UnitOfWork.SaveAsync();
+            await UnitOfWork.SaveChangesAsync();
         }
 
         public UserResponseModel GetUserById(Guid id)
         {
-            var user = UnitOfWork.UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
+            var user = UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
 
             if (user == null)
             {
@@ -59,7 +62,7 @@ namespace Users.API.Services
 
         public ProfileResponseModel GetUserProfile(Guid id)
         {
-            var user = UnitOfWork.UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
+            var user = UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
 
             if (user == null)
             {
@@ -71,14 +74,14 @@ namespace Users.API.Services
 
         public IEnumerable<UserResponseModel> GetUsers()
         {
-            var users = UnitOfWork.UsersRepository.GetAll();
+            var users = UsersRepository.GetAll();
 
             return Mapper.Map<IEnumerable<UserResponseModel>>(users);
         }
 
         public IEnumerable<SettingResponseModel> GetUserSettings(Guid id)
         {
-            var user = UnitOfWork.UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
+            var user = UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
 
             if (user == null)
             {
@@ -90,7 +93,7 @@ namespace Users.API.Services
 
         public async Task<UserResponseModel> UpdateUserAsync(Guid id, UpdateUserRequest request)
         {
-            var user = UnitOfWork.UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
+            var user = UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
 
             if (user == null)
             {
@@ -100,7 +103,7 @@ namespace Users.API.Services
             var profile = Mapper.Map<UserProfile>(request.Profile);
             user.Update(profile);
 
-            await UnitOfWork.SaveAsync();
+            await UnitOfWork.SaveChangesAsync();
 
             return Mapper.Map<UserResponseModel>(user);
         }
@@ -114,9 +117,9 @@ namespace Users.API.Services
                 UserName = createdEvent.UserName
             });
 
-            UnitOfWork.UsersRepository.Add(user);
+            UsersRepository.Add(user);
 
-            await UnitOfWork.SaveAsync();
+            await UnitOfWork.SaveChangesAsync();
 
             return Mapper.Map<UserResponseModel>(user);
         }

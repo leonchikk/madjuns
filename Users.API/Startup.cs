@@ -8,7 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Users.API.Extensions;
 using Users.API.Interfaces;
 using Users.API.Services;
-using Users.Core.Interfaces;
 using Users.Data;
 using Users.Data.Repositories;
 

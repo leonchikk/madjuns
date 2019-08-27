@@ -1,5 +1,4 @@
 ﻿using Auth.Core.Entities;
-using Auth.Core.Interfaces;
 using Common.Core.Interfaces;
 using System;
 using System.Threading.Tasks;
@@ -9,12 +8,10 @@ namespace Auth.Data.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AuthContext _dbContext;
-        public IRepository<Account> AccountsRepository { get; }
 
-        public UnitOfWork(AuthContext dbContext, IRepository<Account> accountsRepository)
+        public UnitOfWork(AuthContext dbContext)
         {
             _dbContext = dbContext;
-            AccountsRepository = accountsRepository;
         }
 
         public void Dispose()
@@ -23,7 +20,7 @@ namespace Auth.Data.Repositories
             GC.SuppressFinalize(this);
         }
 
-        public async Task SaveAsync()
+        public async Task SaveChangesAsync()
         {
             await _dbContext.SaveChangesAsync();
         }

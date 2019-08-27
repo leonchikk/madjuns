@@ -1,8 +1,9 @@
-﻿using Auth.Core.Interfaces;
+﻿using Auth.Core.Entities;
 using Authentication.API.Interfaces;
 using Authentication.Models.Requests;
 using Authentication.Models.Responses;
 using Common.Core.Helpers;
+using Common.Core.Interfaces;
 using System;
 using System.Linq;
 
@@ -10,18 +11,18 @@ namespace Authentication.API.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IRepository<Account> _accountsRepository;
         private readonly ITokenService _tokenService;
 
-        public AuthenticationService(IUnitOfWork unitOfWork, ITokenService tokenService)
+        public AuthenticationService(IRepository<Account> accountsRepository, ITokenService tokenService)
         {
-            _unitOfWork = unitOfWork;
+            _accountsRepository = accountsRepository;
             _tokenService = tokenService;
         }
 
         public AuthenticationToken Login(AuthenticationRequest request)
         {
-            var account = _unitOfWork.AccountsRepository.FindBy(x => x.Email == request.Email && x.Password == CryptographyHelper.EncryptString(request.Password)).FirstOrDefault();
+            var account = _accountsRepository.FindBy(x => x.Email == request.Email && x.Password == CryptographyHelper.EncryptString(request.Password)).FirstOrDefault();
 
             if (account == null)
             {

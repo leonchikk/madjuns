@@ -3,7 +3,6 @@ using Auth.API.Extensions;
 using Auth.API.Interfaces;
 using Auth.API.Middlewares;
 using Auth.API.Services;
-using Auth.Core.Interfaces;
 using Auth.Data;
 using Auth.Data.Repositories;
 using Authentication.API.Interfaces;
