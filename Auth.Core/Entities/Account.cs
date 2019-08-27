@@ -38,7 +38,10 @@ namespace Auth.Core.Entities
             ForgotPasswordToken = Guid.NewGuid().ToString();
         }
 
-        public void SetSystemRole(SystemRoles role) => SystemRole = (int)role;
+        public void SetSystemRole(SystemRoles role)
+        {
+            SystemRole = (int)role;
+        }
 
         public string Email { get; set; }
 

@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Auth.API.Extensions
 {
@@ -15,7 +11,7 @@ namespace Auth.API.Extensions
         {
             _listener = (ServiceBusListener)app.ApplicationServices.GetService(typeof(ServiceBusListener));
 
-            var lifetime = (IApplicationLifetime)app.ApplicationServices.GetService(typeof(IApplicationLifetime));
+            IApplicationLifetime lifetime = (IApplicationLifetime)app.ApplicationServices.GetService(typeof(IApplicationLifetime));
             lifetime.ApplicationStarted.Register(OnStarted);
             lifetime.ApplicationStopping.Register(OnStopping);
 

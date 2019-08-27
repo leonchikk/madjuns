@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using Users.API.Models.Requests;
-using Users.API.Models.Responses;
+﻿using Users.API.Models.Responses;
 using Users.Core.Domain;
 using Profile = AutoMapper.Profile;
 using UserProfile = Users.Core.Domain.Profile;

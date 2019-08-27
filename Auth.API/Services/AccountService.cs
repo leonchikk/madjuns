@@ -1,16 +1,16 @@
-﻿using Auth.Core.Entities;
-using Auth.Core.Enumerations;
-using Auth.API.Interfaces;
+﻿using Auth.API.Interfaces;
 using Auth.API.Models.Requests;
+using Auth.Core.Entities;
+using Auth.Core.Enumerations;
 using Common.Core.Events;
 using Common.Core.Helpers;
+using Common.Core.Interfaces;
 using EasyNetQ;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Common.Core.Interfaces;
 
 namespace Auth.API.Services
 {
@@ -31,14 +31,14 @@ namespace Auth.API.Services
 
         public async Task<Account> CreateUserAsync(CreateAccountRequest request)
         {
-            var isAccountExist = _accountsRepository.Any(a => a.Email == request.Email);
+            bool isAccountExist = _accountsRepository.Any(a => a.Email == request.Email);
 
             if (isAccountExist)
             {
                 throw new Exception("Account with that email already exists!");
             }
 
-            var newAccount = new Account(request.Email, request.Password, request.UserName, request.BirthDay, SystemRoles.User);
+            Account newAccount = new Account(request.Email, request.Password, request.UserName, request.BirthDay, SystemRoles.User);
 
             await _accountsRepository.AddAsync(newAccount);
             await _unitOfWork.SaveChangesAsync();
@@ -68,7 +68,7 @@ namespace Auth.API.Services
 
         public async Task DeleteUserAsync(Guid id)
         {
-            var account = _accountsRepository.FindBy(a => a.Id == id).FirstOrDefault();
+            Account account = _accountsRepository.FindBy(a => a.Id == id).FirstOrDefault();
 
             if (account == null)
             {
@@ -81,7 +81,7 @@ namespace Auth.API.Services
 
         public async Task ForgotPasswordAsync(ForgotPasswordRequest request)
         {
-            var account = _accountsRepository.FindBy(a => a.Email == request.Email).FirstOrDefault();
+            Account account = _accountsRepository.FindBy(a => a.Email == request.Email).FirstOrDefault();
 
             if (account == null)
             {
@@ -103,7 +103,7 @@ namespace Auth.API.Services
 
         public async Task ResetPasswordAsync(ResetPasswordRequest request)
         {
-            var account = _accountsRepository.FindBy(a => a.ForgotPasswordToken == request.ForgotPasswordToken).FirstOrDefault();
+            Account account = _accountsRepository.FindBy(a => a.ForgotPasswordToken == request.ForgotPasswordToken).FirstOrDefault();
 
             if (account == null)
             {
@@ -116,7 +116,7 @@ namespace Auth.API.Services
 
         public async Task VerifyEmailAsync(VerifyEmailRequest request)
         {
-            var account = _accountsRepository.FindBy(a => a.VerifyEmailToken == request.Token).FirstOrDefault();
+            Account account = _accountsRepository.FindBy(a => a.VerifyEmailToken == request.Token).FirstOrDefault();
 
             if (account == null)
             {

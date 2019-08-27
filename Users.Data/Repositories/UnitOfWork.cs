@@ -2,7 +2,6 @@
 using Common.Core.Interfaces;
 using System;
 using System.Threading.Tasks;
-using Users.Core.Domain;
 
 namespace Users.Data.Repositories
 {

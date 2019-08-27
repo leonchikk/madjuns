@@ -22,7 +22,7 @@ namespace Authentication.API.Services
 
         public AuthenticationToken Login(AuthenticationRequest request)
         {
-            var account = _accountsRepository.FindBy(x => x.Email == request.Email && x.Password == CryptographyHelper.EncryptString(request.Password)).FirstOrDefault();
+            Account account = _accountsRepository.FindBy(x => x.Email == request.Email && x.Password == CryptographyHelper.EncryptString(request.Password)).FirstOrDefault();
 
             if (account == null)
             {

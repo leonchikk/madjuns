@@ -53,7 +53,7 @@ namespace Auth.ExternalProviders.Services
 
         private async Task<AuthorizationToken> CreateTokenAsync(ProviderUser providerUser)
         {
-            var domainUser = _accountsRepository.FindBy(a => a.ProviderId == providerUser.ProviderId).FirstOrDefault();
+            Account domainUser = _accountsRepository.FindBy(a => a.ProviderId == providerUser.ProviderId).FirstOrDefault();
 
             if (domainUser == null)
             {

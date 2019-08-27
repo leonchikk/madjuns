@@ -2,9 +2,6 @@
 using EasyNetQ;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Users.API.Interfaces;
 
 namespace Users.API
@@ -19,7 +16,7 @@ namespace Users.API
 
         public ServiceBusListener
         (
-            IBus serviceBus, 
+            IBus serviceBus,
             IServiceProvider serviceProvider
         )
         {

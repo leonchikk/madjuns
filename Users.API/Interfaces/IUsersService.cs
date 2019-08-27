@@ -7,7 +7,7 @@ using Users.API.Models.Responses;
 
 namespace Users.API.Interfaces
 {
-    public interface IUsersService: IBaseService
+    public interface IUsersService : IBaseService
     {
         Task<UserResponseModel> CreateUserAsync(UserCreatedEvent createdEvent);
         IEnumerable<UserResponseModel> GetUsers();

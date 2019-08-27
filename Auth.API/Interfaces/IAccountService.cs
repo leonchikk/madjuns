@@ -1,7 +1,7 @@
-﻿using Auth.Core.Entities;
-using Auth.API.Models.Requests;
-using System.Threading.Tasks;
+﻿using Auth.API.Models.Requests;
+using Auth.Core.Entities;
 using System;
+using System.Threading.Tasks;
 
 namespace Auth.API.Interfaces
 {

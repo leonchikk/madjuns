@@ -32,7 +32,7 @@ namespace Users.API.Services
 
         public async Task DeleteUserAsync(Guid id)
         {
-            var user = UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
+            User user = UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
 
             if (user == null)
             {
@@ -50,7 +50,7 @@ namespace Users.API.Services
 
         public UserResponseModel GetUserById(Guid id)
         {
-            var user = UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
+            User user = UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
 
             if (user == null)
             {
@@ -62,7 +62,7 @@ namespace Users.API.Services
 
         public ProfileResponseModel GetUserProfile(Guid id)
         {
-            var user = UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
+            User user = UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
 
             if (user == null)
             {
@@ -74,14 +74,14 @@ namespace Users.API.Services
 
         public IEnumerable<UserResponseModel> GetUsers()
         {
-            var users = UsersRepository.GetAll();
+            IQueryable<User> users = UsersRepository.GetAll();
 
             return Mapper.Map<IEnumerable<UserResponseModel>>(users);
         }
 
         public IEnumerable<SettingResponseModel> GetUserSettings(Guid id)
         {
-            var user = UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
+            User user = UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
 
             if (user == null)
             {
@@ -93,14 +93,14 @@ namespace Users.API.Services
 
         public async Task<UserResponseModel> UpdateUserAsync(Guid id, UpdateUserRequest request)
         {
-            var user = UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
+            User user = UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
 
             if (user == null)
             {
                 throw new Exception("User with that id does not exist");
             }
 
-            var profile = Mapper.Map<UserProfile>(request.Profile);
+            UserProfile profile = Mapper.Map<UserProfile>(request.Profile);
             user.Update(profile);
 
             await UnitOfWork.SaveChangesAsync();
@@ -110,7 +110,7 @@ namespace Users.API.Services
 
         public async Task<UserResponseModel> CreateUserAsync(UserCreatedEvent createdEvent)
         {
-            var user = new User(createdEvent.UserId, new UserProfile()
+            User user = new User(createdEvent.UserId, new UserProfile()
             {
                 Id = Guid.NewGuid(),
                 Email = createdEvent.Email,

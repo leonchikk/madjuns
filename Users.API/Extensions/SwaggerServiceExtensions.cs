@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Users.API.Extensions
 {
@@ -16,7 +13,7 @@ namespace Users.API.Extensions
             {
                 c.SwaggerDoc("v1", new Info { Title = "Core API", Description = "Swagger Core API" });
 
-                var security = new Dictionary<string, IEnumerable<string>>
+                Dictionary<string, IEnumerable<string>> security = new Dictionary<string, IEnumerable<string>>
                 {
                     {"Bearer", new string[] { }},
                 };
