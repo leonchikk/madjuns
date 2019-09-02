@@ -22,6 +22,9 @@ namespace Common.Core.Interfaces
         void Delete(T obj);
         void DeleteRange(IEnumerable<T> obj);
 
+        T FirstOrDefault(Expression<Func<T, bool>> predicate);
+        Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
+
         IQueryable<T> FindBy(Expression<Func<T, bool>> predicate);
         IQueryable<T> FindBy<T2>(Expression<Func<T, bool>> predicate, params Expression<Func<T, T2>>[] paths);
         IQueryable<T> GetAll();

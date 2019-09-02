@@ -122,5 +122,15 @@ namespace Auth.Data.Repositories
 
             return query.FirstOrDefault();
         }
+
+        public T FirstOrDefault(Expression<Func<T, bool>> predicate)
+        {
+            return DbSet.FirstOrDefault(predicate);
+        }
+
+        public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await DbSet.FirstOrDefaultAsync(predicate);
+        }
     }
 }

@@ -11,10 +11,14 @@ namespace Users.API.Interfaces
     {
         Task<UserResponseModel> CreateUserAsync(UserCreatedEvent createdEvent);
         IEnumerable<UserResponseModel> GetUsers();
-        UserResponseModel GetUserById(Guid Id);
-        ProfileResponseModel GetUserProfile(Guid Id);
-        IEnumerable<SettingResponseModel> GetUserSettings(Guid Id);
+        UserResponseModel GetUserById(Guid id);
+        ProfileResponseModel GetUserProfile(Guid id);
+        IEnumerable<SettingResponseModel> GetUserSettings(Guid id);
         Task<UserResponseModel> UpdateUserAsync(Guid id, UpdateUserRequest request);
-        Task DeleteUserAsync(Guid Id);
+        Task<UserResponseModel> AddToFriend(Guid currentUserId, Guid subscriberId);
+        Task<UserResponseModel> RemoveFriend(Guid currentUserId, Guid friendId);
+        Task<UserResponseModel> AddToBlackList(Guid currentUserId, Guid targetUserId);
+        Task<UserResponseModel> SendRequestToBeFriend(Guid currentUserId, Guid targetUserId);
+        Task DeleteUserAsync(Guid id);
     }
 }

@@ -123,5 +123,25 @@ namespace Users.API.Services
 
             return Mapper.Map<UserResponseModel>(user);
         }
+
+        public Task<UserResponseModel> AddToFriend(Guid currentUserId, Guid subscriberId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UserResponseModel> RemoveFriend(Guid currentUserId, Guid friendId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UserResponseModel> AddToBlackList(Guid currentUserId, Guid targetUserId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UserResponseModel> SendRequestToBeFriend(Guid currentUserId, Guid targetUserId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
