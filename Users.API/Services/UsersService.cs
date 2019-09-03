@@ -124,22 +124,28 @@ namespace Users.API.Services
             return Mapper.Map<UserResponseModel>(user);
         }
 
-        public Task<UserResponseModel> AddToFriend(Guid currentUserId, Guid subscriberId)
+        public async Task<UserResponseModel> AddToFriend(Guid currentUserId, Guid subscriberId)
+        {
+            var currentUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == currentUserId);
+            var subscriber = await UsersRepository.FirstOrDefaultAsync(u => u.Id == subscriberId);
+
+            currentUser.AddToFriends(subscriber);
+            await UnitOfWork.SaveChangesAsync();
+
+            return Mapper.Map<UserResponseModel>(currentUser);
+        }
+
+        public async Task<UserResponseModel> RemoveFriend(Guid currentUserId, Guid friendId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<UserResponseModel> RemoveFriend(Guid currentUserId, Guid friendId)
+        public async Task<UserResponseModel> AddToBlackList(Guid currentUserId, Guid targetUserId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<UserResponseModel> AddToBlackList(Guid currentUserId, Guid targetUserId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<UserResponseModel> SendRequestToBeFriend(Guid currentUserId, Guid targetUserId)
+        public async Task<UserResponseModel> SendRequestToBeFriend(Guid currentUserId, Guid targetUserId)
         {
             throw new NotImplementedException();
         }
