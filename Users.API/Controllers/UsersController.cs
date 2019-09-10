@@ -23,6 +23,24 @@ namespace Users.API.Controllers
             return Ok(_usersService.GetUsers());
         }
 
+        [HttpGet("userId/get-friends")]
+        public IActionResult GetUserFriends(Guid userId)
+        {
+            return Ok(_usersService.GetUserFriends(userId));
+        }
+
+        [HttpGet("userId/get-subscribers")]
+        public IActionResult GetUserSubscribers(Guid userId)
+        {
+            return Ok(_usersService.GetUserSubscribers(userId));
+        }
+
+        [HttpGet("userId/get-blacklist")]
+        public IActionResult GetUserBlackList(Guid userId)
+        {
+            return Ok(_usersService.GetUserBlackList(userId));
+        }
+
         [HttpGet("{id}")]
         public IActionResult GetUserById(Guid id)
         {

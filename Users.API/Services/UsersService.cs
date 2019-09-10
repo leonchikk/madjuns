@@ -76,6 +76,8 @@ namespace Users.API.Services
         {
             IQueryable<User> users = UsersRepository.GetAll();
 
+            var t = users.ToList();
+            
             return Mapper.Map<IEnumerable<UserResponseModel>>(users);
         }
 
@@ -137,17 +139,53 @@ namespace Users.API.Services
 
         public async Task<UserResponseModel> RemoveFriend(Guid currentUserId, Guid friendId)
         {
-            throw new NotImplementedException();
+            var currentUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == currentUserId);
+            var friend = await UsersRepository.FirstOrDefaultAsync(u => u.Id == friendId);
+
+            currentUser.RemoveFromFriends(friend);
+            await UnitOfWork.SaveChangesAsync();
+
+            return Mapper.Map<UserResponseModel>(currentUser);
         }
 
         public async Task<UserResponseModel> AddToBlackList(Guid currentUserId, Guid targetUserId)
         {
-            throw new NotImplementedException();
+            var currentUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == currentUserId);
+            var targetUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == targetUserId);
+
+            currentUser.AddToBlackList(targetUser);
+            await UnitOfWork.SaveChangesAsync();
+
+            return Mapper.Map<UserResponseModel>(currentUser);
         }
 
         public async Task<UserResponseModel> SendRequestToBeFriend(Guid currentUserId, Guid targetUserId)
         {
-            throw new NotImplementedException();
+            var currentUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == currentUserId);
+            var targetUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == targetUserId);
+
+            currentUser.SubscribeTo(targetUser);
+            await UnitOfWork.SaveChangesAsync();
+
+            return Mapper.Map<UserResponseModel>(currentUser);
+        }
+
+        public IEnumerable<UserResponseModel> GetUserFriends(Guid userId)
+        {
+            var userFriends = UsersRepository.FindBy(u => u.Id == userId, u => u.Friends).SelectMany(u => u.Friends);
+            return Mapper.Map<IEnumerable<UserResponseModel>>(userFriends);
+        }
+
+        public IEnumerable<UserResponseModel> GetUserSubscribers(Guid userId)
+        {
+            var userSubscribers = UsersRepository.FindBy(u => u.Id == userId, u => u.Subscribers).SelectMany(u => u.Subscribers);
+            return Mapper.Map<IEnumerable<UserResponseModel>>(userSubscribers);
+        }
+
+        public IEnumerable<UserResponseModel> GetUserBlackList(Guid userId)
+        {
+            var userBlackList = UsersRepository.FindBy(u => u.Id == userId, u => u.BlackList).SelectMany(u => u.BlackList);
+            return Mapper.Map<IEnumerable<UserResponseModel>>(userBlackList);
         }
     }
 }

@@ -65,6 +65,17 @@ namespace Users.Core.Domain
             BlackList.Add(new BlockedUser(this, userToBeBanned));
         }
 
+        public void SubscribeTo(User targetUser)
+        {
+            if (Id == targetUser.Id)
+                throw new Exception("You can not add to subscribers yourself");
+
+            if (targetUser.Subscribers.Any(s => s.Subscriber.Id == Id))
+                throw new Exception("You already have been subscribed");
+
+            Subscribers.Add(new UserSubscriber(targetUser, this));
+        }
+
         public void Update(Profile profile)
         {
             Profile.Update(profile);

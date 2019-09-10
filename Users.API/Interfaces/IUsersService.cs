@@ -9,16 +9,22 @@ namespace Users.API.Interfaces
 {
     public interface IUsersService : IBaseService
     {
+        Task<UserResponseModel> AddToBlackList(Guid currentUserId, Guid targetUserId);
+        Task<UserResponseModel> AddToFriend(Guid currentUserId, Guid subscriberId);
         Task<UserResponseModel> CreateUserAsync(UserCreatedEvent createdEvent);
-        IEnumerable<UserResponseModel> GetUsers();
+        Task<UserResponseModel> RemoveFriend(Guid currentUserId, Guid friendId);
+        Task<UserResponseModel> UpdateUserAsync(Guid id, UpdateUserRequest request);
+        Task<UserResponseModel> SendRequestToBeFriend(Guid currentUserId, Guid targetUserId);
+
         UserResponseModel GetUserById(Guid id);
         ProfileResponseModel GetUserProfile(Guid id);
+
+        IEnumerable<UserResponseModel> GetUsers();
+        IEnumerable<UserResponseModel> GetUserFriends(Guid userId);
+        IEnumerable<UserResponseModel> GetUserSubscribers(Guid userId);
+        IEnumerable<UserResponseModel> GetUserBlackList(Guid userId);
         IEnumerable<SettingResponseModel> GetUserSettings(Guid id);
-        Task<UserResponseModel> UpdateUserAsync(Guid id, UpdateUserRequest request);
-        Task<UserResponseModel> AddToFriend(Guid currentUserId, Guid subscriberId);
-        Task<UserResponseModel> RemoveFriend(Guid currentUserId, Guid friendId);
-        Task<UserResponseModel> AddToBlackList(Guid currentUserId, Guid targetUserId);
-        Task<UserResponseModel> SendRequestToBeFriend(Guid currentUserId, Guid targetUserId);
+
         Task DeleteUserAsync(Guid id);
     }
 }

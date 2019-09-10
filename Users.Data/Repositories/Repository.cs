@@ -71,7 +71,7 @@ namespace Users.Data.Repositories
 
         public IQueryable<T> GetAll()
         {
-            return DbSet.AsQueryable();
+            return DbSet;
         }
 
         public T GetById(Guid id)
