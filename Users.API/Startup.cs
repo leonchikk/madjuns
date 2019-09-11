@@ -25,7 +25,8 @@ namespace Users.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddDbContext<UsersContext>(options => options.UseSqlServer(Configuration.GetConnectionString("local")));
+            services.AddDbContext<UsersContext>(options => options.UseLazyLoadingProxies()
+                                                                  .UseSqlServer(Configuration.GetConnectionString("local")));
             services.AddSingleton(RabbitHutch.CreateBus($"host={Configuration.GetSection("RabbitMqHost").Value}"));
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();

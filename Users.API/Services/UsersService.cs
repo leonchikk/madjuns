@@ -75,8 +75,6 @@ namespace Users.API.Services
         public IEnumerable<UserResponseModel> GetUsers()
         {
             IQueryable<User> users = UsersRepository.GetAll();
-
-            var t = users.ToList();
             
             return Mapper.Map<IEnumerable<UserResponseModel>>(users);
         }

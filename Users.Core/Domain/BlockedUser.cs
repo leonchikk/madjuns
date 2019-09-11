@@ -13,7 +13,7 @@ namespace Users.Core.Domain
             BannedUser = userToBeBanned;
         }
 
-        public User User { get; set; }
-        public User BannedUser { get; set; }
+        public virtual User User { get; set; }
+        public virtual User BannedUser { get; set; }
     }
 }

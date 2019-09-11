@@ -11,7 +11,7 @@ namespace Users.Core.Domain
             Subscriber = subscriber;
         }
 
-        public User User { get; set; }
-        public User Subscriber { get; set; }
+        public virtual User User { get; set; }
+        public virtual User Subscriber { get; set; }
     }
 }

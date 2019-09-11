@@ -7,7 +7,7 @@ namespace Users.Core.Domain
 {
     public class User : BaseEntity
     {
-        private User()
+        protected User()
         {
             Settings = new HashSet<UserSetting>();
             Friends = new HashSet<UserFriend>();
@@ -25,11 +25,11 @@ namespace Users.Core.Domain
             BlackList = new HashSet<BlockedUser>();
         }
 
-        public Profile Profile { get; set; }
-        public ICollection<UserSetting> Settings { get; set; }
-        public ICollection<UserFriend> Friends { get; set; }
-        public ICollection<UserSubscriber> Subscribers { get; set; }
-        public ICollection<BlockedUser> BlackList { get; set; }
+        public virtual Profile Profile { get; set; }
+        public virtual ICollection<UserSetting> Settings { get; set; }
+        public virtual ICollection<UserFriend> Friends { get; set; }
+        public virtual ICollection<UserSubscriber> Subscribers { get; set; }
+        public virtual ICollection<BlockedUser> BlackList { get; set; }
 
         public void AddToFriends(User subscriber)
         {

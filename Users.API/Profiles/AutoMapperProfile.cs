@@ -10,8 +10,12 @@ namespace Users.API.Profiles
         public AutoMapperProfile()
         {
             CreateMap<Address, AddressResponseModel>();
-            CreateMap<User, UserResponseModel>();
+
+            CreateMap<User, UserResponseModel>()
+                .ForMember(m => m.UserId, opt => opt.MapFrom(r => r.Id));
+
             CreateMap<UserProfile, ProfileResponseModel>();
+
             CreateMap<UserSetting, SettingResponseModel>()
                 .ForMember(m => m.Id, opt => opt.MapFrom(r => r.Setting.Id))
                 .ForMember(m => m.Name, opt => opt.MapFrom(r => r.Setting.Name));

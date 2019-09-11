@@ -13,7 +13,7 @@ namespace Users.Core.Domain
             SecondUser = secondUser;
         }
 
-        public User FirstUser { get; set; }
-        public User SecondUser { get; set; }
+        public virtual User FirstUser { get; set; }
+        public virtual User SecondUser { get; set; }
     }
 }
