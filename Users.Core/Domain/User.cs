@@ -36,9 +36,13 @@ namespace Users.Core.Domain
             if (Id == subscriber.Id)
                 throw new Exception("You can not add to friend yourself");
 
-            if (Friends.Any(friend => friend.SecondUser.Id == subscriber.Id || friend.FirstUser.Id == subscriber.Id))
+            if (!Subscribers.Any(sub => sub.Subscriber.Id == subscriber.Id))
+                throw new Exception("This user is not your subscriber");
+
+            if (Friends.Any(friend => friend.Friend.Id == subscriber.Id))
                 throw new Exception("This user already your friend");
 
+            Friends.Add(new UserFriend(subscriber, this));
             Friends.Add(new UserFriend(this, subscriber));
         }
 
@@ -47,11 +51,15 @@ namespace Users.Core.Domain
             if (Id == friend.Id)
                 throw new Exception("You can not remove yourself");
 
-            if (Friends.Any(f => friend.Id != f.SecondUser.Id && friend.Id != f.FirstUser.Id))
+            if (Friends.Any(f => friend.Id != f.Friend.Id))
                 throw new Exception("This user is not your friend");
 
-            var userFriend = Friends.FirstOrDefault(f => f.FirstUser.Id == friend.Id || f.SecondUser.Id == friend.Id);
-            Friends.Remove(userFriend);
+            Friends.Where(f => f.User.Id == friend.Id || f.Friend.Id == friend.Id)
+                .ToList()
+                .ForEach(userFriend =>
+                {
+                    Friends.Remove(userFriend);
+                });
         }
 
         public void AddToBlackList(User userToBeBanned)
@@ -61,6 +69,13 @@ namespace Users.Core.Domain
 
             if (BlackList.Any(b => b.BannedUser.Id == userToBeBanned.Id))
                 throw new Exception("This user already in black list");
+
+            Friends.Where(f => f.User.Id == userToBeBanned.Id || f.Friend.Id == userToBeBanned.Id)
+                .ToList()
+                .ForEach(userFriend =>
+                {
+                    Friends.Remove(userFriend);
+                });
 
             BlackList.Add(new BlockedUser(this, userToBeBanned));
         }

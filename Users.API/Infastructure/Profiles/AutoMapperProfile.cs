@@ -1,4 +1,5 @@
-﻿using Users.API.Models.Responses;
+﻿using System.Linq;
+using Users.API.Models.Responses;
 using Users.Core.Domain;
 using Profile = AutoMapper.Profile;
 using UserProfile = Users.Core.Domain.Profile;
@@ -11,8 +12,14 @@ namespace Users.API.Profiles
         {
             CreateMap<Address, AddressResponseModel>();
 
-            CreateMap<User, UserResponseModel>()
+            CreateMap<User, BaseUserResponseModel>()
                 .ForMember(m => m.UserId, opt => opt.MapFrom(r => r.Id));
+
+            CreateMap<User, UserResponseModel>()
+                .ForMember(m => m.UserId, opt => opt.MapFrom(r => r.Id))
+                .ForMember(m => m.BlackList, opt => opt.MapFrom(r => r.BlackList.Select(entity => entity.BannedUser)))
+                .ForMember(m => m.Friends, opt => opt.MapFrom(r => r.Friends.Select(f => f.Friend)))
+                .ForMember(m => m.Subscribers, opt => opt.MapFrom(r => r.Subscribers.Select(entity => entity.Subscriber)));
 
             CreateMap<UserProfile, ProfileResponseModel>();
 

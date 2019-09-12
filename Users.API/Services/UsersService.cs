@@ -124,7 +124,7 @@ namespace Users.API.Services
             return Mapper.Map<UserResponseModel>(user);
         }
 
-        public async Task<UserResponseModel> AddToFriend(Guid currentUserId, Guid subscriberId)
+        public async Task<UserResponseModel> AddToFriendAsync(Guid currentUserId, Guid subscriberId)
         {
             var currentUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == currentUserId);
             var subscriber = await UsersRepository.FirstOrDefaultAsync(u => u.Id == subscriberId);
@@ -135,7 +135,7 @@ namespace Users.API.Services
             return Mapper.Map<UserResponseModel>(currentUser);
         }
 
-        public async Task<UserResponseModel> RemoveFriend(Guid currentUserId, Guid friendId)
+        public async Task<UserResponseModel> RemoveFriendAsync(Guid currentUserId, Guid friendId)
         {
             var currentUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == currentUserId);
             var friend = await UsersRepository.FirstOrDefaultAsync(u => u.Id == friendId);
@@ -146,7 +146,7 @@ namespace Users.API.Services
             return Mapper.Map<UserResponseModel>(currentUser);
         }
 
-        public async Task<UserResponseModel> AddToBlackList(Guid currentUserId, Guid targetUserId)
+        public async Task<UserResponseModel> AddToBlackListAsync(Guid currentUserId, Guid targetUserId)
         {
             var currentUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == currentUserId);
             var targetUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == targetUserId);
@@ -157,7 +157,7 @@ namespace Users.API.Services
             return Mapper.Map<UserResponseModel>(currentUser);
         }
 
-        public async Task<UserResponseModel> SendRequestToBeFriend(Guid currentUserId, Guid targetUserId)
+        public async Task<UserResponseModel> SendRequestToBeFriendAsync(Guid currentUserId, Guid targetUserId)
         {
             var currentUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == currentUserId);
             var targetUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == targetUserId);

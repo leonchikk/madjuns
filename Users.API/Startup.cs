@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Users.API.Extensions;
 using Users.API.Interfaces;
+using Users.API.Middlewares;
 using Users.API.Services;
 using Users.Data;
 using Users.Data.Repositories;
@@ -44,6 +45,7 @@ namespace Users.API
             }
 
             app.UseSwaggerDocumentation();
+            app.UseMiddleware<ExceptionMiddleware>();
             app.UseServiceBusListener();
             app.UseMvc();
         }

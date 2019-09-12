@@ -9,12 +9,12 @@ namespace Users.API.Interfaces
 {
     public interface IUsersService : IBaseService
     {
-        Task<UserResponseModel> AddToBlackList(Guid currentUserId, Guid targetUserId);
-        Task<UserResponseModel> AddToFriend(Guid currentUserId, Guid subscriberId);
+        Task<UserResponseModel> AddToBlackListAsync(Guid currentUserId, Guid targetUserId);
+        Task<UserResponseModel> AddToFriendAsync(Guid currentUserId, Guid subscriberId);
         Task<UserResponseModel> CreateUserAsync(UserCreatedEvent createdEvent);
-        Task<UserResponseModel> RemoveFriend(Guid currentUserId, Guid friendId);
+        Task<UserResponseModel> RemoveFriendAsync(Guid currentUserId, Guid friendId);
         Task<UserResponseModel> UpdateUserAsync(Guid id, UpdateUserRequest request);
-        Task<UserResponseModel> SendRequestToBeFriend(Guid currentUserId, Guid targetUserId);
+        Task<UserResponseModel> SendRequestToBeFriendAsync(Guid currentUserId, Guid targetUserId);
 
         UserResponseModel GetUserById(Guid id);
         ProfileResponseModel GetUserProfile(Guid id);

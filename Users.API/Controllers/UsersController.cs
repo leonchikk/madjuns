@@ -59,6 +59,24 @@ namespace Users.API.Controllers
             return Ok(_usersService.GetUserSettings(id));
         }
 
+        [HttpPut("{currentUserId}/add-to-friend/{subscriberId}")]
+        public async Task<IActionResult> AddToFriend(Guid currentUserId, Guid subscriberId)
+        {
+            return Ok(await _usersService.AddToFriendAsync(currentUserId, subscriberId));
+        }
+
+        [HttpPut("{currentUserId}/send-request-to-be-friend/{targetUserId}")]
+        public async Task<IActionResult> SendRequestToBeFriend(Guid currentUserId, Guid targetUserId)
+        {
+            return Ok(await _usersService.SendRequestToBeFriendAsync(currentUserId, targetUserId));
+        }
+
+        [HttpPut("{currentUserId}/add-to-black-list/{targetUserId}")]
+        public async Task<IActionResult> AddUserToBlackList(Guid currentUserId, Guid targetUserId)
+        {
+            return Ok(await _usersService.AddToBlackListAsync(currentUserId, targetUserId));
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUserRequest request)
         {

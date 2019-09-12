@@ -5,15 +5,15 @@ namespace Users.Core.Domain
 {
     public class UserFriend : BaseEntity
     {
-        private UserFriend() { }
-        public UserFriend(User firstUser, User secondUser)
+        protected UserFriend() { }
+        public UserFriend(User currentUser, User subscriber)
         {
             Id = Guid.NewGuid();
-            FirstUser = firstUser;
-            SecondUser = secondUser;
+            User = currentUser;
+            Friend = subscriber;
         }
 
-        public virtual User FirstUser { get; set; }
-        public virtual User SecondUser { get; set; }
+        public virtual User User { get; set; }
+        public virtual User Friend { get; set; }
     }
 }

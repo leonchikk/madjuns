@@ -66,15 +66,16 @@ namespace Users.Data
             modelBuilder.Entity<UserFriend>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.HasOne(e => e.FirstUser);
-                entity.HasOne(e => e.SecondUser);
+                entity.HasOne(e => e.User);
+                entity.HasOne(e => e.Friend);
             });
 
             modelBuilder.Entity<UserSubscriber>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.HasOne(e => e.User);
-                entity.HasOne(e => e.Subscriber);
+                entity.HasOne(e => e.Subscriber)
+                    .WithMany(e => e.Subscribers);
             });
 
             modelBuilder.Entity<BlockedUser>(entity =>

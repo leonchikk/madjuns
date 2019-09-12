@@ -5,7 +5,7 @@ namespace Users.Core.Domain
 {
     public class BlockedUser : BaseEntity
     {
-        private BlockedUser() { }
+        protected BlockedUser() { }
         public BlockedUser(User user, User userToBeBanned)
         {
             Id = Guid.NewGuid();

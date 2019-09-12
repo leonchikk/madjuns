@@ -4,7 +4,7 @@ namespace Users.Core.Domain
 {
     public class UserSubscriber : BaseEntity
     {
-        private UserSubscriber() { }
+        protected UserSubscriber() { }
         public UserSubscriber(User target, User subscriber)
         {
             User = target;
