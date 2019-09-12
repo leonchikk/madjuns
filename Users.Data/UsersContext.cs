@@ -35,7 +35,6 @@ namespace Users.Data
                 entity.HasOne(e => e.Profile);
                 entity.HasMany(e => e.Settings);
                 entity.HasMany(e => e.Friends);
-                entity.HasMany(e => e.Subscribers);
                 entity.HasMany(e => e.BlackList);
             });
 
@@ -72,10 +71,17 @@ namespace Users.Data
 
             modelBuilder.Entity<UserSubscriber>(entity =>
             {
-                entity.HasKey(e => e.Id);
-                entity.HasOne(e => e.User);
+                entity.HasKey(e => new { e.SubscriberId, e.UserId });
+
                 entity.HasOne(e => e.Subscriber)
-                    .WithMany(e => e.Subscribers);
+                    .WithMany(e => e.SubscribesTo)
+                    .HasForeignKey(e => e.SubscriberId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.User)
+                    .WithMany(e => e.Subscribers)
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<BlockedUser>(entity =>

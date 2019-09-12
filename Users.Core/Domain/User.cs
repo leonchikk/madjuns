@@ -29,6 +29,7 @@ namespace Users.Core.Domain
         public virtual ICollection<UserSetting> Settings { get; set; }
         public virtual ICollection<UserFriend> Friends { get; set; }
         public virtual ICollection<UserSubscriber> Subscribers { get; set; }
+        public virtual ICollection<UserSubscriber> SubscribesTo { get; set; }
         public virtual ICollection<BlockedUser> BlackList { get; set; }
 
         public void AddToFriends(User subscriber)
@@ -85,10 +86,10 @@ namespace Users.Core.Domain
             if (Id == targetUser.Id)
                 throw new Exception("You can not add to subscribers yourself");
 
-            if (targetUser.Subscribers.Any(s => s.Subscriber.Id == Id))
+            if (SubscribesTo.Any(s => s.Subscriber.Id == Id))
                 throw new Exception("You already have been subscribed");
 
-            Subscribers.Add(new UserSubscriber(targetUser, this));
+            SubscribesTo.Add(new UserSubscriber(targetUser, this));
         }
 
         public void Update(Profile profile)
