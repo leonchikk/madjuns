@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Users.Data;
 
 namespace Users.Data.Migrations
 {
     [DbContext(typeof(UsersContext))]
-    partial class UsersContextModelSnapshot : ModelSnapshot
+    [Migration("20190912190403_UpdatedUserFriendEntityRelationship")]
+    partial class UpdatedUserFriendEntityRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,11 +54,15 @@ namespace Users.Data.Migrations
 
                     b.Property<Guid?>("UserId");
 
+                    b.Property<Guid?>("UserId1");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BannedUserId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("UserBlackList");
                 });
@@ -181,9 +187,13 @@ namespace Users.Data.Migrations
                         .WithMany()
                         .HasForeignKey("BannedUserId");
 
-                    b.HasOne("Users.Core.Domain.User", "User")
+                    b.HasOne("Users.Core.Domain.User")
                         .WithMany("BlackList")
                         .HasForeignKey("UserId");
+
+                    b.HasOne("Users.Core.Domain.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("Users.Core.Domain.Profile", b =>

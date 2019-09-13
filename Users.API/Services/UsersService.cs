@@ -72,9 +72,9 @@ namespace Users.API.Services
             return Mapper.Map<ProfileResponseModel>(user.Profile);
         }
 
-        public IEnumerable<UserResponseModel> GetUsers()
+        public IEnumerable<BaseUserResponseModel> GetUsers()
         {
-            IQueryable<User> users = UsersRepository.GetAll();
+            var users = UsersRepository.GetAll();
             
             return Mapper.Map<IEnumerable<UserResponseModel>>(users);
         }
@@ -168,22 +168,22 @@ namespace Users.API.Services
             return Mapper.Map<UserResponseModel>(currentUser);
         }
 
-        public IEnumerable<UserResponseModel> GetUserFriends(Guid userId)
+        public IEnumerable<BaseUserResponseModel> GetUserFriends(Guid userId)
         {
-            var userFriends = UsersRepository.FindBy(u => u.Id == userId, u => u.Friends).SelectMany(u => u.Friends);
-            return Mapper.Map<IEnumerable<UserResponseModel>>(userFriends);
+            var userFriends = UsersRepository.FindBy(u => u.Id == userId, u => u.UserFriends).SelectMany(u => u.UserFriends);
+            return Mapper.Map<IEnumerable<BaseUserResponseModel>>(userFriends);
         }
 
-        public IEnumerable<UserResponseModel> GetUserSubscribers(Guid userId)
+        public IEnumerable<BaseUserResponseModel> GetUserSubscribers(Guid userId)
         {
             var userSubscribers = UsersRepository.FindBy(u => u.Id == userId, u => u.Subscribers).SelectMany(u => u.Subscribers);
-            return Mapper.Map<IEnumerable<UserResponseModel>>(userSubscribers);
+            return Mapper.Map<IEnumerable<BaseUserResponseModel>>(userSubscribers);
         }
 
-        public IEnumerable<UserResponseModel> GetUserBlackList(Guid userId)
+        public IEnumerable<BaseUserResponseModel> GetUserBlackList(Guid userId)
         {
             var userBlackList = UsersRepository.FindBy(u => u.Id == userId, u => u.BlackList).SelectMany(u => u.BlackList);
-            return Mapper.Map<IEnumerable<UserResponseModel>>(userBlackList);
+            return Mapper.Map<IEnumerable<BaseUserResponseModel>>(userBlackList);
         }
     }
 }

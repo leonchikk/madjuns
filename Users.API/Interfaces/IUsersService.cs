@@ -19,10 +19,10 @@ namespace Users.API.Interfaces
         UserResponseModel GetUserById(Guid id);
         ProfileResponseModel GetUserProfile(Guid id);
 
-        IEnumerable<UserResponseModel> GetUsers();
-        IEnumerable<UserResponseModel> GetUserFriends(Guid userId);
-        IEnumerable<UserResponseModel> GetUserSubscribers(Guid userId);
-        IEnumerable<UserResponseModel> GetUserBlackList(Guid userId);
+        IEnumerable<BaseUserResponseModel> GetUsers();
+        IEnumerable<BaseUserResponseModel> GetUserFriends(Guid userId);
+        IEnumerable<BaseUserResponseModel> GetUserSubscribers(Guid userId);
+        IEnumerable<BaseUserResponseModel> GetUserBlackList(Guid userId);
         IEnumerable<SettingResponseModel> GetUserSettings(Guid id);
 
         Task DeleteUserAsync(Guid id);

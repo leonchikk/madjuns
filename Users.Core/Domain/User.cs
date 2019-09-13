@@ -10,7 +10,7 @@ namespace Users.Core.Domain
         protected User()
         {
             Settings = new HashSet<UserSetting>();
-            Friends = new HashSet<UserFriend>();
+            UserFriends = new HashSet<UserFriend>();
             Subscribers = new HashSet<UserSubscriber>();
             BlackList = new HashSet<BlockedUser>();
         }
@@ -20,14 +20,15 @@ namespace Users.Core.Domain
             Id = accountId;
             Profile = profile;
             Settings = new HashSet<UserSetting>();
-            Friends = new HashSet<UserFriend>();
+            UserFriends = new HashSet<UserFriend>();
             Subscribers = new HashSet<UserSubscriber>();
             BlackList = new HashSet<BlockedUser>();
         }
 
         public virtual Profile Profile { get; set; }
         public virtual ICollection<UserSetting> Settings { get; set; }
-        public virtual ICollection<UserFriend> Friends { get; set; }
+        public virtual ICollection<UserFriend> UserFriends { get; set; }
+        public virtual ICollection<UserFriend> UserIsAFriendOf { get; set; }
         public virtual ICollection<UserSubscriber> Subscribers { get; set; }
         public virtual ICollection<UserSubscriber> SubscribesTo { get; set; }
         public virtual ICollection<BlockedUser> BlackList { get; set; }
@@ -40,11 +41,11 @@ namespace Users.Core.Domain
             if (!Subscribers.Any(sub => sub.Subscriber.Id == subscriber.Id))
                 throw new Exception("This user is not your subscriber");
 
-            if (Friends.Any(friend => friend.Friend.Id == subscriber.Id))
+            if (UserFriends.Any(friend => friend.Friend.Id == subscriber.Id))
                 throw new Exception("This user already your friend");
 
-            Friends.Add(new UserFriend(subscriber, this));
-            Friends.Add(new UserFriend(this, subscriber));
+            UserFriends.Add(new UserFriend(Id, subscriber.Id));
+            RemoveFromSubscribers(subscriber.Id);
         }
 
         public void RemoveFromFriends(User friend)
@@ -52,14 +53,11 @@ namespace Users.Core.Domain
             if (Id == friend.Id)
                 throw new Exception("You can not remove yourself");
 
-            if (Friends.Any(f => friend.Id != f.Friend.Id))
-                throw new Exception("This user is not your friend");
-
-            Friends.Where(f => f.User.Id == friend.Id || f.Friend.Id == friend.Id)
+            UserFriends.Where(f => f.User.Id == friend.Id || f.Friend.Id == friend.Id)
                 .ToList()
                 .ForEach(userFriend =>
                 {
-                    Friends.Remove(userFriend);
+                    UserFriends.Remove(userFriend);
                 });
         }
 
@@ -71,14 +69,18 @@ namespace Users.Core.Domain
             if (BlackList.Any(b => b.BannedUser.Id == userToBeBanned.Id))
                 throw new Exception("This user already in black list");
 
-            Friends.Where(f => f.User.Id == userToBeBanned.Id || f.Friend.Id == userToBeBanned.Id)
-                .ToList()
-                .ForEach(userFriend =>
-                {
-                    Friends.Remove(userFriend);
-                });
-
+            RemoveFromFriends(userToBeBanned);
             BlackList.Add(new BlockedUser(this, userToBeBanned));
+        }
+        
+        public void RemoveFromBlackList(User bannedUser)
+        {
+            BlackList.Where(f => f.BannedUser.Id == bannedUser.Id)
+                .ToList()
+                .ForEach(banned =>
+                {
+                    BlackList.Remove(banned);
+                });
         }
 
         public void SubscribeTo(User targetUser)
@@ -90,6 +92,34 @@ namespace Users.Core.Domain
                 throw new Exception("You already have been subscribed");
 
             SubscribesTo.Add(new UserSubscriber(targetUser, this));
+        }
+
+        public void RemoveFromSubscribers(Guid subscribeId)
+        {
+            var subscription = Subscribers.FirstOrDefault(s => s.SubscriberId == subscribeId);
+
+            if (subscription == null)
+                throw new Exception("This user is not subscribe to you");
+
+            Subscribers.Remove(subscription);
+        }
+
+        public void RejectSubscription(Guid userId)
+        {
+            var subscription = SubscribesTo.FirstOrDefault(s => s.UserId == userId);
+
+            if (subscription == null)
+                throw new Exception("You are not subscribe to this user");
+
+            Subscribers.Remove(subscription);
+        }
+
+        public IEnumerable<User> GetFriends()
+        {
+            var userFriends = UserFriends.Select(u => u.User);
+            var userIsAFriendOf = UserIsAFriendOf.Select(u => u.Friend);
+
+            return userFriends.Concat(userIsAFriendOf);
         }
 
         public void Update(Profile profile)

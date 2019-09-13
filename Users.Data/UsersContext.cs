@@ -34,8 +34,6 @@ namespace Users.Data
                 entity.HasKey(e => e.Id);
                 entity.HasOne(e => e.Profile);
                 entity.HasMany(e => e.Settings);
-                entity.HasMany(e => e.Friends);
-                entity.HasMany(e => e.BlackList);
             });
 
             modelBuilder.Entity<Address>(entity =>
@@ -64,9 +62,17 @@ namespace Users.Data
 
             modelBuilder.Entity<UserFriend>(entity =>
             {
-                entity.HasKey(e => e.Id);
-                entity.HasOne(e => e.User);
-                entity.HasOne(e => e.Friend);
+                entity.HasKey(e => new { e.UserId, e.FriendId});
+
+                entity.HasOne(e => e.User)
+                    .WithMany(e => e.UserIsAFriendOf)
+                    .HasForeignKey(e => e.FriendId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.Friend)
+                    .WithMany(e => e.UserFriends)
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<UserSubscriber>(entity =>
@@ -87,8 +93,10 @@ namespace Users.Data
             modelBuilder.Entity<BlockedUser>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.HasOne(e => e.User);
-                entity.HasOne(e => e.BannedUser);
+                entity.HasOne(e => e.User)
+                    .WithMany(e => e.BlackList);
+                entity.HasOne(e => e.BannedUser)
+                    .WithMany(); ;
             });
         }
     }
