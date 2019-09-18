@@ -23,24 +23,6 @@ namespace Users.API.Controllers
             return Ok(_usersService.GetUsers());
         }
 
-        [HttpGet("userId/get-friends")]
-        public IActionResult GetUserFriends(Guid userId)
-        {
-            return Ok(_usersService.GetUserFriends(userId));
-        }
-
-        [HttpGet("userId/get-subscribers")]
-        public IActionResult GetUserSubscribers(Guid userId)
-        {
-            return Ok(_usersService.GetUserSubscribers(userId));
-        }
-
-        [HttpGet("userId/get-blacklist")]
-        public IActionResult GetUserBlackList(Guid userId)
-        {
-            return Ok(_usersService.GetUserBlackList(userId));
-        }
-
         [HttpGet("{id}")]
         public IActionResult GetUserById(Guid id)
         {
@@ -57,24 +39,6 @@ namespace Users.API.Controllers
         public IActionResult GetUserSettingsById(Guid id)
         {
             return Ok(_usersService.GetUserSettings(id));
-        }
-
-        [HttpPut("{currentUserId}/add-to-friend/{subscriberId}")]
-        public async Task<IActionResult> AddToFriend(Guid currentUserId, Guid subscriberId)
-        {
-            return Ok(await _usersService.AddToFriendAsync(currentUserId, subscriberId));
-        }
-
-        [HttpPut("{currentUserId}/send-request-to-be-friend/{targetUserId}")]
-        public async Task<IActionResult> SendRequestToBeFriend(Guid currentUserId, Guid targetUserId)
-        {
-            return Ok(await _usersService.SendRequestToBeFriendAsync(currentUserId, targetUserId));
-        }
-
-        [HttpPut("{currentUserId}/add-to-black-list/{targetUserId}")]
-        public async Task<IActionResult> AddUserToBlackList(Guid currentUserId, Guid targetUserId)
-        {
-            return Ok(await _usersService.AddToBlackListAsync(currentUserId, targetUserId));
         }
 
         [HttpPut("{id}")]

@@ -185,5 +185,10 @@ namespace Users.API.Services
             var userBlackList = UsersRepository.FindBy(u => u.Id == userId, u => u.BlackList).SelectMany(u => u.BlackList);
             return Mapper.Map<IEnumerable<BaseUserResponseModel>>(userBlackList);
         }
+
+        public Task RejectSubscription(Guid currentUserId, Guid targetUserId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

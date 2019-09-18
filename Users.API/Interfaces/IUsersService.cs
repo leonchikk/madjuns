@@ -15,6 +15,7 @@ namespace Users.API.Interfaces
         Task<UserResponseModel> RemoveFriendAsync(Guid currentUserId, Guid friendId);
         Task<UserResponseModel> UpdateUserAsync(Guid id, UpdateUserRequest request);
         Task<UserResponseModel> SendRequestToBeFriendAsync(Guid currentUserId, Guid targetUserId);
+        Task RejectSubscription(Guid currentUserId, Guid targetUserId);
 
         UserResponseModel GetUserById(Guid id);
         ProfileResponseModel GetUserProfile(Guid id);
