@@ -6,6 +6,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using Users.API.Interfaces;
 using Users.API.Services;
@@ -25,7 +26,7 @@ namespace Users.Tests.Services
             userServiceMock.Setup(x => x.DeleteUserAsync(userId)).Verifiable();
         }
 
-        //[ExpectedException(typeof(Exception))]
+        [ExpectedException(typeof(Exception))]
         [TestMethod]
         public void CheckGetUserById_GetUserWithNotExistId_OnFailed()
         {
@@ -37,7 +38,7 @@ namespace Users.Tests.Services
             var userRepositoryMock = new Mock<IRepository<User>>();
             var mapperMock = new Mock<IMapper>();
 
-            userRepositoryMock.Setup(x => x.FindBy(u => u.Id == userEntryId)).Returns(userEntries);
+            userRepositoryMock.Setup(x => x.FindBy(It.IsAny<Expression<Func<User, bool>>>())).Returns(userEntries);
 
             var userService = new UsersService(null, null, mapperMock.Object, userRepositoryMock.Object);
             userService.GetUserById(userIdToCheck);
