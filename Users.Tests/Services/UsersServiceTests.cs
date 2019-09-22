@@ -12,7 +12,6 @@ using Users.API.Services;
 using Users.Core.Domain;
 using Users.Data;
 using Users.Data.Repositories;
-using Users.Tests.Extensions;
 
 namespace Users.Tests.Services
 {
