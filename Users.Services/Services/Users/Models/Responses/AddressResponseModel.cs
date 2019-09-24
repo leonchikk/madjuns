@@ -1,4 +1,4 @@
-﻿namespace Users.API.Models.Responses
+﻿namespace Users.Services.Users.Models.Responses
 {
     public class AddressResponseModel
     {

@@ -31,10 +31,10 @@ namespace Users.API.Controllers
             return Ok(await _usersService.AddToBlackListAsync(currentUserId, targetUserId));
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        [HttpDelete("{bannedUserId}/from/{currentUserId}")]
+        public async Task<IActionResult> RemoveFromBlackList(Guid currentUserId, Guid bannedUserId)
         {
-            //await _usersService.DeleteUserAsync(id);
+            await _usersService.RemoveFromBlackList(currentUserId, bannedUserId);
             return Ok();
         }
     }

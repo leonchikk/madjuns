@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Users.API.Interfaces;
 
 namespace Users.API.Controllers
@@ -29,6 +26,13 @@ namespace Users.API.Controllers
         public async Task<IActionResult> SendRequestToBeFriend(Guid currentUserId, Guid targetUserId)
         {
             return Ok(await _usersService.SendRequestToBeFriendAsync(currentUserId, targetUserId));
+        }
+
+        [HttpDelete("{currentUserId}/from/{targetUserId}")]
+        public async Task<IActionResult> RejectSubscription(Guid currentUserId, Guid targetUserId)
+        {
+            await _usersService.RejectSubscription(currentUserId, targetUserId);
+            return Ok();
         }
     }
 }

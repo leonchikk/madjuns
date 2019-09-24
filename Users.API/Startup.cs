@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Users.API.Extensions;
-using Users.API.Interfaces;
 using Users.API.Middlewares;
-using Users.API.Services;
 using Users.Data;
 using Users.Data.Repositories;
+using Users.Services.Services;
+using Users.Services.Users.Interfaces;
 
 namespace Users.API
 {

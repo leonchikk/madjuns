@@ -7,11 +7,11 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Users.API.Interfaces;
-using Users.API.Services;
 using Users.Core.Domain;
 using Users.Data;
 using Users.Data.Repositories;
+using Users.Services.Services;
+using Users.Services.Users.Interfaces;
 
 namespace Users.Tests.Services
 {

@@ -2,10 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Users.API.Models.Requests;
-using Users.API.Models.Responses;
+using Users.Services.Users.Models.Requests;
+using Users.Services.Users.Models.Responses;
 
-namespace Users.API.Interfaces
+namespace Users.Services.Users.Interfaces
 {
     public interface IUsersService : IBaseService
     {
@@ -16,6 +16,8 @@ namespace Users.API.Interfaces
         Task<UserResponseModel> UpdateUserAsync(Guid id, UpdateUserRequest request);
         Task<UserResponseModel> SendRequestToBeFriendAsync(Guid currentUserId, Guid targetUserId);
         Task RejectSubscription(Guid currentUserId, Guid targetUserId);
+        Task RemoveFromBlackList(Guid currentUserId, Guid targetUserId);
+
 
         UserResponseModel GetUserById(Guid id);
         ProfileResponseModel GetUserProfile(Guid id);

@@ -2,7 +2,7 @@
 using Common.Core.Interfaces;
 using EasyNetQ;
 
-namespace Users.API.Interfaces
+namespace Users.Services
 {
     public interface IBaseService
     {

@@ -6,13 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Users.API.Interfaces;
-using Users.API.Models.Requests;
-using Users.API.Models.Responses;
 using Users.Core.Domain;
+using Users.Services.Users.Interfaces;
+using Users.Services.Users.Models.Requests;
+using Users.Services.Users.Models.Responses;
 using UserProfile = Users.Core.Domain.Profile;
 
-namespace Users.API.Services
+namespace Users.Services.Services
 {
     public class UsersService : IUsersService
     {
@@ -186,9 +186,21 @@ namespace Users.API.Services
             return Mapper.Map<IEnumerable<BaseUserResponseModel>>(userBlackList);
         }
 
-        public Task RejectSubscription(Guid currentUserId, Guid targetUserId)
+        public async Task RejectSubscription(Guid currentUserId, Guid targetUserId)
         {
-            throw new NotImplementedException();
+            var targetUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == targetUserId);
+
+            targetUser.RejectSubscription(currentUserId);
+            await UnitOfWork.SaveChangesAsync();
+        }
+
+        public async Task RemoveFromBlackList(Guid currentUserId, Guid targetUserId)
+        {
+            var currentUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == currentUserId);
+            var targetUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == targetUserId);
+
+            currentUser.RemoveFromBlackList(targetUser);
+            await UnitOfWork.SaveChangesAsync();
         }
     }
 }

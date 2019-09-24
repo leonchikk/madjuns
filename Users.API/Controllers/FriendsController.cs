@@ -28,10 +28,10 @@ namespace Users.API.Controllers
             return Ok(await _usersService.AddToFriendAsync(currentUserId, subscriberId));
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        [HttpDelete("{friendId}/from/{currentUserId}")]
+        public async Task<IActionResult> Delete(Guid friendId, Guid currentUserId)
         {
-            //await _usersService.RemoveFriendAsync(id);
+            await _usersService.RemoveFriendAsync(currentUserId, friendId);
             return Ok();
         }
     }
