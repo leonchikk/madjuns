@@ -10,6 +10,9 @@ using Users.API.Middlewares;
 using Users.Data;
 using Users.Data.Repositories;
 using Users.Services.Services;
+using Users.Services.Services.Bans;
+using Users.Services.Services.Friends;
+using Users.Services.Services.Subscriptions;
 using Users.Services.Users.Interfaces;
 
 namespace Users.API
@@ -32,6 +35,10 @@ namespace Users.API
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IUsersService, UsersService>();
+            services.AddTransient<IBansService, BansService>();
+            services.AddTransient<IFriendsService, FriendsService>();
+            services.AddTransient<ISubscriptionsService, SubscriptionsService>();
+
             services.ConfigureAutoMapper();
             services.AddSwaggerDocumentation();
             services.AddSingleton<ServiceBusListener>();

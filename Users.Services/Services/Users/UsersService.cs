@@ -14,6 +14,7 @@ using UserProfile = Users.Core.Domain.Profile;
 
 namespace Users.Services.Services
 {
+    //TODO Make settings service and probably profile
     public class UsersService : IUsersService
     {
         public IUnitOfWork UnitOfWork { get; set; }
@@ -122,85 +123,6 @@ namespace Users.Services.Services
             await UnitOfWork.SaveChangesAsync();
 
             return Mapper.Map<UserResponseModel>(user);
-        }
-
-        public async Task<UserResponseModel> AddToFriendAsync(Guid currentUserId, Guid subscriberId)
-        {
-            var currentUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == currentUserId);
-            var subscriber = await UsersRepository.FirstOrDefaultAsync(u => u.Id == subscriberId);
-
-            currentUser.AddToFriends(subscriber);
-            await UnitOfWork.SaveChangesAsync();
-
-            return Mapper.Map<UserResponseModel>(currentUser);
-        }
-
-        public async Task<UserResponseModel> RemoveFriendAsync(Guid currentUserId, Guid friendId)
-        {
-            var currentUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == currentUserId);
-            var friend = await UsersRepository.FirstOrDefaultAsync(u => u.Id == friendId);
-
-            currentUser.RemoveFromFriends(friend);
-            await UnitOfWork.SaveChangesAsync();
-
-            return Mapper.Map<UserResponseModel>(currentUser);
-        }
-
-        public async Task<UserResponseModel> AddToBlackListAsync(Guid currentUserId, Guid targetUserId)
-        {
-            var currentUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == currentUserId);
-            var targetUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == targetUserId);
-
-            currentUser.AddToBlackList(targetUser);
-            await UnitOfWork.SaveChangesAsync();
-
-            return Mapper.Map<UserResponseModel>(currentUser);
-        }
-
-        public async Task<UserResponseModel> SendRequestToBeFriendAsync(Guid currentUserId, Guid targetUserId)
-        {
-            var currentUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == currentUserId);
-            var targetUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == targetUserId);
-
-            currentUser.SubscribeTo(targetUser);
-            await UnitOfWork.SaveChangesAsync();
-
-            return Mapper.Map<UserResponseModel>(currentUser);
-        }
-
-        public IEnumerable<BaseUserResponseModel> GetUserFriends(Guid userId)
-        {
-            var userFriends = UsersRepository.FindBy(u => u.Id == userId, u => u.UserFriends).SelectMany(u => u.UserFriends);
-            return Mapper.Map<IEnumerable<BaseUserResponseModel>>(userFriends);
-        }
-
-        public IEnumerable<BaseUserResponseModel> GetUserSubscribers(Guid userId)
-        {
-            var userSubscribers = UsersRepository.FindBy(u => u.Id == userId, u => u.Subscribers).SelectMany(u => u.Subscribers);
-            return Mapper.Map<IEnumerable<BaseUserResponseModel>>(userSubscribers);
-        }
-
-        public IEnumerable<BaseUserResponseModel> GetUserBlackList(Guid userId)
-        {
-            var userBlackList = UsersRepository.FindBy(u => u.Id == userId, u => u.BlackList).SelectMany(u => u.BlackList);
-            return Mapper.Map<IEnumerable<BaseUserResponseModel>>(userBlackList);
-        }
-
-        public async Task RejectSubscription(Guid currentUserId, Guid targetUserId)
-        {
-            var targetUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == targetUserId);
-
-            targetUser.RejectSubscription(currentUserId);
-            await UnitOfWork.SaveChangesAsync();
-        }
-
-        public async Task RemoveFromBlackList(Guid currentUserId, Guid targetUserId)
-        {
-            var currentUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == currentUserId);
-            var targetUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == targetUserId);
-
-            currentUser.RemoveFromBlackList(targetUser);
-            await UnitOfWork.SaveChangesAsync();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using Users.API.Models.Responses;
 using Users.Core.Domain;
+using Users.Services.Users.Models.Responses;
 using Profile = AutoMapper.Profile;
 using UserProfile = Users.Core.Domain.Profile;
 

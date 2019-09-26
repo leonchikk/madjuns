@@ -16,10 +16,13 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="Services\Users\" />
-    <Folder Include="Services\Bans\" />
-    <Folder Include="Services\Friends\" />
-    <Folder Include="Services\Subscriptions\" />
+    <ProjectReference Include="..\Users.Core\Users.Core.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Services\Bans\Models\" />
+    <Folder Include="Services\Friends\Models\" />
+    <Folder Include="Services\Subscriptions\Models\" />
   </ItemGroup>
 
 </Project>

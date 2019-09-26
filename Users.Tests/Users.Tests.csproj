@@ -21,6 +21,7 @@
     <ProjectReference Include="..\Users.API\Users.API.csproj" />
     <ProjectReference Include="..\Users.Core\Users.Core.csproj" />
     <ProjectReference Include="..\Users.Data\Users.Data.csproj" />
+    <ProjectReference Include="..\Users.Services\Users.Services.csproj" />
   </ItemGroup>
 
 </Project>

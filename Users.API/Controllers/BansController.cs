@@ -4,7 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Users.API.Interfaces;
+using Users.Services.Services.Bans;
+using Users.Services.Users.Interfaces;
 
 namespace Users.API.Controllers
 {
@@ -12,29 +13,29 @@ namespace Users.API.Controllers
     [ApiController]
     public class BansController : BaseController
     {
-        private readonly IUsersService _usersService;
+        private readonly IBansService _bansService;
 
-        public BansController(IUsersService usersService)
+        public BansController(IBansService bansService)
         {
-            _usersService = usersService;
+            _bansService = bansService;
         }
 
         [HttpGet("userId/get-blacklist")]
         public IActionResult GetUserBlackList(Guid userId)
         {
-            return Ok(_usersService.GetUserBlackList(userId));
+            return Ok(_bansService.GetUserBlackList(userId));
         }
 
         [HttpPut("{currentUserId}/add-to-black-list/{targetUserId}")]
         public async Task<IActionResult> AddUserToBlackList(Guid currentUserId, Guid targetUserId)
         {
-            return Ok(await _usersService.AddToBlackListAsync(currentUserId, targetUserId));
+            return Ok(await _bansService.AddToBlackListAsync(currentUserId, targetUserId));
         }
 
         [HttpDelete("{bannedUserId}/from/{currentUserId}")]
         public async Task<IActionResult> RemoveFromBlackList(Guid currentUserId, Guid bannedUserId)
         {
-            await _usersService.RemoveFromBlackList(currentUserId, bannedUserId);
+            await _bansService.RemoveFromBlackList(currentUserId, bannedUserId);
             return Ok();
         }
     }

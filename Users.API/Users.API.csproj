@@ -18,11 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Users.Data\Users.Data.csproj" />
+    <ProjectReference Include="..\Users.Services\Users.Services.csproj" />
   </ItemGroup>
 
 </Project>

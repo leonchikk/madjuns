@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using Users.API.Interfaces;
-using Users.API.Models.Requests;
+using Users.Services.Users.Interfaces;
+using Users.Services.Users.Models.Requests;
 
 namespace Users.API.Controllers
 {

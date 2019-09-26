@@ -2,7 +2,7 @@
 using EasyNetQ;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using Users.API.Interfaces;
+using Users.Services.Users.Interfaces;
 
 namespace Users.API
 {
