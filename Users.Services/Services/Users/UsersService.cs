@@ -8,8 +8,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Users.Core.Domain;
 using Users.Services.Users.Interfaces;
-using Users.Services.Users.Models.Requests;
-using Users.Services.Users.Models.Responses;
+using Users.Services.Models.Requests;
+using Users.Services.Models.Responses;
 using UserProfile = Users.Core.Domain.Profile;
 
 namespace Users.Services.Services

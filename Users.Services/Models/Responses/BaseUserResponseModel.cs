@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Users.Services.Users.Models.Responses
+namespace Users.Services.Models.Responses
 {
     public class BaseUserResponseModel
     {

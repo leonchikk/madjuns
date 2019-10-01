@@ -7,11 +7,10 @@ using AutoMapper;
 using Common.Core.Interfaces;
 using EasyNetQ;
 using Users.Core.Domain;
-using Users.Services.Users.Models.Responses;
+using Users.Services.Models.Responses;
 
 namespace Users.Services.Services.Subscriptions
 {
-    //TODO Move models from users service
     public class SubscriptionsService : ISubscriptionsService
     {
         public IUnitOfWork UnitOfWork { get; set; }

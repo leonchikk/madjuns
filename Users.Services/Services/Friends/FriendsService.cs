@@ -7,11 +7,10 @@ using AutoMapper;
 using Common.Core.Interfaces;
 using EasyNetQ;
 using Users.Core.Domain;
-using Users.Services.Users.Models.Responses;
+using Users.Services.Models.Responses;
 
 namespace Users.Services.Services.Friends
 {
-    //TODO Move models from users service
     public class FriendsService : IFriendsService
     {
         public IUnitOfWork UnitOfWork { get; set; }

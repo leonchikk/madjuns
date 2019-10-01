@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using Users.Services.Users.Interfaces;
-using Users.Services.Users.Models.Requests;
+using Users.Services.Models.Requests;
 
 namespace Users.API.Controllers
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Users.Services.Users.Models.Responses
+namespace Users.Services.Models.Responses
 {
     public class UserResponseModel: BaseUserResponseModel
     {
