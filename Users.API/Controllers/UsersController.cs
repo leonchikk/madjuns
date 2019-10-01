@@ -3,9 +3,11 @@ using System;
 using System.Threading.Tasks;
 using Users.Services.Users.Interfaces;
 using Users.Services.Models.Requests;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Users.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase

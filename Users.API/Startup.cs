@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Users.API.Extensions;
+using Users.API.Infastructure.Extensions;
 using Users.API.Middlewares;
 using Users.Data;
 using Users.Data.Repositories;
@@ -39,6 +40,7 @@ namespace Users.API
             services.AddTransient<IFriendsService, FriendsService>();
             services.AddTransient<ISubscriptionsService, SubscriptionsService>();
 
+            services.ConfigureAuthentication(Configuration);
             services.ConfigureAutoMapper();
             services.AddSwaggerDocumentation();
             services.AddSingleton<ServiceBusListener>();
@@ -54,6 +56,7 @@ namespace Users.API
             app.UseSwaggerDocumentation();
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseServiceBusListener();
+            app.UseAuthentication();
             app.UseMvc();
         }
     }
