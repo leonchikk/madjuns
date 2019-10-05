@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using Users.Services.Services.Subscriptions;
-using Users.Services.Users.Interfaces;
 
 namespace Users.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SubscribersController : BaseController
@@ -17,22 +18,22 @@ namespace Users.API.Controllers
             _subscriptionsService = subscriptionsService;
         }
 
-        [HttpGet("userId")]
-        public IActionResult GetUserSubscribers(Guid userId)
+        [HttpGet]
+        public IActionResult GetUserSubscribers()
         {
-            return Ok(_subscriptionsService.GetUserSubscribers(userId));
+            return Ok(_subscriptionsService.GetUserSubscribers(CurrentUserId));
         }
 
-        [HttpPut("{currentUserId}/send-request-to-be-friend/{targetUserId}")]
-        public async Task<IActionResult> SendRequestToBeFriend(Guid currentUserId, Guid targetUserId)
+        [HttpPut("subscribe-to/{targetUserId}")]
+        public async Task<IActionResult> SendRequestToBeFriend(Guid targetUserId)
         {
-            return Ok(await _subscriptionsService.SendRequestToBeFriendAsync(currentUserId, targetUserId));
+            return Ok(await _subscriptionsService.SendRequestToBeFriendAsync(CurrentUserId, targetUserId));
         }
 
-        [HttpDelete("{currentUserId}/from/{targetUserId}")]
-        public async Task<IActionResult> RejectSubscription(Guid currentUserId, Guid targetUserId)
+        [HttpDelete("reject/{targetUserId}")]
+        public async Task<IActionResult> RejectSubscription(Guid targetUserId)
         {
-            await _subscriptionsService.RejectSubscription(currentUserId, targetUserId);
+            await _subscriptionsService.RejectSubscription(CurrentUserId, targetUserId);
             return Ok();
         }
     }

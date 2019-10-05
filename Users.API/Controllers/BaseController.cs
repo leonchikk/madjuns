@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Security.Claims;
 
 namespace Users.API.Controllers
 {
@@ -6,6 +8,13 @@ namespace Users.API.Controllers
     [ApiController]
     public class BaseController : ControllerBase
     {
-
+        public Guid CurrentUserId
+        {
+            get
+            {
+                var indentity = HttpContext.User.Identity as ClaimsIdentity;
+                return Guid.Parse(indentity.FindFirst("AccountId").Value);
+            }
+        }
     }
 }

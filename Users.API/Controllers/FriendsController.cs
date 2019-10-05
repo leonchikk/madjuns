@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using Users.Services.Services.Friends;
@@ -7,6 +8,7 @@ using Users.Services.Users.Interfaces;
 namespace Users.API.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class FriendsController : BaseController
     {
@@ -17,22 +19,22 @@ namespace Users.API.Controllers
             _friendsService = friendsService;
         }
 
-        [HttpGet("userId")]
-        public IActionResult GetUserFriends(Guid userId)
+        [HttpGet]
+        public IActionResult GetUserFriends()
         {
-            return Ok(_friendsService.GetUserFriends(userId));
+            return Ok(_friendsService.GetUserFriends(CurrentUserId));
         }
 
-        [HttpPut("{currentUserId}/add-to-friend/{subscriberId}")]
-        public async Task<IActionResult> AddToFriend(Guid currentUserId, Guid subscriberId)
+        [HttpPut("add/{subscriberId}")]
+        public async Task<IActionResult> AddToFriend( Guid subscriberId)
         {
-            return Ok(await _friendsService.AddToFriendAsync(currentUserId, subscriberId));
+            return Ok(await _friendsService.AddToFriendAsync(CurrentUserId, subscriberId));
         }
 
-        [HttpDelete("{friendId}/from/{currentUserId}")]
-        public async Task<IActionResult> Delete(Guid friendId, Guid currentUserId)
+        [HttpDelete("{friendId}")]
+        public async Task<IActionResult> Delete(Guid friendId)
         {
-            await _friendsService.RemoveFriendAsync(currentUserId, friendId);
+            await _friendsService.RemoveFriendAsync(CurrentUserId, friendId);
             return Ok();
         }
     }

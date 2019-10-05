@@ -22,22 +22,22 @@ namespace Users.API.Controllers
             _bansService = bansService;
         }
 
-        [HttpGet("userId/get-blacklist")]
-        public IActionResult GetUserBlackList(Guid userId)
+        [HttpGet]
+        public IActionResult GetUserBlackList()
         {
-            return Ok(_bansService.GetUserBlackList(userId));
+            return Ok(_bansService.GetUserBlackList(CurrentUserId));
         }
 
-        [HttpPut("{currentUserId}/add-to-black-list/{targetUserId}")]
-        public async Task<IActionResult> AddUserToBlackList(Guid currentUserId, Guid targetUserId)
+        [HttpPut("add/{targetUserId}")]
+        public async Task<IActionResult> AddUserToBlackList(Guid targetUserId)
         {
-            return Ok(await _bansService.AddToBlackListAsync(currentUserId, targetUserId));
+            return Ok(await _bansService.AddToBlackListAsync(CurrentUserId, targetUserId));
         }
 
-        [HttpDelete("{bannedUserId}/from/{currentUserId}")]
-        public async Task<IActionResult> RemoveFromBlackList(Guid currentUserId, Guid bannedUserId)
+        [HttpDelete("{bannedUserId}")]
+        public async Task<IActionResult> RemoveFromBlackList(Guid bannedUserId)
         {
-            await _bansService.RemoveFromBlackList(currentUserId, bannedUserId);
+            await _bansService.RemoveFromBlackList(CurrentUserId, bannedUserId);
             return Ok();
         }
     }

@@ -12,6 +12,10 @@ namespace Users.API.Profiles
         {
             CreateMap<Address, AddressResponseModel>();
 
+            CreateMap<UserFriend, BaseUserResponseModel>()
+                .ForMember(m => m.UserId, opt => opt.MapFrom(r => r.User.Id))
+                .ForMember(m => m.Profile, opt => opt.MapFrom(r => r.User.Profile));
+
             CreateMap<User, BaseUserResponseModel>()
                 .ForMember(m => m.UserId, opt => opt.MapFrom(r => r.Id));
 

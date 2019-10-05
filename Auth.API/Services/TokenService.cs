@@ -45,6 +45,8 @@ namespace Authentication.Services
         {
             List<Claim> claims = new List<Claim>
                 {
+                   new Claim("AccountId", account.Id.ToString()),
+                   new Claim("SystemRole", account.SystemRole.ToString()),
                    new Claim("Email", account.Email)
                 };
 
