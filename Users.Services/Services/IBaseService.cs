@@ -8,6 +8,5 @@ namespace Users.Services
     {
         IUnitOfWork UnitOfWork { get; set; }
         IBus ServiceBus { get; set; }
-        IMapper Mapper { get; set; }
     }
 }

@@ -1,22 +1,22 @@
 ﻿using Common.Core.Events;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Users.Core.Domain;
 using Users.Services.Models.Requests;
-using Users.Services.Models.Responses;
 
 namespace Users.Services.Users.Interfaces
 {
     public interface IUsersService : IBaseService
     {
-        Task<UserResponseModel> CreateUserAsync(UserCreatedEvent createdEvent);
-        Task<UserResponseModel> UpdateUserAsync(Guid id, UpdateUserRequest request);
+        Task<User> CreateUserAsync(UserCreatedEvent createdEvent);
+        Task<User> UpdateUserAsync(Guid id, UpdateUserRequest request);
 
-        UserResponseModel GetUserById(Guid id);
-        ProfileResponseModel GetUserProfile(Guid id);
+        User GetUserById(Guid id);
+        Profile GetUserProfile(Guid id);
 
-        IEnumerable<BaseUserResponseModel> GetUsers();
-        IEnumerable<SettingResponseModel> GetUserSettings(Guid id);
+        IQueryable<User> GetUsers();
+        IQueryable<UserSetting> GetUserSettings(Guid id);
 
         Task DeleteUserAsync(Guid id);
     }

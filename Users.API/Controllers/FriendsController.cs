@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -12,10 +13,12 @@ namespace Users.API.Controllers
     [ApiController]
     public class FriendsController : BaseController
     {
+        private readonly IMapper _mapper;
         private readonly IFriendsService _friendsService;
 
-        public FriendsController(IFriendsService friendsService)
+        public FriendsController(IFriendsService friendsService, IMapper mapper): base(mapper)
         {
+            _mapper = mapper;
             _friendsService = friendsService;
         }
 

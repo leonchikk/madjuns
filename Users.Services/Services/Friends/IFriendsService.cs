@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Users.Core.Domain;
 using Users.Services.Models.Responses;
 
 namespace Users.Services.Services.Friends
 {
     public interface IFriendsService: IBaseService
     {
-        Task<UserResponseModel> AddToFriendAsync(Guid currentUserId, Guid subscriberId);
-        Task<UserResponseModel> RemoveFriendAsync(Guid currentUserId, Guid friendId);
-        IEnumerable<BaseUserResponseModel> GetUserFriends(Guid userId);
+        Task<User> AddToFriendAsync(Guid currentUserId, Guid subscriberId);
+        Task<User> RemoveFriendAsync(Guid currentUserId, Guid friendId);
+        IQueryable<UserFriend> GetUserFriends(Guid userId);
     }
 }

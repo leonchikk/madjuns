@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Common.Core.Events;
+﻿using Common.Core.Events;
 using Common.Core.Interfaces;
 using EasyNetQ;
 using System;
@@ -11,6 +10,7 @@ using Users.Services.Users.Interfaces;
 using Users.Services.Models.Requests;
 using Users.Services.Models.Responses;
 using UserProfile = Users.Core.Domain.Profile;
+using AutoMapper;
 
 namespace Users.Services.Services
 {
@@ -49,7 +49,7 @@ namespace Users.Services.Services
             await UnitOfWork.SaveChangesAsync();
         }
 
-        public UserResponseModel GetUserById(Guid id)
+        public User GetUserById(Guid id)
         {
             User user = UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
 
@@ -58,10 +58,10 @@ namespace Users.Services.Services
                 throw new Exception("User with that id does not exist");
             }
 
-            return Mapper.Map<UserResponseModel>(user);
+            return user;
         }
 
-        public ProfileResponseModel GetUserProfile(Guid id)
+        public UserProfile GetUserProfile(Guid id)
         {
             User user = UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
 
@@ -70,17 +70,15 @@ namespace Users.Services.Services
                 throw new Exception("User with that id does not exist");
             }
 
-            return Mapper.Map<ProfileResponseModel>(user.Profile);
+            return user.Profile;
         }
 
-        public IEnumerable<BaseUserResponseModel> GetUsers()
+        public IQueryable<User> GetUsers()
         {
-            var users = UsersRepository.GetAll();
-            
-            return Mapper.Map<IEnumerable<UserResponseModel>>(users);
+            return UsersRepository.GetAll();
         }
 
-        public IEnumerable<SettingResponseModel> GetUserSettings(Guid id)
+        public IQueryable<UserSetting> GetUserSettings(Guid id)
         {
             User user = UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
 
@@ -89,10 +87,10 @@ namespace Users.Services.Services
                 throw new Exception("User with that id does not exist");
             }
 
-            return Mapper.Map<IEnumerable<SettingResponseModel>>(user.Settings);
+            return user.Settings.AsQueryable();
         }
 
-        public async Task<UserResponseModel> UpdateUserAsync(Guid id, UpdateUserRequest request)
+        public async Task<User> UpdateUserAsync(Guid id, UpdateUserRequest request)
         {
             User user = UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
 
@@ -106,10 +104,10 @@ namespace Users.Services.Services
 
             await UnitOfWork.SaveChangesAsync();
 
-            return Mapper.Map<UserResponseModel>(user);
+            return user;
         }
 
-        public async Task<UserResponseModel> CreateUserAsync(UserCreatedEvent createdEvent)
+        public async Task<User> CreateUserAsync(UserCreatedEvent createdEvent)
         {
             User user = new User(createdEvent.UserId, new UserProfile()
             {
@@ -122,7 +120,7 @@ namespace Users.Services.Services
 
             await UnitOfWork.SaveChangesAsync();
 
-            return Mapper.Map<UserResponseModel>(user);
+            return user;
         }
     }
 }

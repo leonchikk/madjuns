@@ -4,18 +4,22 @@ using System.Threading.Tasks;
 using Users.Services.Users.Interfaces;
 using Users.Services.Models.Requests;
 using Microsoft.AspNetCore.Authorization;
+using AutoMapper;
 
 namespace Users.API.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController : BaseController
     {
+        private readonly IMapper _mapper;
+
         private readonly IUsersService _usersService;
 
-        public UsersController(IUsersService usersService)
+        public UsersController(IUsersService usersService, IMapper mapper) : base(mapper)
         {
+            _mapper = mapper;
             _usersService = usersService;
         }
 

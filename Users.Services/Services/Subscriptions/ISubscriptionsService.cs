@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
-using Users.Services.Models.Responses;
+using Users.Core.Domain;
 
 namespace Users.Services.Services.Subscriptions
 {
-    public interface ISubscriptionsService: IBaseService
+    public interface ISubscriptionsService : IBaseService
     {
-        Task<UserResponseModel> SendRequestToBeFriendAsync(Guid currentUserId, Guid targetUserId);
+        Task<User> SendRequestToBeFriendAsync(Guid currentUserId, Guid targetUserId);
         Task RejectSubscription(Guid currentUserId, Guid targetUserId);
-        IEnumerable<BaseUserResponseModel> GetUserSubscribers(Guid userId);
+        IQueryable<UserSubscriber> GetUserSubscribers(Guid userId);
     }
 }

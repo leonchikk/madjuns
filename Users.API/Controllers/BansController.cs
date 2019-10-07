@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Users.Services.Models.Responses;
 using Users.Services.Services.Bans;
-using Users.Services.Users.Interfaces;
 
 namespace Users.API.Controllers
 {
@@ -17,7 +16,7 @@ namespace Users.API.Controllers
     {
         private readonly IBansService _bansService;
 
-        public BansController(IBansService bansService)
+        public BansController(IBansService bansService, IMapper mapper): base(mapper)
         {
             _bansService = bansService;
         }
@@ -25,19 +24,24 @@ namespace Users.API.Controllers
         [HttpGet]
         public IActionResult GetUserBlackList()
         {
-            return Ok(_bansService.GetUserBlackList(CurrentUserId));
+            var blackList = _bansService.GetUserBlackList(CurrentUserId);
+
+            return Ok(Mapper.Map<IEnumerable<BaseUserResponseModel>>(blackList));
         }
 
         [HttpPut("add/{targetUserId}")]
         public async Task<IActionResult> AddUserToBlackList(Guid targetUserId)
         {
-            return Ok(await _bansService.AddToBlackListAsync(CurrentUserId, targetUserId));
+            var bannedUser = await _bansService.AddToBlackListAsync(CurrentUserId, targetUserId);
+           
+            return Ok(Mapper.Map<BaseUserResponseModel>(bannedUser));
         }
 
         [HttpDelete("{bannedUserId}")]
         public async Task<IActionResult> RemoveFromBlackList(Guid bannedUserId)
         {
             await _bansService.RemoveFromBlackList(CurrentUserId, bannedUserId);
+
             return Ok();
         }
     }

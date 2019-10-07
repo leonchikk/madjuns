@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -11,10 +12,12 @@ namespace Users.API.Controllers
     [ApiController]
     public class SubscribersController : BaseController
     {
+        private readonly IMapper _mapper;
         private readonly ISubscriptionsService _subscriptionsService;
 
-        public SubscribersController(ISubscriptionsService subscriptionsService)
+        public SubscribersController(ISubscriptionsService subscriptionsService, IMapper mapper): base(mapper)
         {
+            _mapper = mapper;
             _subscriptionsService = subscriptionsService;
         }
 

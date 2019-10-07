@@ -15,19 +15,17 @@ namespace Users.Services.Services.Friends
     {
         public IUnitOfWork UnitOfWork { get; set; }
         public IBus ServiceBus { get; set; }
-        public IMapper Mapper { get; set; }
 
         private IRepository<User> UsersRepository { get; set; }
 
-        public FriendsService(IUnitOfWork unitOfWork, IBus serviceBus, IMapper mapper, IRepository<User> usersRepository)
+        public FriendsService(IUnitOfWork unitOfWork, IBus serviceBus, IRepository<User> usersRepository)
         {
             UnitOfWork = unitOfWork;
             ServiceBus = serviceBus;
-            Mapper = mapper;
             UsersRepository = usersRepository;
         }
 
-        public async Task<UserResponseModel> AddToFriendAsync(Guid currentUserId, Guid subscriberId)
+        public async Task<User> AddToFriendAsync(Guid currentUserId, Guid subscriberId)
         {
             var currentUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == currentUserId);
             var subscriber = await UsersRepository.FirstOrDefaultAsync(u => u.Id == subscriberId);
@@ -35,10 +33,10 @@ namespace Users.Services.Services.Friends
             currentUser.AddToFriends(subscriber);
             await UnitOfWork.SaveChangesAsync();
 
-            return Mapper.Map<UserResponseModel>(currentUser);
+            return currentUser;
         }
 
-        public async Task<UserResponseModel> RemoveFriendAsync(Guid currentUserId, Guid friendId)
+        public async Task<User> RemoveFriendAsync(Guid currentUserId, Guid friendId)
         {
             var currentUser = await UsersRepository.FirstOrDefaultAsync(u => u.Id == currentUserId);
             var friend = await UsersRepository.FirstOrDefaultAsync(u => u.Id == friendId);
@@ -46,13 +44,12 @@ namespace Users.Services.Services.Friends
             currentUser.RemoveFromFriends(friend);
             await UnitOfWork.SaveChangesAsync();
 
-            return Mapper.Map<UserResponseModel>(currentUser);
+            return currentUser;
         }
 
-        public IEnumerable<BaseUserResponseModel> GetUserFriends(Guid userId)
+        public IQueryable<UserFriend> GetUserFriends(Guid userId)
         {
-            var userFriends = UsersRepository.FindBy(u => u.Id == userId, u => u.UserFriends).SelectMany(u => u.UserFriends);
-            return Mapper.Map<IEnumerable<BaseUserResponseModel>>(userFriends);
+            return UsersRepository.FindBy(u => u.Id == userId, u => u.UserFriends).SelectMany(u => u.UserFriends);
         }
     }
 }

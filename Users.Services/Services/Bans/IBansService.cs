@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
+using Users.Core.Domain;
 using Users.Services.Models.Responses;
 
 namespace Users.Services.Services.Bans
 {
-    public interface IBansService: IBaseService
+    public interface IBansService : IBaseService
     {
-        IEnumerable<BaseUserResponseModel> GetUserBlackList(Guid userId);
-        Task<UserResponseModel> AddToBlackListAsync(Guid currentUserId, Guid targetUserId);
+        IQueryable<BlockedUser> GetUserBlackList(Guid userId);
+        Task<User> AddToBlackListAsync(Guid currentUserId, Guid targetUserId);
         Task RemoveFromBlackList(Guid currentUserId, Guid targetUserId);
     }
 }
