@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Common.Core.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using Users.API.Models.Search.Bans;
+using Users.Core.Domain;
 using Users.Services.Models.Responses;
 using Users.Services.Services.Bans;
 
@@ -22,19 +24,24 @@ namespace Users.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetUserBlackList()
+        public IActionResult GetUserBlackList([FromQuery] BansSimpleSearchModel searchModel)
         {
-            var blackList = _bansService.GetUserBlackList(CurrentUserId);
+            var blackList = _bansService.GetUserBlackList(CurrentUserId)
+              .ApplySimpleFilter(searchModel.SearchTerm, BansSearchFilter.SearchableFields);
 
-            return Ok(Mapper.Map<IEnumerable<BaseUserResponseModel>>(blackList));
+            var result = GetListResponse<BaseUserResponseModel, BlockedUser>(searchModel, blackList);
+
+            return Ok(result);
         }
 
         [HttpPut("add/{targetUserId}")]
         public async Task<IActionResult> AddUserToBlackList(Guid targetUserId)
         {
             var bannedUser = await _bansService.AddToBlackListAsync(CurrentUserId, targetUserId);
-           
-            return Ok(Mapper.Map<BaseUserResponseModel>(bannedUser));
+
+            var result = Mapper.Map<BaseUserResponseModel>(bannedUser);
+
+            return Ok(result);
         }
 
         [HttpDelete("{bannedUserId}")]

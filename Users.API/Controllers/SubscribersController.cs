@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
+using Common.Core.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using Users.API.Models.Search.Subscribers;
+using Users.Core.Domain;
+using Users.Services.Models.Responses;
 using Users.Services.Services.Subscriptions;
 
 namespace Users.API.Controllers
@@ -12,25 +16,32 @@ namespace Users.API.Controllers
     [ApiController]
     public class SubscribersController : BaseController
     {
-        private readonly IMapper _mapper;
         private readonly ISubscriptionsService _subscriptionsService;
 
         public SubscribersController(ISubscriptionsService subscriptionsService, IMapper mapper): base(mapper)
         {
-            _mapper = mapper;
             _subscriptionsService = subscriptionsService;
         }
 
         [HttpGet]
-        public IActionResult GetUserSubscribers()
+        public IActionResult GetUserSubscribers([FromQuery] SubscribersSimpleSearchModel searchModel)
         {
-            return Ok(_subscriptionsService.GetUserSubscribers(CurrentUserId));
+            var subscribers = _subscriptionsService.GetUserSubscribers(CurrentUserId)
+                .ApplySimpleFilter(searchModel.SearchTerm, SubscribersSearchFilter.SearchableFields);
+
+            var result = GetListResponse<BaseUserResponseModel, UserSubscriber>(searchModel, subscribers);
+
+            return Ok(result);
         }
 
         [HttpPut("subscribe-to/{targetUserId}")]
         public async Task<IActionResult> SendRequestToBeFriend(Guid targetUserId)
         {
-            return Ok(await _subscriptionsService.SendRequestToBeFriendAsync(CurrentUserId, targetUserId));
+            var subscribeTo = await _subscriptionsService.SendRequestToBeFriendAsync(CurrentUserId, targetUserId);
+
+            var result = Mapper.Map<BaseUserResponseModel>(subscribeTo);
+
+            return Ok(result);
         }
 
         [HttpDelete("reject/{targetUserId}")]

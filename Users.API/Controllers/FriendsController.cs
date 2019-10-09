@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using Common.Core.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using Users.API.Models.Search.Friends;
+using Users.Core.Domain;
+using Users.Services.Models.Responses;
 using Users.Services.Services.Friends;
-using Users.Services.Users.Interfaces;
 
 namespace Users.API.Controllers
 {
@@ -13,25 +16,32 @@ namespace Users.API.Controllers
     [ApiController]
     public class FriendsController : BaseController
     {
-        private readonly IMapper _mapper;
         private readonly IFriendsService _friendsService;
 
         public FriendsController(IFriendsService friendsService, IMapper mapper): base(mapper)
         {
-            _mapper = mapper;
             _friendsService = friendsService;
         }
 
         [HttpGet]
-        public IActionResult GetUserFriends()
+        public IActionResult GetUserFriends([FromQuery] FriendsSimpleSearchModel searchModel)
         {
-            return Ok(_friendsService.GetUserFriends(CurrentUserId));
+            var friends = _friendsService.GetUserFriends(CurrentUserId)
+                .ApplySimpleFilter(searchModel.SearchTerm, FriendsSearchFilter.SearchableFields);
+
+            var result = GetListResponse<BaseUserResponseModel, UserFriend>(searchModel, friends);
+
+            return Ok(result);
         }
 
         [HttpPut("add/{subscriberId}")]
         public async Task<IActionResult> AddToFriend( Guid subscriberId)
         {
-            return Ok(await _friendsService.AddToFriendAsync(CurrentUserId, subscriberId));
+            var friend = await _friendsService.AddToFriendAsync(CurrentUserId, subscriberId);
+
+            var result = Mapper.Map<BaseUserResponseModel>(friend);
+
+            return Ok(result);
         }
 
         [HttpDelete("{friendId}")]

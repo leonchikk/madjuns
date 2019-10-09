@@ -11,7 +11,7 @@ namespace Users.API.Controllers
     [ApiController]
     public class BaseController : ControllerBase
     {
-        public readonly IMapper Mapper;
+        protected readonly IMapper Mapper;
 
         public BaseController(IMapper mapper)
         {
@@ -28,7 +28,7 @@ namespace Users.API.Controllers
         }
 
         [NonAction]
-        protected BaseListResponseModel<TResult> GetListResponse<TResult>(PagingRequestModel searchModel, IQueryable<TResult> entities)
+        protected BaseListResponseModel<TResult> GetListResponse<TResult, TEntity>(PagingRequestModel searchModel, IQueryable<TEntity> entities)
         {
             var result = new BaseListResponseModel<TResult>
             {
@@ -37,7 +37,7 @@ namespace Users.API.Controllers
 
             entities = PagingQuery(entities, searchModel.Page, searchModel.Limit);
 
-            result.Data = entities.ToArray();
+            result.Data = Mapper.Map<TResult[]>(entities.ToArray());
 
             return result;
         }
