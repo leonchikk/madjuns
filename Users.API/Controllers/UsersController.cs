@@ -25,7 +25,7 @@ namespace Users.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetUsers(UsersSimpleSearchModel searchModel)
+        public IActionResult GetUsers([FromQuery]UsersSimpleSearchModel searchModel)
         {
             var users = _usersService.GetUsers()
                 .ApplySimpleFilter(searchModel.SearchTerm, UsersSearchFilter.SearchableFields);
