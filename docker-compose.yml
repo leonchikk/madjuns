@@ -17,6 +17,19 @@ services:
     environment:
         TARGET_HOST: "192.168.0.106"
         TARGET_PORT: 27014
+  
+  web-apigateway:
+    ports:
+      - 4444:4444
+    networks:
+      - ngrok-net
+    environment:
+      ASPNETCORE_URLS: http://+:4444
+      ASPNETCORE_ENVIRONMENT: Development
+    image: "web-apigateway"
+    container_name: web-apigateway
+    depends_on:
+      - rabbit-mq
       
   auth-api:
     ports:
