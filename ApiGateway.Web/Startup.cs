@@ -4,6 +4,7 @@ using ApiGateway.Web.HttpClients.Implementations;
 using ApiGateway.Web.HttpClients.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -11,10 +12,17 @@ namespace ApiGateway.Web
 {
     public class Startup
     {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpClient("auth", c =>
-                c.BaseAddress = new Uri("http://192.168.0.106:27015/")
+                c.BaseAddress = new Uri(Configuration.GetSection("ApiUrls:AuthApi").Value)
             );
             services.AddScoped<IHttpAuthClient, HttpAuthClient>();
             services.AddSwaggerGen(c =>

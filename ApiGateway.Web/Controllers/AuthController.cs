@@ -20,7 +20,7 @@ namespace ApiGateway.Web.Controllers
         }
 
         [HttpPost("sign-in")]
-        public async Task<IActionResult> SignIn(AuthRequestModel model)
+        public async Task<IActionResult> SignIn([FromBody] AuthRequestModel model)
         {
             return Ok(await _httpAuthClient.AuthAsync(model));
         }

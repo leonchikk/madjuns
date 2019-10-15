@@ -25,8 +25,8 @@ namespace ApiGateway.Web.HttpClients.Implementations
             var byteContent = new ByteArrayContent(buffer);
             byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            var rawResult = await client.PostAsync("api/auth/sign-in", byteContent);
-            var stringResult = await rawResult.Content.ReadAsStringAsync();
+            var httpResponseMessage = await client.PostAsync("api/auth/sign-in", byteContent);
+            var stringResult = await httpResponseMessage.Content.ReadAsStringAsync();
 
             return JsonConvert.DeserializeObject<AuthResponseModel>(stringResult);
         }
