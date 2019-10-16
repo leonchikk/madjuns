@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ApiGateway.Web.BackgroundWorkers;
 using ApiGateway.Web.HttpClients.Implementations;
 using ApiGateway.Web.HttpClients.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -44,6 +45,12 @@ namespace ApiGateway.Web
                 });
                 c.AddSecurityRequirement(security);
             });
+
+            var section = Configuration.GetSection("Test");
+
+            services.AddHostedService<TestBackgroundWorker>();
+            services.AddOptions();
+            services.Configure<TestSettings>(section);
             services.AddMvc();
         }
 
