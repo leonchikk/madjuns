@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ApiGateway.Web.BackgroundWorkers;
 using ApiGateway.Web.HttpClients.Implementations;
 using ApiGateway.Web.HttpClients.Interfaces;
+using ApiGateway.Web.Test;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -48,6 +49,7 @@ namespace ApiGateway.Web
 
             var section = Configuration.GetSection("Test");
 
+            services.AddSingleton<IAppSettingsService, AppSettingsService>();
             services.AddHostedService<TestBackgroundWorker>();
             services.AddOptions();
             services.Configure<TestSettings>(section);

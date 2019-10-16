@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using ApiGateway.Web.Test;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using System;
@@ -12,24 +13,26 @@ namespace ApiGateway.Web.BackgroundWorkers
     public class TestBackgroundWorker : BackgroundService
     {
         private readonly IServiceProvider _scopeProvider;
+        private readonly IAppSettingsService _setting;
 
-        public TestBackgroundWorker(IServiceProvider scope)
+        public TestBackgroundWorker(IServiceProvider scope, IAppSettingsService setting)
         {
             _scopeProvider = scope;
+            _setting = setting;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             using (var scope = _scopeProvider.CreateScope())
             {
-                var options = _scopeProvider.GetRequiredService<IOptionsMonitor<TestSettings>>();
+                //var options = _scopeProvider.GetRequiredService<IOptionsMonitor<TestSettings>>();
 
                 while (!stoppingToken.IsCancellationRequested)
                 {
 
                     try
                     {
-                        var t = options.CurrentValue.Message;
+                        var t = _setting.GetMessage();
                     }
                     catch (Exception e)
                     {
