@@ -9,26 +9,16 @@ namespace ApiGateway.Web.HttpClients.Implementations
 {
     public class HttpAuthClient : IHttpAuthClient
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IHttpBaseClient _httpBaseClient;
 
-        public HttpAuthClient(IHttpClientFactory httpClientFactory)
+        public HttpAuthClient(IHttpBaseClient httpBaseClient)
         {
-            _httpClientFactory = httpClientFactory;
+            _httpBaseClient = httpBaseClient;
         }
 
         public async Task<AuthResponseModel> AuthAsync(AuthRequestModel requestModel)
         {
-            var client = _httpClientFactory.CreateClient("auth");
-
-            var credentials = JsonConvert.SerializeObject(requestModel);
-            var buffer = System.Text.Encoding.UTF8.GetBytes(credentials);
-            var byteContent = new ByteArrayContent(buffer);
-            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            var httpResponseMessage = await client.PostAsync("api/auth/sign-in", byteContent);
-            var stringResult = await httpResponseMessage.Content.ReadAsStringAsync();
-
-            return JsonConvert.DeserializeObject<AuthResponseModel>(stringResult);
+            return await _httpBaseClient.SendPostAsync<AuthResponseModel, AuthRequestModel>("auth", "api/auth/sign-in", requestModel);
         }
     }
 }

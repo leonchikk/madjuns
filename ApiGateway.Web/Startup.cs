@@ -24,6 +24,7 @@ namespace ApiGateway.Web
             services.AddHttpClient("auth", c =>
                 c.BaseAddress = new Uri(Configuration.GetSection("ApiUrls:AuthApi").Value)
             );
+            services.AddScoped<IHttpBaseClient, HttpBaseClient>();
             services.AddScoped<IHttpAuthClient, HttpAuthClient>();
             services.AddSwaggerGen(c =>
             {
