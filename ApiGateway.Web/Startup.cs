@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using ApiGateway.Web.HttpClients.Implementations;
 using ApiGateway.Web.HttpClients.Interfaces;
+using Common.Networking.Implementations;
+using Common.Networking.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;

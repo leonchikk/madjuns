@@ -1,5 +1,6 @@
 ﻿using Auth.API.Interfaces;
 using Auth.API.Models.Requests;
+using Auth.API.Models.Responses;
 using Authentication.API.Interfaces;
 using Authentication.Models.Requests;
 using Microsoft.AspNetCore.Mvc;
@@ -21,34 +22,40 @@ namespace Auth.API.Controllers
         }
 
         [HttpPost("sign-up")]
-        public async Task<IActionResult> SignUp(CreateAccountRequest request)
+        public async Task<IActionResult> SignUpAsync(CreateAccountRequest request)
         {
             await _accountService.CreateUserAsync(request);
             return Ok();
         }
 
         [HttpPost("sign-in")]
-        public IActionResult SignIn(AuthenticationRequest request)
+        public IActionResult SignInAsync(AuthenticationRequest request)
         {
             return Ok(_authenticationService.Login(request));
         }
 
         [HttpGet("verify-email")]
-        public async Task<IActionResult> VerifyEmail([FromQuery] VerifyEmailRequest request)
+        public async Task<IActionResult> VerifyEmailAsync([FromQuery] VerifyEmailRequest request)
         {
             await _accountService.VerifyEmailAsync(request);
-            return Redirect(request.RedirectUrl);
+
+            var response = new VerifyEmailResponseModel()
+            {
+                RedirectUrl = request.RedirectUrl
+            };
+
+            return Ok(response);
         }
 
         [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
+        public async Task<IActionResult> ForgotPasswordAsync(ForgotPasswordRequest request)
         {
             await _accountService.ForgotPasswordAsync(request);
             return Ok();
         }
 
         [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+        public async Task<IActionResult> ResetPasswordAsync(ResetPasswordRequest request)
         {
             await _accountService.ResetPasswordAsync(request);
             return Ok();

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Notifications.Email.Interfaces;
+using System;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
@@ -23,6 +24,8 @@ namespace Notifications.Email.Services
 
         public void SendMail(MailAddress to, string subject, string body)
         {
+            Console.WriteLine($"Starting sending email to {to.Address}");
+
             MailMessage msg = new MailMessage
             {
                 From = new MailAddress(_configuration.GetSection("SmtpClientSettings:UserName").Value, "MadJuns"),

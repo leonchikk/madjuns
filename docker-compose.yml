@@ -1,9 +1,9 @@
 version: '3.0'
 
 services:
-  rabbit-mq:
+  rabbitmq:
     image: rabbitmq:3.7-management
-    container_name: rabbit-mq
+    container_name: rabbitmq
     networks:
       - ngrok-net
       
@@ -26,11 +26,11 @@ services:
     environment:
       ASPNETCORE_URLS: http://+:4444
       ASPNETCORE_ENVIRONMENT: Development
-      'ApiUrls:AuthApi': "https://192.168.0.106:27015/"
+      'ApiUrls:AuthApi': "http://192.168.0.106:27015/"
     image: "web-apigateway"
     container_name: web-apigateway
     depends_on:
-      - rabbit-mq
+      - rabbitmq
       
   auth-api:
     ports:
@@ -40,13 +40,13 @@ services:
     environment:
       ASPNETCORE_URLS: http://+:27015
       ASPNETCORE_ENVIRONMENT: Development
-      RabbitMqHost: "rabbit-mq"
+      RabbitMqHost: "rabbitmq"
       'ConnectionStrings:local': "Server=192.168.0.106,1433;Database=AuthContext;User=MadJuns;Password=100895;"
       
     image: "auth-api"
     container_name: auth-api
     depends_on:
-      - rabbit-mq
+      - rabbitmq
       
   email-notifications:
     ports:
@@ -54,12 +54,12 @@ services:
     networks:
       - ngrok-net
     environment:
-      RabbitMqHost: "rabbit-mq"
+      RabbitMqHost: "rabbitmq"
       
     image: "email-notifications"
     container_name: email-notifications
     depends_on:
-      - rabbit-mq
+      - rabbitmq
     
   users-api:
     ports:
@@ -69,13 +69,13 @@ services:
     environment:
       ASPNETCORE_URLS: http://+:27017
       ASPNETCORE_ENVIRONMENT: Development
-      RabbitMqHost: "rabbit-mq"
+      RabbitMqHost: "rabbitmq"
       'ConnectionStrings:local': "Server=192.168.0.106,1433;Database=UsersContext;User=MadJuns;Password=100895;"
       
     image: "users-api"
     container_name: users-api
     depends_on:
-      - rabbit-mq
+      - rabbitmq
     
 networks:
   ngrok-net:

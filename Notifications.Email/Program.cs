@@ -21,13 +21,18 @@ namespace Notifications.Email
             IEmailService emailService = new EmailService(configuration);
 
             System.Console.WriteLine("---------------------------------------------------------");
-            System.Console.WriteLine($"host={configuration.GetSection("RabbitMqHost").Value}");
+            System.Console.WriteLine($"Host={configuration.GetSection("RabbitMqHost").Value}");
+            System.Console.WriteLine($"UserName={configuration.GetSection("SmtpClientSettings:UserName").Value}");
+            System.Console.WriteLine($"Password={configuration.GetSection("SmtpClientSettings:Password").Value}");
             System.Console.WriteLine("---------------------------------------------------------");
 
             IBus messageBus = RabbitHutch.CreateBus($"host={configuration.GetSection("RabbitMqHost").Value}");
 
-
-            messageBus.Subscribe<SendMailEvent>(Guid.NewGuid().ToString(), msg => emailService.SendMail(new MailAddress(msg.To), msg.Subject, msg.Body));
+            messageBus.Subscribe<SendMailEvent>(Guid.NewGuid().ToString(), msg => 
+            {
+                emailService.SendMail(new MailAddress(msg.To), msg.Subject, msg.Body);
+                System.Console.WriteLine("Subscribing to email events");
+            });
         }
     }
 }
