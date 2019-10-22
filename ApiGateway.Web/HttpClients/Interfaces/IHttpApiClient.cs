@@ -1,7 +1,7 @@
 ﻿
 namespace ApiGateway.Web.HttpClients.Interfaces
 {
-    public interface IHttpApiClient
+    public interface IHttpApiClient: IBaseClient
     {
     }
 }

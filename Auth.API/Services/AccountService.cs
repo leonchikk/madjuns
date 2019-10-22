@@ -44,7 +44,7 @@ namespace Auth.API.Services
             await _unitOfWork.SaveChangesAsync();
 
             string callbackUrl = UrlHelper.AddUrlParameters(
-                url: $"{_accessor.HttpContext.Request.Scheme}://{_accessor.HttpContext.Request.Host}/api/auth/verify-email",
+                url: $"{_accessor.HttpContext.Request.Headers["X-ApiGateway-Address"]}/api/auth/verify-email",
                 parameters: new Dictionary<string, string>
                 {
                     { "token", newAccount.VerifyEmailToken },

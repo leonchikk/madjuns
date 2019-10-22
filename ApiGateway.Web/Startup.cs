@@ -6,8 +6,10 @@ using Common.Networking.Implementations;
 using Common.Networking.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace ApiGateway.Web
@@ -26,8 +28,11 @@ namespace ApiGateway.Web
             services.AddHttpClient("auth", c =>
                 c.BaseAddress = new Uri(Configuration.GetSection("ApiUrls:AuthApi").Value)
             );
+
             services.AddScoped<IHttpBaseClient, HttpBaseClient>();
             services.AddScoped<IHttpAuthClient, HttpAuthClient>();
+            services.AddHttpContextAccessor();
+            services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Core API", Description = "Swagger Core API" });

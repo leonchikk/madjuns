@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ApiGateway.Web.HttpClients.Interfaces
 {
-    public interface IHttpAuthClient
+    public interface IHttpAuthClient: IBaseClient
     {
         Task SignUpAsync(SignUpRequestModel requestModel);
         Task<SignInResponseModel> SignInAsync(SignInRequestModel requestModel);
