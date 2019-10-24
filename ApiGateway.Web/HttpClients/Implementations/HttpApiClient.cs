@@ -5,6 +5,6 @@ namespace ApiGateway.Web.HttpClients.Implementations
 {
     public class HttpApiClient : IHttpApiClient
     {
-        public Dictionary<string, string> Headers { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public Dictionary<string, string> Headers { get; set; }
     }
 }
