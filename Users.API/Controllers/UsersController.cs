@@ -2,13 +2,14 @@
 using System;
 using System.Threading.Tasks;
 using Users.Services.Users.Interfaces;
-using Users.Services.Models.Requests;
 using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 using Users.API.Models.Search.Users;
 using Common.Core.Extensions;
-using Users.Services.Models.Responses;
 using Users.Core.Domain;
+using Users.API.Models.Responses;
+using Users.API.Models.Requests;
+using Profile = Users.Core.Domain.Profile;
 
 namespace Users.API.Controllers
 {
@@ -68,7 +69,9 @@ namespace Users.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUserRequest request)
         {
-            var user = await _usersService.UpdateUserAsync(id, request);
+            var profile = Mapper.Map<Profile>(request.Profile);
+
+            var user = await _usersService.UpdateUserAsync(id, profile);
 
             var result = Mapper.Map<UserResponseModel>(user);
 

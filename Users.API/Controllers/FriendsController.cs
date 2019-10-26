@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using Users.API.Models.Responses;
 using Users.API.Models.Search.Friends;
 using Users.Core.Domain;
-using Users.Services.Models.Responses;
 using Users.Services.Services.Friends;
 
 namespace Users.API.Controllers

@@ -51,7 +51,7 @@ namespace Users.Tests.Services
 
             _mockUsersRepository = new Mock<Repository<User>>(mockContext.Object);
 
-            _usersService = new UsersService(null, null, null, _mockUsersRepository.Object);
+            _usersService = new UsersService(null, null, _mockUsersRepository.Object);
         }
 
         [ExpectedException(typeof(Exception))]

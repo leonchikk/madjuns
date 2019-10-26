@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Users.Services.Models.Responses
+namespace ApiGateway.Web.HttpClients.Models.UsersAPI.Responses
 {
     public class UserResponseModel: BaseUserResponseModel
     {

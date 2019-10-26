@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Users.Core.Domain;
-using Users.Services.Models.Responses;
 
 namespace Users.Services.Services.Bans
 {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ApiGateway.Web.HttpClients.Implementations;
 using ApiGateway.Web.HttpClients.Interfaces;
+using ApiGateway.Web.Infrastructure.Extensions;
 using Common.Networking.Implementations;
 using Common.Networking.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -26,13 +27,22 @@ namespace ApiGateway.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpClient("auth", c =>
-                c.BaseAddress = new Uri(Configuration.GetSection("ApiUrls:AuthApi").Value)
+            {
+                c.BaseAddress = new Uri(Configuration.GetSection("ApiUrls:AuthApi").Value);
+            });
+
+            services.AddHttpClient("users", c =>
+                c.BaseAddress = new Uri(Configuration.GetSection("ApiUrls:UsersApi").Value)
             );
 
             services.AddScoped<IHttpBaseClient, HttpBaseClient>();
             services.AddScoped<IHttpAuthClient, HttpAuthClient>();
+            services.AddScoped<IHttpUsersClient, HttpUsersClient>();
+
             services.AddHttpContextAccessor();
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.ConfigureAuthentication(Configuration);
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Core API", Description = "Swagger Core API" });
@@ -65,6 +75,7 @@ namespace ApiGateway.Web
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Core API");
                 });
             }
+            app.UseAuthentication();
             app.UseMvc();
         }
     }

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
+using Users.API.Models.Responses;
 using Users.Core.Domain;
-using Users.Services.Models.Responses;
 using Profile = AutoMapper.Profile;
 using UserProfile = Users.Core.Domain.Profile;
 
@@ -32,6 +32,7 @@ namespace Users.API.Profiles
                 .ForMember(m => m.Id, opt => opt.MapFrom(r => r.Setting.Id))
                 .ForMember(m => m.Name, opt => opt.MapFrom(r => r.Setting.Name));
 
+            CreateMap<ProfileResponseModel, UserProfile>();
         }
     }
 }

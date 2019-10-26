@@ -27,6 +27,7 @@ services:
       ASPNETCORE_URLS: http://+:4444
       ASPNETCORE_ENVIRONMENT: Development
       'ApiUrls:AuthApi': "http://192.168.0.106:27015/"
+      'ApiUrls:UsersApi': "http://192.168.0.106:27017/"
     image: "web-apigateway"
     container_name: web-apigateway
     depends_on:

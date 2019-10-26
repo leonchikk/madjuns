@@ -39,8 +39,8 @@ namespace ApiGateway.Web.Controllers
         [HttpGet("verify-email")]
         public async Task<IActionResult> VerifyEmailAsync([FromQuery] VerifyEmailRequestModel model)
         {
-            var hostUrl = _configuration.GetSection("ApiUrls:AuthApi").Value;
-            var result = await _httpAuthClient.VerifyEmailAsync(hostUrl, model);
+            var serviceUrl = _configuration.GetSection("ApiUrls:AuthApi").Value;
+            var result = await _httpAuthClient.VerifyEmailAsync(serviceUrl, model);
 
             return Redirect(result.RedirectUrl);
         }

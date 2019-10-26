@@ -1,4 +1,4 @@
-﻿namespace Users.Services.Models.Requests
+﻿namespace Users.API.Models.Requests
 {
     public class UpdateProfileRequest
     {

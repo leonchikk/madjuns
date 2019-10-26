@@ -7,10 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Users.Core.Domain;
 using Users.Services.Users.Interfaces;
-using Users.Services.Models.Requests;
-using Users.Services.Models.Responses;
 using UserProfile = Users.Core.Domain.Profile;
-using AutoMapper;
 
 namespace Users.Services.Services
 {
@@ -19,15 +16,13 @@ namespace Users.Services.Services
     {
         public IUnitOfWork UnitOfWork { get; set; }
         public IBus ServiceBus { get; set; }
-        public IMapper Mapper { get; set; }
 
         private IRepository<User> UsersRepository { get; set; }
 
-        public UsersService(IUnitOfWork unitOfWork, IBus serviceBus, IMapper mapper, IRepository<User> usersRepository)
+        public UsersService(IUnitOfWork unitOfWork, IBus serviceBus, IRepository<User> usersRepository)
         {
             UnitOfWork = unitOfWork;
             ServiceBus = serviceBus;
-            Mapper = mapper;
             UsersRepository = usersRepository;
         }
 
@@ -90,7 +85,7 @@ namespace Users.Services.Services
             return user.Settings.AsQueryable();
         }
 
-        public async Task<User> UpdateUserAsync(Guid id, UpdateUserRequest request)
+        public async Task<User> UpdateUserAsync(Guid id, Profile profile)
         {
             User user = UsersRepository.FindBy(u => u.Id == id).FirstOrDefault();
 
@@ -99,7 +94,6 @@ namespace Users.Services.Services
                 throw new Exception("User with that id does not exist");
             }
 
-            UserProfile profile = Mapper.Map<UserProfile>(request.Profile);
             user.Update(profile);
 
             await UnitOfWork.SaveChangesAsync();

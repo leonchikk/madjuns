@@ -7,7 +7,6 @@ using AutoMapper;
 using Common.Core.Interfaces;
 using EasyNetQ;
 using Users.Core.Domain;
-using Users.Services.Models.Responses;
 
 namespace Users.Services.Services.Friends
 {

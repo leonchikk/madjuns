@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace ApiGateway.Web.HttpClients.Interfaces
 {
-    public interface IHttpAuthClient: IBaseClient
+    public interface IHttpAuthClient
     {
         Task SignUpAsync(SignUpRequestModel requestModel);
         Task<SignInResponseModel> SignInAsync(SignInRequestModel requestModel);
 
-        Task<VerifyEmailResponseModel> VerifyEmailAsync(string hostUrl, VerifyEmailRequestModel requestModel);
+        Task<VerifyEmailResponseModel> VerifyEmailAsync(string serviceUrl, VerifyEmailRequestModel requestModel);
         Task ForgotPasswordAsync(ForgotPasswordRequestModel requestModel);
         Task ResetPasswordAsync(ResetPasswordRequestModel requestModel);
 
