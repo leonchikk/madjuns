@@ -60,5 +60,16 @@ namespace Common.Networking.Extensions
 
             return byteContent;
         }
+
+        public static void CopyHeaders(this HttpRequestMessage requestMessage, Dictionary<string, string> headersToCopy)
+        {
+            if (headersToCopy == null)
+                return;
+
+            foreach (var header in headersToCopy)
+            {
+                requestMessage.Headers.Add(header.Key, header.Value);
+            }
+        }
     }
 }

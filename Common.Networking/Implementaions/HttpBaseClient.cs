@@ -18,63 +18,70 @@ namespace Common.Networking.Implementations
 
         public async Task<TResult> GetAsync<TResult>(string clientName, string requestUri, Dictionary<string, string> headers = null)
         {
-            var client = _httpClientFactory.CreateClient(clientName);
+            using (var requestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri))
+            {
+                requestMessage.CopyHeaders(headers);
 
-            var httpResponseMessage = await client.GetAsync(requestUri);
+                var httpClient = _httpClientFactory.CreateClient(clientName);
+                var httpResponseMessage = await httpClient.SendAsync(requestMessage);
 
-            return await httpResponseMessage.HandleResponseAsync<TResult>();
+                return await httpResponseMessage.HandleResponseAsync<TResult>();
+            }
         }
 
         public async Task<TResult> DeleteAsync<TResult>(string clientName, string requestUri, Dictionary<string, string> headers = null)
         {
-            var client = _httpClientFactory.CreateClient(clientName);
+            using (var requestMessage = new HttpRequestMessage(HttpMethod.Delete, requestUri))
+            {
+                requestMessage.CopyHeaders(headers);
 
-            var httpResponseMessage = await client.DeleteAsync(requestUri);
+                var httpClient = _httpClientFactory.CreateClient(clientName);
+                var httpResponseMessage = await httpClient.SendAsync(requestMessage);
 
-            return await httpResponseMessage.HandleResponseAsync<TResult>();
+                return await httpResponseMessage.HandleResponseAsync<TResult>();
+            }
         }
 
         public async Task DeleteAsync(string clientName, string requestUri, Dictionary<string, string> headers = null)
         {
-            var client = _httpClientFactory.CreateClient(clientName);
+            using (var requestMessage = new HttpRequestMessage(HttpMethod.Delete, requestUri))
+            {
+                requestMessage.CopyHeaders(headers);
+                var httpClient = _httpClientFactory.CreateClient(clientName);
+                var httpResponseMessage = await httpClient.DeleteAsync(requestUri);
 
-            var httpResponseMessage = await client.DeleteAsync(requestUri);
-
-            await httpResponseMessage.HandleResponseAsync();
+                await httpResponseMessage.HandleResponseAsync();
+            }
         }
 
         public async Task<TResult> PostAsync<TResult, TRequest>(string clientName, string requestUri, TRequest requestModel, Dictionary<string, string> headers = null, string mediaType = "application/json") where TRequest : class
         {
-            var client = _httpClientFactory.CreateClient(clientName);
-
-            var httpResponseMessage = await client.PostAsync(requestUri, requestModel.GenerateHttpContent(headers, mediaType));
+            var httpClient = _httpClientFactory.CreateClient(clientName);
+            var httpResponseMessage = await httpClient.PostAsync(requestUri, requestModel.GenerateHttpContent(headers, mediaType));
 
             return await httpResponseMessage.HandleResponseAsync<TResult>();
         }
 
         public async Task PostAsync<TRequest>(string clientName, string requestUri, TRequest requestModel, Dictionary<string, string> headers = null, string mediaType = "application/json") where TRequest : class
         {
-            var client = _httpClientFactory.CreateClient(clientName);
-
-            var httpResponseMessage = await client.PostAsync(requestUri, requestModel.GenerateHttpContent(headers, mediaType));
+            var httpClient = _httpClientFactory.CreateClient(clientName);
+            var httpResponseMessage = await httpClient.PostAsync(requestUri, requestModel.GenerateHttpContent(headers, mediaType));
 
             await httpResponseMessage.HandleResponseAsync();
         }
 
         public async Task PutAsync<TRequest>(string clientName, string requestUri, TRequest requestModel, Dictionary<string, string> headers = null, string mediaType = "application/json") where TRequest : class
         {
-            var client = _httpClientFactory.CreateClient(clientName);
-
-            var httpResponseMessage = await client.PutAsync(requestUri, requestModel.GenerateHttpContent(headers, mediaType));
+            var httpClient = _httpClientFactory.CreateClient(clientName);
+            var httpResponseMessage = await httpClient.PutAsync(requestUri, requestModel.GenerateHttpContent(headers, mediaType));
 
             await httpResponseMessage.HandleResponseAsync();
         }
 
         public async Task<TResult> PutAsync<TResult, TRequest>(string clientName, string requestUri, TRequest requestModel, Dictionary<string, string> headers = null, string mediaType = "application/json") where TRequest : class
         {
-            var client = _httpClientFactory.CreateClient(clientName);
-
-            var httpResponseMessage = await client.PutAsync(requestUri, requestModel.GenerateHttpContent(headers, mediaType));
+            var httpClient = _httpClientFactory.CreateClient(clientName);
+            var httpResponseMessage = await httpClient.PutAsync(requestUri, requestModel.GenerateHttpContent(headers, mediaType));
 
             return await httpResponseMessage.HandleResponseAsync<TResult>();
         }

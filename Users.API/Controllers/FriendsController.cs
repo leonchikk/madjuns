@@ -35,7 +35,7 @@ namespace Users.API.Controllers
         }
 
         [HttpPut("add/{subscriberId}")]
-        public async Task<IActionResult> AddToFriend( Guid subscriberId)
+        public async Task<IActionResult> AddToFriendAsync( Guid subscriberId)
         {
             var friend = await _friendsService.AddToFriendAsync(CurrentUserId, subscriberId);
 
@@ -45,7 +45,7 @@ namespace Users.API.Controllers
         }
 
         [HttpDelete("{friendId}")]
-        public async Task<IActionResult> Delete(Guid friendId)
+        public async Task<IActionResult> DeleteAsync(Guid friendId)
         {
             await _friendsService.RemoveFriendAsync(CurrentUserId, friendId);
             return Ok();

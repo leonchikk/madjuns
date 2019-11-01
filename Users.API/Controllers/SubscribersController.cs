@@ -35,7 +35,7 @@ namespace Users.API.Controllers
         }
 
         [HttpPut("subscribe-to/{targetUserId}")]
-        public async Task<IActionResult> SendRequestToBeFriend(Guid targetUserId)
+        public async Task<IActionResult> SendRequestToBeFriendAsync(Guid targetUserId)
         {
             var subscribeTo = await _subscriptionsService.SendRequestToBeFriendAsync(CurrentUserId, targetUserId);
 
@@ -45,7 +45,7 @@ namespace Users.API.Controllers
         }
 
         [HttpDelete("reject/{targetUserId}")]
-        public async Task<IActionResult> RejectSubscription(Guid targetUserId)
+        public async Task<IActionResult> RejectSubscriptionAsync(Guid targetUserId)
         {
             await _subscriptionsService.RejectSubscription(CurrentUserId, targetUserId);
             return Ok();

@@ -35,7 +35,7 @@ namespace Users.API.Controllers
         }
 
         [HttpPut("add/{targetUserId}")]
-        public async Task<IActionResult> AddUserToBlackList(Guid targetUserId)
+        public async Task<IActionResult> AddUserToBlackListAsync(Guid targetUserId)
         {
             var bannedUser = await _bansService.AddToBlackListAsync(CurrentUserId, targetUserId);
 
@@ -45,7 +45,7 @@ namespace Users.API.Controllers
         }
 
         [HttpDelete("{bannedUserId}")]
-        public async Task<IActionResult> RemoveFromBlackList(Guid bannedUserId)
+        public async Task<IActionResult> RemoveFromBlackListAsync(Guid bannedUserId)
         {
             await _bansService.RemoveFromBlackList(CurrentUserId, bannedUserId);
 

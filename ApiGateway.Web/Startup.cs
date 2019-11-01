@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ApiGateway.Web.HttpClients.Implementations;
 using ApiGateway.Web.HttpClients.Interfaces;
 using ApiGateway.Web.Infrastructure.Extensions;
+using ApiGateway.Web.Settings;
 using Common.Networking.Implementations;
 using Common.Networking.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -28,14 +29,16 @@ namespace ApiGateway.Web
         {
             services.AddHttpClient("auth", c =>
             {
-                c.BaseAddress = new Uri(Configuration.GetSection("ApiUrls:AuthApi").Value);
+                c.BaseAddress = new Uri(Configuration.GetSection("GatewaySettings:AuthApiUrl").Value);
             });
 
             services.AddHttpClient("users", c =>
-                c.BaseAddress = new Uri(Configuration.GetSection("ApiUrls:UsersApi").Value)
+                c.BaseAddress = new Uri(Configuration.GetSection("GatewaySettings:UsersApiUrl").Value)
             );
 
+            services.Configure<GatewaySettings>(Configuration.GetSection("GatewaySettings"));
             services.AddScoped<IHttpBaseClient, HttpBaseClient>();
+
             services.AddScoped<IHttpAuthClient, HttpAuthClient>();
             services.AddScoped<IHttpUsersClient, HttpUsersClient>();
 

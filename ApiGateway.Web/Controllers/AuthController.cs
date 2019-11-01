@@ -15,12 +15,10 @@ namespace ApiGateway.Web.Controllers
     public class AuthController : Controller
     {
         private readonly IHttpAuthClient _httpAuthClient;
-        private readonly IConfiguration _configuration;
 
-        public AuthController(IHttpAuthClient httpAuthClient, IConfiguration configuration)
+        public AuthController(IHttpAuthClient httpAuthClient)
         {
             _httpAuthClient = httpAuthClient;
-            _configuration = configuration;
         }
 
         [HttpPost("sign-in")]
@@ -39,8 +37,7 @@ namespace ApiGateway.Web.Controllers
         [HttpGet("verify-email")]
         public async Task<IActionResult> VerifyEmailAsync([FromQuery] VerifyEmailRequestModel model)
         {
-            var serviceUrl = _configuration.GetSection("ApiUrls:AuthApi").Value;
-            var result = await _httpAuthClient.VerifyEmailAsync(serviceUrl, model);
+            var result = await _httpAuthClient.VerifyEmailAsync(model);
 
             return Redirect(result.RedirectUrl);
         }
