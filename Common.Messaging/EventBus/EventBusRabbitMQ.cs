@@ -118,7 +118,7 @@ namespace Common.Messaging.EventBus
         {
             DoInternalSubscription<TEvent>();
 
-            Console.WriteLine("Subscribing to event {EventName}", nameof(TEvent));
+            //Console.WriteLine("Subscribing to event {EventName}", nameof(TEvent));
 
             _subscriptionsManager.AddSubscription<TEvent, TEventHandler>();
             StartBasicConsume();

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Common.Core.Interfaces;
-using EasyNetQ;
+using Common.Messaging.Abstractions;
 using Users.Core.Domain;
 
 namespace Users.Services.Services.Bans
@@ -13,11 +13,11 @@ namespace Users.Services.Services.Bans
     public class BansService : IBansService
     {
         public IUnitOfWork UnitOfWork { get; set; }
-        public IBus ServiceBus { get; set; }
+        public IEventBus ServiceBus { get; set; }
 
         private IRepository<User> UsersRepository { get; set; }
 
-        public BansService(IUnitOfWork unitOfWork, IBus serviceBus, IRepository<User> usersRepository)
+        public BansService(IUnitOfWork unitOfWork, IEventBus serviceBus, IRepository<User> usersRepository)
         {
             UnitOfWork = unitOfWork;
             ServiceBus = serviceBus;

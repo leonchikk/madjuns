@@ -1,13 +1,18 @@
-﻿using Common.Core.Interfaces;
-using EasyNetQ;
+﻿using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Common.Core.Interfaces;
+using Common.Messaging.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using Users.API.EventHandlers;
 using Users.API.Extensions;
 using Users.API.Infastructure.Extensions;
 using Users.API.Middlewares;
+using Users.Core.Events;
 using Users.Data;
 using Users.Data.Repositories;
 using Users.Services.Services;
@@ -27,12 +32,12 @@ namespace Users.API
 
         public IConfiguration Configuration { get; }
 
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
             services.AddDbContext<UsersContext>(options => options.UseLazyLoadingProxies()
                                                                   .UseSqlServer(Configuration.GetConnectionString("local")));
-            services.AddSingleton(RabbitHutch.CreateBus($"host={Configuration.GetSection("RabbitMqHost").Value}"));
+            services.AddRabbitMQEventBus(Configuration);
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IUsersService, UsersService>();
@@ -43,7 +48,12 @@ namespace Users.API
             services.ConfigureAuthentication(Configuration);
             services.ConfigureAutoMapper();
             services.AddSwaggerDocumentation();
-            services.AddSingleton<ServiceBusListener>();
+            services.AddTransient<UserCreatedEventHandler>();
+
+            var container = new ContainerBuilder();
+            container.Populate(services);
+
+            return new AutofacServiceProvider(container.Build());
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -55,7 +65,7 @@ namespace Users.API
 
             app.UseSwaggerDocumentation();
             app.UseMiddleware<ExceptionMiddleware>();
-            app.UseServiceBusListener();
+            app.SubscribeToEvent<UserCreatedEvent, UserCreatedEventHandler>();
             app.UseAuthentication();
             app.UseMvc();
         }

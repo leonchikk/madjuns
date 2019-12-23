@@ -1,6 +1,4 @@
-﻿using Common.Core.Events;
-using EasyNetQ;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Notifications.Email.Interfaces;
 using Notifications.Email.Services;
 using System;

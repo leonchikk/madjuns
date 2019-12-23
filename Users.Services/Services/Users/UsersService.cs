@@ -1,11 +1,10 @@
-﻿using Common.Core.Events;
-using Common.Core.Interfaces;
-using EasyNetQ;
+﻿using Common.Core.Interfaces;
+using Common.Messaging.Abstractions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Users.Core.Domain;
+using Users.Core.Events;
 using Users.Services.Users.Interfaces;
 using UserProfile = Users.Core.Domain.Profile;
 
@@ -15,11 +14,11 @@ namespace Users.Services.Services
     public class UsersService : IUsersService
     {
         public IUnitOfWork UnitOfWork { get; set; }
-        public IBus ServiceBus { get; set; }
+        public IEventBus ServiceBus { get; set; }
 
         private IRepository<User> UsersRepository { get; set; }
 
-        public UsersService(IUnitOfWork unitOfWork, IBus serviceBus, IRepository<User> usersRepository)
+        public UsersService(IUnitOfWork unitOfWork, IEventBus serviceBus, IRepository<User> usersRepository)
         {
             UnitOfWork = unitOfWork;
             ServiceBus = serviceBus;
@@ -35,9 +34,9 @@ namespace Users.Services.Services
                 throw new Exception("User with that account id does not exist");
             }
 
-            await ServiceBus.PublishAsync(new UserDeletedEvent
+            ServiceBus.Publish(new UserDeletedEvent
             {
-                AcountId = id
+                AccountId = id
             });
 
             user.IsDeleted = true;

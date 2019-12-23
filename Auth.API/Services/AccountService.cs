@@ -2,10 +2,10 @@
 using Auth.API.Models.Requests;
 using Auth.Core.Entities;
 using Auth.Core.Enumerations;
-using Common.Core.Events;
+using Auth.Core.Events;
 using Common.Core.Helpers;
 using Common.Core.Interfaces;
-using EasyNetQ;
+using Common.Messaging.Abstractions;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -18,10 +18,10 @@ namespace Auth.API.Services
     {
         private readonly IRepository<Account> _accountsRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IBus _serviceBus;
+        private readonly IEventBus _serviceBus;
         private readonly IHttpContextAccessor _accessor;
 
-        public AccountService(IRepository<Account> accountsRepository, IUnitOfWork unitOfWork, IBus serviceBus, IHttpContextAccessor accessor)
+        public AccountService(IRepository<Account> accountsRepository, IUnitOfWork unitOfWork, IEventBus serviceBus, IHttpContextAccessor accessor)
         {
             _accountsRepository = accountsRepository;
             _accessor = accessor;
@@ -51,9 +51,9 @@ namespace Auth.API.Services
                     { "redirectUrl", request.RedirectUrl }
                 });
 
-            await PublishEmailEvent("Verify account", newAccount.Email, callbackUrl);
+            PublishEmailEvent("Verify account", newAccount.Email, callbackUrl);
 
-            await _serviceBus.PublishAsync
+            _serviceBus.Publish
             (
                 new UserCreatedEvent
                 {
@@ -98,7 +98,7 @@ namespace Auth.API.Services
                     { "token", account.ForgotPasswordToken }
                });
 
-            await PublishEmailEvent("Change password", account.Email, callbackUrl);
+             PublishEmailEvent("Change password", account.Email, callbackUrl);
         }
 
         public async Task ResetPasswordAsync(ResetPasswordRequest request)
@@ -132,9 +132,9 @@ namespace Auth.API.Services
             await _unitOfWork.SaveChangesAsync();
         }
 
-        private async Task PublishEmailEvent(string subject, string to, string body)
+        private void PublishEmailEvent(string subject, string to, string body)
         {
-            await _serviceBus.PublishAsync
+            _serviceBus.Publish
             (
                 new SendMailEvent
                 {

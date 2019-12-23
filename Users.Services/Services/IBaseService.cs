@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using Common.Core.Interfaces;
-using EasyNetQ;
+using Common.Messaging.Abstractions;
 
 namespace Users.Services
 {
     public interface IBaseService
     {
         IUnitOfWork UnitOfWork { get; set; }
-        IBus ServiceBus { get; set; }
+        IEventBus ServiceBus { get; set; }
     }
 }

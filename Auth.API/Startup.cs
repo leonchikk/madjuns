@@ -1,21 +1,26 @@
 ﻿using Auth.API;
+using Auth.API.EventsHandlers;
 using Auth.API.Extensions;
 using Auth.API.Interfaces;
 using Auth.API.Middlewares;
 using Auth.API.Services;
+using Auth.Core.Events;
 using Auth.Data;
 using Auth.Data.Repositories;
 using Authentication.API.Interfaces;
 using Authentication.API.Services;
 using Authentication.Services;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Common.Core.Interfaces;
-using EasyNetQ;
+using Common.Messaging.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
+using System;
 using System.Collections.Generic;
 
 namespace Auth
@@ -29,11 +34,11 @@ namespace Auth
 
         public IConfiguration Configuration { get; }
 
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
             services.AddDbContext<AuthContext>(options => options.UseSqlServer(Configuration.GetConnectionString("local")));
-            services.AddSingleton(RabbitHutch.CreateBus($"host={Configuration.GetSection("RabbitMqHost").Value}"));
+            services.AddRabbitMQEventBus(Configuration);
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IAccountService, AccountService>();
@@ -59,7 +64,12 @@ namespace Auth
                 });
                 c.AddSecurityRequirement(security);
             });
-            services.AddSingleton<ServiceBusListener>();
+            services.AddTransient<UserDeletedEventHandler>();
+
+            var container = new ContainerBuilder();
+            container.Populate(services);
+
+            return new AutofacServiceProvider(container.Build());
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -82,7 +92,7 @@ namespace Auth
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseHttpsRedirection();
             app.UseMvc();
-            app.UseServiceBusListener();
+            app.SubscribeToEvent<UserDeletedEvent, UserDeletedEventHandler>();
         }
     }
 }

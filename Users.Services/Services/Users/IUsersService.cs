@@ -1,8 +1,8 @@
-﻿using Common.Core.Events;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Users.Core.Domain;
+using Users.Core.Events;
 
 namespace Users.Services.Users.Interfaces
 {

@@ -81,7 +81,7 @@ namespace Common.Messaging.Implementations
                     _connection.CallbackException += OnCallbackException;
                     _connection.ConnectionBlocked += OnConnectionBlocked;
 
-                    Console.WriteLine("RabbitMQ Client acquired a persistent connection to '{HostName}' and is subscribed to failure events", _connection.Endpoint.HostName);
+                    //Console.WriteLine("RabbitMQ Client acquired a persistent connection to '{HostName}' and is subscribed to failure events", _connection.Endpoint.HostName);
 
                     return true;
                 }

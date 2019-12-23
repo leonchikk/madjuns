@@ -1,5 +1,5 @@
 ﻿using Common.Core.Interfaces;
-using EasyNetQ;
+using Common.Messaging.Abstractions;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,11 +10,11 @@ namespace Users.Services.Services.Subscriptions
     public class SubscriptionsService : ISubscriptionsService
     {
         public IUnitOfWork UnitOfWork { get; set; }
-        public IBus ServiceBus { get; set; }
+        public IEventBus ServiceBus { get; set; }
 
         private IRepository<User> UsersRepository { get; set; }
 
-        public SubscriptionsService(IUnitOfWork unitOfWork, IBus serviceBus, IRepository<User> usersRepository)
+        public SubscriptionsService(IUnitOfWork unitOfWork, IEventBus serviceBus, IRepository<User> usersRepository)
         {
             UnitOfWork = unitOfWork;
             ServiceBus = serviceBus;
