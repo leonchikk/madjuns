@@ -1,14 +1,10 @@
-﻿using Autofac;
-using Autofac.Core.Lifetime;
-using Common.Messaging.Abstractions;
+﻿using Common.Messaging.Abstractions;
 using Common.Messaging.EventBus;
 using Common.Messaging.Implementations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Common.Messaging.Extensions
 {
@@ -20,64 +16,37 @@ namespace Common.Messaging.Extensions
             {
                 var factory = new ConnectionFactory()
                 {
-                    HostName = configuration["EventBusConnection"],
+                    HostName = configuration["RabbitMQ:EventBusConnection"],
                     DispatchConsumersAsync = true
                 };
 
-                if (!string.IsNullOrEmpty(configuration["EventBusUserName"]))
+                if (!string.IsNullOrEmpty(configuration["RabbitMQ:EventBusUserName"]))
                 {
-                    factory.UserName = configuration["EventBusUserName"];
+                    factory.UserName = configuration["RabbitMQ:EventBusUserName"];
                 }
 
-                if (!string.IsNullOrEmpty(configuration["EventBusPassword"]))
+                if (!string.IsNullOrEmpty(configuration["RabbitMQ:EventBusPassword"]))
                 {
-                    factory.Password = configuration["EventBusPassword"];
+                    factory.Password = configuration["RabbitMQ:EventBusPassword"];
                 }
 
                 return new PersistentConnection(factory);
             });
 
-            var subscriptionClientName = configuration["SubscriptionClientName"];
+            var subscriptionClientName = configuration["RabbitMQ:SubscriptionClientName"];
 
-            services.AddSingleton<IEventBus, EventBusRabbitMQ>(sp =>
+            services.AddSingleton<IEventBus, EventBusRabbitMQ>(serviceProvider =>
             {
-                var rabbitMQPersistentConnection = sp.GetRequiredService<IPersistentConnection>();
-                var iLifetimeScope = sp.GetRequiredService<ILifetimeScope>();
-                var eventBusSubcriptionsManager = sp.GetRequiredService<ISubscriptionsManager>();
+                var rabbitMQPersistentConnection = serviceProvider.GetRequiredService<IPersistentConnection>();
+                var eventBusSubcriptionsManager = serviceProvider.GetRequiredService<ISubscriptionsManager>();
+                var logger = serviceProvider.GetRequiredService<ILogger<EventBusRabbitMQ>>();
 
-                return new EventBusRabbitMQ(rabbitMQPersistentConnection, eventBusSubcriptionsManager, iLifetimeScope, subscriptionClientName);
+                return new EventBusRabbitMQ(serviceProvider, logger, rabbitMQPersistentConnection, eventBusSubcriptionsManager, subscriptionClientName);
             });
 
             services.AddSingleton<ISubscriptionsManager, SubscriptionsManager>();
 
             return services;
-        }
-
-        public static EventBusRabbitMQ CreateRabbitMQEventBus(IConfiguration configuration)
-        {
-            var lifeTimeScope = new ContainerBuilder().Build().BeginLifetimeScope();
-
-            var factory = new ConnectionFactory()
-            {
-                HostName = configuration["EventBusConnection"],
-                DispatchConsumersAsync = true
-            };
-
-            if (!string.IsNullOrEmpty(configuration["EventBusUserName"]))
-            {
-                factory.UserName = configuration["EventBusUserName"];
-            }
-
-            if (!string.IsNullOrEmpty(configuration["EventBusPassword"]))
-            {
-                factory.Password = configuration["EventBusPassword"];
-            }
-
-            var persistentConnection = new PersistentConnection(factory);
-            var subscriptionClientName = configuration["SubscriptionClientName"];
-            var eventBusSubcriptionsManager = new SubscriptionsManager();
-
-            return new EventBusRabbitMQ(persistentConnection, eventBusSubcriptionsManager, lifeTimeScope, subscriptionClientName);
         }
     }
 }

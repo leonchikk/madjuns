@@ -1,8 +1,13 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Common.Messaging.Abstractions;
+using Common.Messaging.Extensions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Notifications.Email.EventHandlers;
+using Notifications.Email.Events;
 using Notifications.Email.Interfaces;
 using Notifications.Email.Services;
 using System;
-using System.Net.Mail;
 
 namespace Notifications.Email
 {
@@ -10,27 +15,22 @@ namespace Notifications.Email
     {
         private static void Main(string[] args)
         {
-            IConfigurationBuilder builder = new ConfigurationBuilder()
+            var configuration = new ConfigurationBuilder()
                 .SetBasePath(Environment.CurrentDirectory)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddEnvironmentVariables();
+                .AddEnvironmentVariables()
+                .Build();
 
-            IConfigurationRoot configuration = builder.Build();
-            IEmailService emailService = new EmailService(configuration);
+            var serviceProvider = new ServiceCollection()
+                .AddSingleton<IEmailService, EmailService>()
+                .AddSingleton<SendMailEventHandler>()
+                .AddRabbitMQEventBus(configuration)
+                .AddSingleton<IConfiguration>(sp => configuration)
+                .AddLogging(configure => configure.AddConsole())
+                .BuildServiceProvider();
 
-            System.Console.WriteLine("---------------------------------------------------------");
-            System.Console.WriteLine($"Host={configuration.GetSection("RabbitMqHost").Value}");
-            System.Console.WriteLine($"UserName={configuration.GetSection("SmtpClientSettings:UserName").Value}");
-            System.Console.WriteLine($"Password={configuration.GetSection("SmtpClientSettings:Password").Value}");
-            System.Console.WriteLine("---------------------------------------------------------");
-
-            IBus messageBus = RabbitHutch.CreateBus($"host={configuration.GetSection("RabbitMqHost").Value}");
-
-            messageBus.Subscribe<SendMailEvent>(Guid.NewGuid().ToString(), msg => 
-            {
-                emailService.SendMail(new MailAddress(msg.To), msg.Subject, msg.Body);
-                System.Console.WriteLine("Subscribing to email events");
-            });
+            var messageBus = serviceProvider.GetRequiredService<IEventBus>();
+            messageBus.Subscribe<SendMailEvent, SendMailEventHandler>();
         }
     }
 }

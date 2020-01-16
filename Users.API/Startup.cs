@@ -1,6 +1,4 @@
-﻿using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using Common.Core.Interfaces;
+﻿using Common.Core.Interfaces;
 using Common.Messaging.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,9 +30,9 @@ namespace Users.API
 
         public IConfiguration Configuration { get; }
 
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc(option => option.EnableEndpointRouting = false);
             services.AddDbContext<UsersContext>(options => options.UseLazyLoadingProxies()
                                                                   .UseSqlServer(Configuration.GetConnectionString("local")));
             services.AddRabbitMQEventBus(Configuration);
@@ -49,11 +47,6 @@ namespace Users.API
             services.ConfigureAutoMapper();
             services.AddSwaggerDocumentation();
             services.AddTransient<UserCreatedEventHandler>();
-
-            var container = new ContainerBuilder();
-            container.Populate(services);
-
-            return new AutofacServiceProvider(container.Build());
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

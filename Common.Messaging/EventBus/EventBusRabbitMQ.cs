@@ -1,6 +1,6 @@
-﻿using Autofac;
-using Common.Messaging.Abstractions;
+﻿using Common.Messaging.Abstractions;
 using Common.Messaging.Events;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Polly;
@@ -17,16 +17,15 @@ using System.Threading.Tasks;
 namespace Common.Messaging.EventBus
 {
     //TODO Add logger
-    //TODO Try to change autofac to built-in DI
     //TODO Inject retryCount from settings via DI
     public class EventBusRabbitMQ : IEventBus, IDisposable
     {
         private const string BROKER_NAME = "event_bus";
-        private readonly string AUTOFAC_SCOPE_NAME = "eshop_event_bus";
 
         private readonly IPersistentConnection _persistentConnection;
         private readonly ISubscriptionsManager _subscriptionsManager;
-        private readonly ILifetimeScope _autofac;
+        private readonly ILogger<EventBusRabbitMQ> _logger;
+        private readonly IServiceProvider _serviceProvider;
         private readonly int _retryCount;
 
         private IModel _consumerChannel;
@@ -34,16 +33,19 @@ namespace Common.Messaging.EventBus
 
         public EventBusRabbitMQ
         (
+            IServiceProvider serviceProvider,
+            ILogger<EventBusRabbitMQ> logger,
             IPersistentConnection persistentConnection,
             ISubscriptionsManager subscriptionsManager,
-            ILifetimeScope autofac,
             string queueName
         )
         {
-            _autofac = autofac;
+            _serviceProvider = serviceProvider;
+            _logger = logger;
             _persistentConnection = persistentConnection;
             _subscriptionsManager = subscriptionsManager;
             _queueName = queueName;
+            _consumerChannel = CreateConsumerChannel();
             _retryCount = 5;
 
             _subscriptionsManager.OnEventRemoved += SubsManager_OnEventRemoved;
@@ -72,23 +74,21 @@ namespace Common.Messaging.EventBus
         {
             if (!_persistentConnection.IsConnected)
                 _persistentConnection.TryConnect();
-            
 
             var policy = RetryPolicy.Handle<BrokerUnreachableException>()
                 .Or<SocketException>()
                 .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
                 {
-                    Console.WriteLine(ex.Message, "Could not publish event: {EventId} after {Timeout}s ({ExceptionMessage})", @event.Id, $"{time.TotalSeconds:n1}", ex.Message);
+                    _logger.LogError(ex, "Could not publish event: {EventId} after {Timeout}s ({ExceptionMessage})", @event.Id, $"{time.TotalSeconds:n1}", ex.Message);
                 });
 
             var eventName = @event.GetType().Name;
 
-            Console.WriteLine("Creating RabbitMQ channel to publish event: {EventId} ({EventName})", @event.Id, eventName);
+            _logger.LogTrace("Creating RabbitMQ channel to publish event: {EventId} ({EventName})", @event.Id, eventName);
 
             using (var channel = _persistentConnection.CreateModel())
             {
-
-                Console.WriteLine("Declaring RabbitMQ exchange to publish event: {EventId}", @event.Id);
+                _logger.LogTrace("Declaring RabbitMQ exchange to publish event: {EventId}", @event.Id);
 
                 channel.ExchangeDeclare(exchange: BROKER_NAME, type: "direct");
 
@@ -100,7 +100,7 @@ namespace Common.Messaging.EventBus
                     var properties = channel.CreateBasicProperties();
                     properties.DeliveryMode = 2; // persistent
 
-                    Console.WriteLine("Publishing event to RabbitMQ: {EventId}", @event.Id);
+                    _logger.LogTrace("Publishing event to RabbitMQ: {EventId}", @event.Id);
 
                     channel.BasicPublish(
                         exchange: BROKER_NAME,
@@ -118,7 +118,7 @@ namespace Common.Messaging.EventBus
         {
             DoInternalSubscription<TEvent>();
 
-            //Console.WriteLine("Subscribing to event {EventName}", nameof(TEvent));
+            _logger.LogInformation("Subscribing to event {EventName} with {EventHandler}", nameof(TEvent), typeof(TEventHandler));
 
             _subscriptionsManager.AddSubscription<TEvent, TEventHandler>();
             StartBasicConsume();
@@ -150,7 +150,7 @@ namespace Common.Messaging.EventBus
         {
             var eventName = _subscriptionsManager.GetEventKey<TEvent>();
 
-            Console.WriteLine("Unsubscribing from event {EventName}", eventName);
+            _logger.LogInformation("Unsubscribing from event {EventName}", eventName);
 
             _subscriptionsManager.RemoveSubscription<TEvent, TEventHandler>();
         }
@@ -167,7 +167,7 @@ namespace Common.Messaging.EventBus
 
         private void StartBasicConsume()
         {
-            Console.WriteLine("Starting RabbitMQ basic consume");
+            _logger.LogTrace("Starting RabbitMQ basic consume");
 
             if (_consumerChannel != null)
             {
@@ -182,7 +182,7 @@ namespace Common.Messaging.EventBus
             }
             else
             {
-                Console.WriteLine("StartBasicConsume can't call on _consumerChannel == null");
+                _logger.LogError("StartBasicConsume can't call on _consumerChannel == null");
             }
         }
 
@@ -202,7 +202,7 @@ namespace Common.Messaging.EventBus
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString(), "----- ERROR Processing message \"{Message}\"", message);
+                _logger.LogWarning(ex, "----- ERROR Processing message \"{Message}\"", message);
             }
 
             // Even on exception we take the message off the queue.
@@ -218,7 +218,7 @@ namespace Common.Messaging.EventBus
                 _persistentConnection.TryConnect();
             }
 
-            Console.WriteLine("Creating RabbitMQ consumer channel");
+            _logger.LogTrace("Creating RabbitMQ consumer channel");
 
             var channel = _persistentConnection.CreateModel();
 
@@ -233,7 +233,7 @@ namespace Common.Messaging.EventBus
 
             channel.CallbackException += (sender, ea) =>
             {
-                Console.WriteLine(ea.Exception.Message, "Recreating RabbitMQ consumer channel");
+                _logger.LogWarning(ea.Exception, "Recreating RabbitMQ consumer channel");
 
                 _consumerChannel.Dispose();
                 _consumerChannel = CreateConsumerChannel();
@@ -245,29 +245,26 @@ namespace Common.Messaging.EventBus
 
         private async Task ProcessEvent(string eventName, string message)
         {
-            Console.WriteLine("Processing RabbitMQ event: {EventName}", eventName);
+            _logger.LogTrace("Processing RabbitMQ event: {EventName}", eventName);
 
             if (_subscriptionsManager.HasSubscriptions(eventName))
             {
-                using (var scope = _autofac.BeginLifetimeScope(AUTOFAC_SCOPE_NAME))
+                var subscriptions = _subscriptionsManager.GetHandlersForEvent(eventName);
+                foreach (var subscription in subscriptions)
                 {
-                    var subscriptions = _subscriptionsManager.GetHandlersForEvent(eventName);
-                    foreach (var subscription in subscriptions)
-                    {
-                        var handler = scope.ResolveOptional(subscription.HandlerType);
-                        if (handler == null) continue;
-                        var eventType = _subscriptionsManager.GetEventTypeByName(eventName);
-                        var integrationEvent = JsonConvert.DeserializeObject(message, eventType);
-                        var concreteType = typeof(IEventHandler<>).MakeGenericType(eventType);
+                    var handler = _serviceProvider.GetService(subscription.HandlerType);
+                    if (handler == null) continue;
+                    var eventType = _subscriptionsManager.GetEventTypeByName(eventName);
+                    var integrationEvent = JsonConvert.DeserializeObject(message, eventType);
+                    var concreteType = typeof(IEventHandler<>).MakeGenericType(eventType);
 
-                        await Task.Yield();
-                        await (Task)concreteType.GetMethod("Handle").Invoke(handler, new object[] { integrationEvent });  
-                    }
+                    await Task.Yield();
+                    await (Task)concreteType.GetMethod("Handle").Invoke(handler, new object[] { integrationEvent });  
                 }
             }
             else
             {
-                Console.WriteLine("No subscription for RabbitMQ event: {EventName}", eventName);
+                _logger.LogWarning("No subscription for RabbitMQ event: {EventName}", eventName);
             }
         }
     }
