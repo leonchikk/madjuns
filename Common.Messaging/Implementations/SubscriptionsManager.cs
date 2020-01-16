@@ -1,5 +1,4 @@
 ﻿using Common.Messaging.Abstractions;
-using Common.Messaging.EventBus;
 using Common.Messaging.Events;
 using System;
 using System.Collections.Generic;
@@ -36,6 +35,11 @@ namespace Common.Messaging.Implementations
             var eventName = GetEventKey<TEvent>();
             var eventHandlerTypeToBeAdded = typeof(TEventHandler);
 
+            if (!_eventTypes.Contains(typeof(TEvent)))
+            {
+                _eventTypes.Add(typeof(TEvent));
+            }
+
             if (!HasSubscriptions<TEvent>())
                 _handlers.Add(eventName, new List<SubscriptionInfo>());
 
@@ -43,6 +47,7 @@ namespace Common.Messaging.Implementations
                 throw new ArgumentException(
                     $"Handler Type {eventHandlerTypeToBeAdded.Name} already registered for '{eventName}'", nameof(eventHandlerTypeToBeAdded));
 
+            _handlers[eventName].Add(new SubscriptionInfo(eventHandlerTypeToBeAdded));
         }
         public void RemoveSubscription<TEvent, TEventHandler>()
             where TEvent : Event
@@ -52,7 +57,7 @@ namespace Common.Messaging.Implementations
             var handlerToRemoveType = typeof(TEventHandler);
             var handlerToRemove = _handlers[eventName].SingleOrDefault(eventHandler => eventHandler.GetType() == handlerToRemoveType);
 
-            if(handlerToRemove != null)
+            if (handlerToRemove != null)
             {
                 _handlers[eventName].Remove(handlerToRemove);
                 if (!_handlers[eventName].Any())

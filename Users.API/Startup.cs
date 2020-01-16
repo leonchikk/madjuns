@@ -1,11 +1,11 @@
 ﻿using Common.Core.Interfaces;
+using Common.Messaging.Abstractions;
 using Common.Messaging.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using Users.API.EventHandlers;
 using Users.API.Extensions;
 using Users.API.Infastructure.Extensions;
@@ -58,9 +58,11 @@ namespace Users.API
 
             app.UseSwaggerDocumentation();
             app.UseMiddleware<ExceptionMiddleware>();
-            app.SubscribeToEvent<UserCreatedEvent, UserCreatedEventHandler>();
             app.UseAuthentication();
             app.UseMvc();
+
+            var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
+            eventBus.Subscribe<UserCreatedEvent, UserCreatedEventHandler>();
         }
     }
 }
