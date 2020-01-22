@@ -32,7 +32,7 @@ namespace Users.Services.Services.Friends
             currentUser.AddToFriends(subscriber);
             await UnitOfWork.SaveChangesAsync();
 
-            return currentUser;
+            return subscriber;
         }
 
         public async Task<User> RemoveFriendAsync(Guid currentUserId, Guid friendId)
@@ -46,9 +46,9 @@ namespace Users.Services.Services.Friends
             return currentUser;
         }
 
-        public IQueryable<UserFriend> GetUserFriends(Guid userId)
+        public IQueryable<FriendsShip> GetUserFriends(Guid userId)
         {
-            return UsersRepository.FindBy(u => u.Id == userId, u => u.UserFriends).SelectMany(u => u.UserFriends);
+            return UsersRepository.FindBy(u => u.Id == userId, u => u.IAmFriendsWith).SelectMany(u => u.IAmFriendsWith);
         }
     }
 }

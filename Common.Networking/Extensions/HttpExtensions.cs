@@ -42,7 +42,20 @@ namespace Common.Networking.Extensions
             }
         }
 
-        public static ByteArrayContent GenerateHttpContent<TRequest>(this TRequest requestModel, Dictionary<string, string> headers, string mediaType) where TRequest: class
+        public static HttpClient SetAuthorizationHeader(this HttpClient client, Dictionary<string, string> headers = null)
+        {
+            if (headers != null && headers.ContainsKey("Authorization"))
+            {
+                // Remove bearer work from start
+                var token = headers["Authorization"].Replace("Bearer ", string.Empty);
+
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            return client;
+        }
+
+        public static ByteArrayContent GenerateHttpContent<TRequest>(this TRequest requestModel, Dictionary<string, string> headers, string mediaType) where TRequest : class
         {
             var jsonFromRequestModel = JsonConvert.SerializeObject(requestModel);
             var buffer = System.Text.Encoding.UTF8.GetBytes(jsonFromRequestModel);
@@ -54,6 +67,11 @@ namespace Common.Networking.Extensions
             {
                 foreach (var header in headers)
                 {
+                    if (header.Key == "Authorization")
+                    {
+                        continue;
+                    }
+
                     byteContent.Headers.Add(header.Key, header.Value);
                 }
             }

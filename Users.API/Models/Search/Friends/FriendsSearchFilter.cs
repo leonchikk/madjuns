@@ -6,7 +6,7 @@ namespace Users.API.Models.Search.Friends
     {
         public static string[] SearchableFields => new string[]
         {
-            $"{nameof(UserFriend.Friend)}.{nameof(UserFriend.Friend.Profile)}.{nameof(UserFriend.Friend.Profile.UserName)}"
+            $"{nameof(FriendsShip.MyFriend)}.{nameof(FriendsShip.MyFriend.Profile)}.{nameof(FriendsShip.MyFriend.Profile.UserName)}"
         };
     }
 }

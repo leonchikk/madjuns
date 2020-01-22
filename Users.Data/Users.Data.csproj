@@ -5,9 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.2.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />
+    <Compile Remove="Migrations\20200118115657_UpdateFriendShipRelation.cs" />
+    <Compile Remove="Migrations\20200118115657_UpdateFriendShipRelation.Designer.cs" />
+    <Compile Remove="Migrations\20200118152547_AddedKeysForUserBlockedEntity.cs" />
+    <Compile Remove="Migrations\20200118152547_AddedKeysForUserBlockedEntity.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1" />
   </ItemGroup>
   
   <ItemGroup>

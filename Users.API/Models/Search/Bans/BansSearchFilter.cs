@@ -7,7 +7,8 @@ namespace Users.API.Models.Search.Bans
     {
         public static string[] SearchableFields => new string[]
         {
-            $"{nameof(BlockedUser.BannedUser)}.{nameof(BlockedUser.BannedUser.Profile)}.{nameof(BlockedUser.BannedUser.Profile.UserName)}"
+            $"{nameof(BlockedUser.Initiator)}.{nameof(BlockedUser.Initiator.Profile)}.{nameof(BlockedUser.Initiator.Profile.UserName)}",
+            $"{nameof(BlockedUser.WhoisBlocked)}.{nameof(BlockedUser.WhoisBlocked.Profile)}.{nameof(BlockedUser.WhoisBlocked.Profile.UserName)}"
         };
     }
 }

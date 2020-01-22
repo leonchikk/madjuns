@@ -10,9 +10,11 @@ namespace Users.Core.Domain
         protected User()
         {
             Settings = new HashSet<UserSetting>();
-            UserFriends = new HashSet<UserFriend>();
+            IAmFriendsWith = new HashSet<FriendsShip>();
+            AreFriendsWithMe = new HashSet<FriendsShip>();
             Subscribers = new HashSet<UserSubscriber>();
-            BlackList = new HashSet<BlockedUser>();
+            UsersBlockedByMe = new HashSet<BlockedUser>();
+            IAmBlockedByUsers = new HashSet<BlockedUser>();
         }
 
         public User(Guid accountId, Profile profile)
@@ -20,45 +22,55 @@ namespace Users.Core.Domain
             Id = accountId;
             Profile = profile;
             Settings = new HashSet<UserSetting>();
-            UserFriends = new HashSet<UserFriend>();
+            IAmFriendsWith = new HashSet<FriendsShip>();
+            AreFriendsWithMe = new HashSet<FriendsShip>();
             Subscribers = new HashSet<UserSubscriber>();
-            BlackList = new HashSet<BlockedUser>();
+            UsersBlockedByMe = new HashSet<BlockedUser>();
+            IAmBlockedByUsers = new HashSet<BlockedUser>();
         }
 
         public virtual Profile Profile { get; set; }
         public virtual ICollection<UserSetting> Settings { get; set; }
-        public virtual ICollection<UserFriend> UserFriends { get; set; }
-        public virtual ICollection<UserFriend> UserIsAFriendOf { get; set; }
+        public virtual ICollection<FriendsShip> IAmFriendsWith { get; set; }
+        public virtual ICollection<FriendsShip> AreFriendsWithMe { get; set; }
         public virtual ICollection<UserSubscriber> Subscribers { get; set; }
         public virtual ICollection<UserSubscriber> SubscribesTo { get; set; }
-        public virtual ICollection<BlockedUser> BlackList { get; set; }
+        public virtual ICollection<BlockedUser> UsersBlockedByMe { get; set; }
+        public virtual ICollection<BlockedUser> IAmBlockedByUsers { get; set; }
 
         public void AddToFriends(User subscriber)
         {
             if (Id == subscriber.Id)
-                throw new Exception("You can not add to friend yourself");
+                throw new Exception("You can not add to friend yourself"); 
 
             if (!Subscribers.Any(sub => sub.Subscriber.Id == subscriber.Id))
                 throw new Exception("This user is not your subscriber");
 
-            if (UserFriends.Any(friend => friend.Friend.Id == subscriber.Id))
+            var currentFriends = GetFriends();
+   
+            if (currentFriends.Any(friend => friend.Id == subscriber.Id))
                 throw new Exception("This user already your friend");
 
-            UserFriends.Add(new UserFriend(Id, subscriber.Id));
+            IAmFriendsWith.Add(new FriendsShip(Id, subscriber.Id));
+            AreFriendsWithMe.Add(new FriendsShip(subscriber.Id, Id));
+
             RemoveFromSubscribers(subscriber.Id);
         }
 
         public void RemoveFromFriends(User friend)
         {
-            if (Id == friend.Id)
-                throw new Exception("You can not remove yourself");
+            var myFriendshipWithFriendRelation = IAmFriendsWith.Where(x => x.MyFriendId == friend.Id).FirstOrDefault();
+            var FriendshipWithMe = AreFriendsWithMe.Where(x => x.MyFriendId == Id).FirstOrDefault();
 
-            UserFriends.Where(f => f.User.Id == friend.Id || f.Friend.Id == friend.Id)
-                .ToList()
-                .ForEach(userFriend =>
-                {
-                    UserFriends.Remove(userFriend);
-                });
+            if (myFriendshipWithFriendRelation != null)
+            {
+                IAmFriendsWith.Remove(myFriendshipWithFriendRelation);
+            }
+
+            if (FriendshipWithMe != null)
+            {
+                AreFriendsWithMe.Remove(FriendshipWithMe);
+            }
         }
 
         public void AddToBlackList(User userToBeBanned)
@@ -66,21 +78,21 @@ namespace Users.Core.Domain
             if (Id == userToBeBanned.Id)
                 throw new Exception("You can not block yourself");
 
-            if (BlackList.Any(b => b.BannedUser.Id == userToBeBanned.Id))
+            if (UsersBlockedByMe.Any(blockedUser => blockedUser.WhoisBlocked.Id == userToBeBanned.Id))
                 throw new Exception("This user already in black list");
 
             RemoveFromFriends(userToBeBanned);
-            BlackList.Add(new BlockedUser(this, userToBeBanned));
+            UsersBlockedByMe.Add(new BlockedUser(Id, userToBeBanned.Id));
         }
-        
+
         public void RemoveFromBlackList(User bannedUser)
         {
-            BlackList.Where(f => f.BannedUser.Id == bannedUser.Id)
-                .ToList()
-                .ForEach(banned =>
-                {
-                    BlackList.Remove(banned);
-                });
+            var userBlockedByMe = UsersBlockedByMe.Where(blockedUser => blockedUser.WhoisBlocked.Id == bannedUser.Id).FirstOrDefault();
+
+            if (userBlockedByMe == null)
+                throw new Exception("This user has not been banned");
+
+            UsersBlockedByMe.Remove(userBlockedByMe);
         }
 
         public void SubscribeTo(User targetUser)
@@ -116,10 +128,7 @@ namespace Users.Core.Domain
 
         public IEnumerable<User> GetFriends()
         {
-            var userFriends = UserFriends.Select(u => u.User);
-            var userIsAFriendOf = UserIsAFriendOf.Select(u => u.Friend);
-
-            return userFriends.Concat(userIsAFriendOf);
+            return IAmFriendsWith.Select(x => x.MyFriend);
         }
 
         public void Update(Profile profile)

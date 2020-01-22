@@ -12,21 +12,25 @@ namespace Users.API.Profiles
         {
             CreateMap<Address, AddressResponseModel>();
 
-            CreateMap<UserFriend, BaseUserResponseModel>()
-                .ForMember(m => m.UserId, opt => opt.MapFrom(r => r.User.Id))
-                .ForMember(m => m.Profile, opt => opt.MapFrom(r => r.User.Profile));
-
             CreateMap<User, BaseUserResponseModel>()
                 .ForMember(m => m.UserId, opt => opt.MapFrom(r => r.Id));
 
             CreateMap<User, UserResponseModel>()
                 .ForMember(m => m.UserId, opt => opt.MapFrom(r => r.Id))
-                .ForMember(m => m.BlackList, opt => opt.MapFrom(r => r.BlackList.Select(entity => entity.BannedUser)))
+                .ForMember(m => m.BlackList, opt => opt.MapFrom(r => r.UsersBlockedByMe.Select(entity => entity.WhoisBlocked)))
                 .ForMember(m => m.Friends, opt => opt.MapFrom(r => r.GetFriends()))
                 .ForMember(m => m.SubscribesTo, opt => opt.MapFrom(r => r.SubscribesTo.Select(entity => entity.User)))
                 .ForMember(m => m.Subscribers, opt => opt.MapFrom(r => r.Subscribers.Select(entity => entity.Subscriber)));
 
             CreateMap<UserProfile, ProfileResponseModel>();
+
+            CreateMap<FriendsShip, BaseUserResponseModel>()
+                .ForMember(m => m.UserId, opt => opt.MapFrom(r => r.MyFriendId))
+                .ForMember(m => m.Profile, opt => opt.MapFrom(r => r.MyFriend.Profile));
+
+            CreateMap<UserSubscriber, BaseUserResponseModel>()
+                .ForMember(m => m.UserId, opt => opt.MapFrom(r => r.SubscriberId))
+                .ForMember(m => m.Profile, opt => opt.MapFrom(r => r.Subscriber.Profile));
 
             CreateMap<UserSetting, SettingResponseModel>()
                 .ForMember(m => m.Id, opt => opt.MapFrom(r => r.Setting.Id))

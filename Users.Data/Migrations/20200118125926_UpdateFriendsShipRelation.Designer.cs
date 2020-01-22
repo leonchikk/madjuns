@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Users.Data;
 
 namespace Users.Data.Migrations
 {
     [DbContext(typeof(UsersContext))]
-    partial class UsersContextModelSnapshot : ModelSnapshot
+    [Migration("20200118125926_UpdateFriendsShipRelation")]
+    partial class UpdateFriendsShipRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,19 +52,22 @@ namespace Users.Data.Migrations
 
             modelBuilder.Entity("Users.Core.Domain.BlockedUser", b =>
                 {
-                    b.Property<Guid>("InitiatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("WhoisBlockedId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("InitiatorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.HasKey("InitiatorId", "WhoisBlockedId");
+                    b.Property<Guid?>("WhoisBlockedId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InitiatorId");
 
                     b.HasIndex("WhoisBlockedId");
 
@@ -211,15 +216,11 @@ namespace Users.Data.Migrations
                 {
                     b.HasOne("Users.Core.Domain.User", "Initiator")
                         .WithMany("UsersBlockedByMe")
-                        .HasForeignKey("InitiatorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("InitiatorId");
 
                     b.HasOne("Users.Core.Domain.User", "WhoisBlocked")
                         .WithMany("IAmBlockedByUsers")
-                        .HasForeignKey("WhoisBlockedId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("WhoisBlockedId");
                 });
 
             modelBuilder.Entity("Users.Core.Domain.FriendsShip", b =>

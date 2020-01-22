@@ -29,7 +29,7 @@ namespace Users.Services.Services.Subscriptions
             currentUser.SubscribeTo(targetUser);
             await UnitOfWork.SaveChangesAsync();
 
-            return currentUser;
+            return targetUser;
         }
 
         public IQueryable<UserSubscriber> GetUserSubscribers(Guid userId)

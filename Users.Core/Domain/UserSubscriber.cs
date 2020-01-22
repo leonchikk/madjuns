@@ -8,7 +8,6 @@ namespace Users.Core.Domain
         protected UserSubscriber() { }
         public UserSubscriber(User target, User subscriber)
         {
-            Id = Guid.NewGuid();
             User = target;
             Subscriber = subscriber;
         }

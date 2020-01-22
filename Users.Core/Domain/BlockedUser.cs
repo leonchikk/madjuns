@@ -6,14 +6,16 @@ namespace Users.Core.Domain
     public class BlockedUser : BaseEntity
     {
         protected BlockedUser() { }
-        public BlockedUser(User user, User userToBeBanned)
+        public BlockedUser(Guid initiatorId, Guid whoIsBannedId)
         {
-            Id = Guid.NewGuid();
-            User = user;
-            BannedUser = userToBeBanned;
+            InitiatorId = initiatorId;
+            WhoisBlockedId = whoIsBannedId;
         }
 
-        public virtual User User { get; set; }
-        public virtual User BannedUser { get; set; }
+        public virtual Guid InitiatorId { get; set; }
+        public virtual Guid WhoisBlockedId { get; set; }
+
+        public virtual User Initiator { get; set; }
+        public virtual User WhoisBlocked { get; set; }
     }
 }

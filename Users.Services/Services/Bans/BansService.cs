@@ -32,12 +32,12 @@ namespace Users.Services.Services.Bans
             currentUser.AddToBlackList(targetUser);
             await UnitOfWork.SaveChangesAsync();
 
-            return currentUser;
+            return targetUser;
         }
 
         public IQueryable<BlockedUser> GetUserBlackList(Guid userId)
         {
-            return UsersRepository.FindBy(u => u.Id == userId, u => u.BlackList).SelectMany(u => u.BlackList);
+            return UsersRepository.FindBy(u => u.Id == userId, u => u.UsersBlockedByMe).SelectMany(u => u.UsersBlockedByMe);
         }
 
         public async Task RemoveFromBlackList(Guid currentUserId, Guid targetUserId)

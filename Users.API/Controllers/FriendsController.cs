@@ -29,7 +29,7 @@ namespace Users.API.Controllers
             var friends = _friendsService.GetUserFriends(CurrentUserId)
                 .ApplySimpleFilter(searchModel.SearchTerm, FriendsSearchFilter.SearchableFields);
 
-            var result = GetListResponse<BaseUserResponseModel, UserFriend>(searchModel, friends);
+            var result = GetListResponse<BaseUserResponseModel, FriendsShip>(searchModel, friends);
 
             return Ok(result);
         }

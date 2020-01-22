@@ -11,6 +11,6 @@ namespace Users.Services.Services.Friends
     {
         Task<User> AddToFriendAsync(Guid currentUserId, Guid subscriberId);
         Task<User> RemoveFriendAsync(Guid currentUserId, Guid friendId);
-        IQueryable<UserFriend> GetUserFriends(Guid userId);
+        IQueryable<FriendsShip> GetUserFriends(Guid userId);
     }
 }
