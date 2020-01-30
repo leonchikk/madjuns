@@ -9,23 +9,29 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Common.Messaging.EventBus
 {
-    //TODO Add logger
-    //TODO Inject retryCount from settings via DI
     public class EventBusRabbitMQ : IEventBus, IDisposable
     {
-        private const string BROKER_NAME = "event_bus";
+        private const string BROKER_NAME = "app.events.exchange";
+        private const string BROKER_ALT_NAME = "app.events.exchange.alt";
+        private const string DLX_BROKER_NAME = "app.events.dlx";
+        private const string RETRY_QUEUE = "retry.queue";
+        private const string RETRY_ALT_QUEUE = "retry.queue.alt";
+        private const int RETRY_DELAY = 10_000; // in ms
 
         private readonly IPersistentConnection _persistentConnection;
         private readonly ISubscriptionsManager _subscriptionsManager;
         private readonly ILogger<EventBusRabbitMQ> _logger;
         private readonly IServiceProvider _serviceProvider;
         private readonly int _retryCount;
+        private readonly int _resendMessageCount;
 
         private IModel _consumerChannel;
         private string _queueName;
@@ -36,7 +42,9 @@ namespace Common.Messaging.EventBus
             ILogger<EventBusRabbitMQ> logger,
             IPersistentConnection persistentConnection,
             ISubscriptionsManager subscriptionsManager,
-            string queueName
+            string queueName,
+            int retryCount = 10,
+            int resendMessageCount = 10
         )
         {
             _serviceProvider = serviceProvider;
@@ -45,7 +53,8 @@ namespace Common.Messaging.EventBus
             _subscriptionsManager = subscriptionsManager;
             _queueName = queueName;
             _consumerChannel = CreateConsumerChannel();
-            _retryCount = 5;
+            _retryCount = retryCount;
+            _resendMessageCount = resendMessageCount;
 
             _subscriptionsManager.OnEventRemoved += SubsManager_OnEventRemoved;
         }
@@ -89,7 +98,29 @@ namespace Common.Messaging.EventBus
             {
                 _logger.LogTrace("Declaring RabbitMQ exchange to publish event: {EventId}", @event.Id);
 
-                channel.ExchangeDeclare(exchange: BROKER_NAME, type: "direct");
+                channel.ExchangeDeclare(
+                exchange: BROKER_ALT_NAME,
+                type: ExchangeType.Direct,
+                durable: true,
+                autoDelete: false);
+
+                channel.QueueDeclare(
+                    queue: RETRY_ALT_QUEUE,
+                    durable: true,
+                    exclusive: false,
+                    autoDelete: false);
+
+                var exchangeArgs = new Dictionary<string, object>
+                {
+                    { "alternate-exchange", BROKER_ALT_NAME }
+                };
+
+                channel.ExchangeDeclare(
+                    exchange: BROKER_NAME,
+                    type: ExchangeType.Direct,
+                    durable: true,
+                    autoDelete: false,
+                    arguments: exchangeArgs);
 
                 var message = JsonConvert.SerializeObject(@event);
                 var body = Encoding.UTF8.GetBytes(message);
@@ -98,8 +129,9 @@ namespace Common.Messaging.EventBus
                 {
                     var properties = channel.CreateBasicProperties();
                     properties.DeliveryMode = 2; // persistent
+                    properties.CorrelationId = Guid.NewGuid().ToString();
 
-                    _logger.LogTrace("Publishing event to RabbitMQ: {EventId}", @event.Id);
+                    _logger.LogTrace($"Publishing event to RabbitMQ: {@event.Id}");
 
                     channel.BasicPublish(
                         exchange: BROKER_NAME,
@@ -137,9 +169,22 @@ namespace Common.Messaging.EventBus
 
                 using (var channel = _persistentConnection.CreateModel())
                 {
+                    var args = new Dictionary<string, object>();
+                    args.Add("x-dead-letter-exchange", DLX_BROKER_NAME);
+
                     channel.QueueBind(queue: _queueName,
                                       exchange: BROKER_NAME,
-                                      routingKey: eventName);
+                                      routingKey: eventName, 
+                                      arguments: args);
+
+                    channel.QueueBind(
+                        queue: _queueName,
+                        exchange: BROKER_NAME,
+                        routingKey: eventName,
+                        args);
+
+                    channel.QueueBind(RETRY_QUEUE, DLX_BROKER_NAME, eventName);
+                    channel.QueueBind(RETRY_ALT_QUEUE, BROKER_ALT_NAME, eventName);
                 }
             }
         }
@@ -189,26 +234,60 @@ namespace Common.Messaging.EventBus
         private async Task Consumer_Received(object sender, BasicDeliverEventArgs eventArgs)
         {
             var eventName = eventArgs.RoutingKey;
+
+            if (eventArgs.BasicProperties.IsHeadersPresent() && eventArgs.BasicProperties.Headers.ContainsKey("x-death"))
+            {
+                var deathHeaderGroups = eventArgs.BasicProperties.Headers["x-death"] as List<object>;
+                var deathHeaders = deathHeaderGroups.FirstOrDefault() as Dictionary<string, object>;
+                var count = Convert.ToInt32(deathHeaders["count"]);
+
+                if (count > _resendMessageCount)
+                {
+                    PublishToAltQueue(eventArgs);
+                    _consumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                    return;
+                }
+            }
+
             var message = Encoding.UTF8.GetString(eventArgs.Body);
 
             try
             {
-                if (message.ToLowerInvariant().Contains("throw-fake-exception"))
-                {
-                    throw new InvalidOperationException($"Fake exception requested: \"{message}\"");
-                }
+                var processed = await ProcessEvent(eventName, message);
 
-                await ProcessEvent(eventName, message);
+                if (processed)
+                    _consumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                else
+                    _consumerChannel.BasicReject(eventArgs.DeliveryTag, requeue: false);
             }
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, "----- ERROR Processing message \"{Message}\"", message);
-            }
 
-            // Even on exception we take the message off the queue.
-            // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
-            // For more information see: https://www.rabbitmq.com/dlx.html
-            _consumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                _consumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false);
+            }
+        }
+
+        private void PublishToAltQueue(BasicDeliverEventArgs @event)
+        {
+            var policy = Policy.Handle<BrokerUnreachableException>()
+                .Or<SocketException>()
+                .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
+                {
+                    _logger.LogWarning(ex, $"Could not publish dead event with correlationId {@event.BasicProperties.CorrelationId} after {time.TotalSeconds:n1}s ({ex.Message})");
+                });
+
+            policy.Execute(() =>
+            {
+                _logger.LogTrace($"Publishing event to Alternative DLX: {@event.RoutingKey}");
+
+                _consumerChannel.BasicPublish(
+                    exchange: BROKER_ALT_NAME,
+                    routingKey: @event.RoutingKey,
+                    mandatory: true,
+                    basicProperties: @event.BasicProperties,
+                    body: @event.Body);
+            });
         }
 
         private IModel CreateConsumerChannel()
@@ -222,14 +301,46 @@ namespace Common.Messaging.EventBus
 
             var channel = _persistentConnection.CreateModel();
 
-            channel.ExchangeDeclare(exchange: BROKER_NAME,
-                                    type: "direct");
+            channel.ExchangeDeclare(
+                exchange: BROKER_ALT_NAME,
+                type: ExchangeType.Direct,
+                durable: true,
+                autoDelete: false);
 
-            channel.QueueDeclare(queue: _queueName,
-                                 durable: true,
-                                 exclusive: false,
-                                 autoDelete: false,
-                                 arguments: null);
+            channel.QueueDeclare(
+                queue: RETRY_ALT_QUEUE,
+                durable: true,
+                exclusive: false,
+                autoDelete: false);
+
+            var exchangeArgs = new Dictionary<string, object>
+            {
+                { "alternate-exchange", BROKER_ALT_NAME }
+            };
+
+            channel.ExchangeDeclare(
+                exchange: BROKER_NAME,
+                type: ExchangeType.Direct,
+                durable: true,
+                autoDelete: false,
+                arguments: exchangeArgs);
+
+            channel.ExchangeDeclare(
+                exchange: DLX_BROKER_NAME,
+                type: ExchangeType.Direct,
+                durable: true,
+                autoDelete: false);
+
+            var queueArgs = new Dictionary<string, object>();
+            queueArgs.Add("x-dead-letter-exchange", BROKER_NAME);
+            queueArgs.Add("x-message-ttl", RETRY_DELAY);
+
+            channel.QueueDeclare(
+                queue: RETRY_QUEUE,
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: queueArgs);
 
             channel.CallbackException += (sender, ea) =>
             {
@@ -243,16 +354,16 @@ namespace Common.Messaging.EventBus
             return channel;
         }
 
-        private async Task ProcessEvent(string eventName, string message)
+        private async Task<bool> ProcessEvent(string eventName, string message)
         {
             _logger.LogTrace("Processing RabbitMQ event: {EventName}", eventName);
 
             if (_subscriptionsManager.HasSubscriptions(eventName))
             {
-                var subscriptions = _subscriptionsManager.GetHandlersForEvent(eventName);
-                foreach (var subscription in subscriptions)
+                using (var scope = _serviceProvider.CreateScope())
                 {
-                    using (var scope = _serviceProvider.CreateScope())
+                    var subscriptions = _subscriptionsManager.GetHandlersForEvent(eventName);
+                    foreach (var subscription in subscriptions)
                     {
                         var handler = scope.ServiceProvider.GetService(subscription.HandlerType);
                         if (handler == null) continue;
@@ -268,7 +379,11 @@ namespace Common.Messaging.EventBus
             else
             {
                 _logger.LogWarning("No subscription for RabbitMQ event: {EventName}", eventName);
+                
+                return false;
             }
+
+            return true;
         }
     }
 }
