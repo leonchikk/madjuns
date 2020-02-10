@@ -1,14 +1,14 @@
 ﻿using Common.Core.Models;
 using System;
-using System.Collections.Generic;
 
 namespace Communication.Core.Entities
 {
-    public class Role : BaseEntity
+    public class ChannelMember : BaseEntity
     {
-        public string Name { get; set; }
-        public ICollection<PermissionInRole> RolePermissions { get; set; }
+        public Guid UserId { get; set; }
         public Guid ChannelId { get; set; }
+
+        public User User { get; set; }
         public Channel Channel { get; set; }
     }
 }

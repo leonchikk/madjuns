@@ -1,6 +1,9 @@
-﻿namespace Communication.Core.Entities
+﻿using Common.Core.Models;
+
+namespace Communication.Core.Entities
 {
-    public class Permission
+    public class Permission : BaseEntity
     {
+        public string Name { get; set; }
     }
 }
