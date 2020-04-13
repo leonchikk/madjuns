@@ -172,10 +172,12 @@ namespace Common.Messaging.EventBus
                     var args = new Dictionary<string, object>();
                     args.Add("x-dead-letter-exchange", DLX_BROKER_NAME);
 
-                    channel.QueueBind(queue: _queueName,
-                                      exchange: BROKER_NAME,
-                                      routingKey: eventName, 
-                                      arguments: args);
+                    channel.QueueDeclare(
+                        queue: _queueName,
+                        durable: true,
+                        exclusive: false,
+                        autoDelete: false,
+                        arguments: args);
 
                     channel.QueueBind(
                         queue: _queueName,
