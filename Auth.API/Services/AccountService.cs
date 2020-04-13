@@ -7,6 +7,7 @@ using Common.Core.Helpers;
 using Common.Core.Interfaces;
 using Common.Messaging.Abstractions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,12 +20,12 @@ namespace Auth.API.Services
         private readonly IRepository<Account> _accountsRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEventBus _serviceBus;
-        private readonly IHttpContextAccessor _accessor;
+        private readonly string _apiGatewayAddress;
 
-        public AccountService(IRepository<Account> accountsRepository, IUnitOfWork unitOfWork, IEventBus serviceBus, IHttpContextAccessor accessor)
+        public AccountService(IRepository<Account> accountsRepository, IUnitOfWork unitOfWork, IEventBus serviceBus, IConfiguration configuration)
         {
             _accountsRepository = accountsRepository;
-            _accessor = accessor;
+            _apiGatewayAddress = configuration["ApiGatewayAddress"];
             _unitOfWork = unitOfWork;
             _serviceBus = serviceBus;
         }
@@ -44,7 +45,7 @@ namespace Auth.API.Services
             await _unitOfWork.SaveChangesAsync();
 
             string callbackUrl = UrlHelper.AddUrlParameters(
-                url: $"{_accessor.HttpContext.Request.Headers["X-ApiGateway-Address"]}/api/auth/verify-email",
+                url: $"{_apiGatewayAddress}/api/auth/verify-email",
                 parameters: new Dictionary<string, string>
                 {
                     { "token", newAccount.VerifyEmailToken },
