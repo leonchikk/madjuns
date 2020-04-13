@@ -68,14 +68,14 @@ namespace Auth.API.Services
 
         public async Task DeleteUserAsync(Guid id)
         {
-            Account account = _accountsRepository.FindBy(a => a.Id == id).FirstOrDefault();
+            Account account = await _accountsRepository.FirstOrDefaultAsync(a => a.Id == id);
 
             if (account == null)
             {
                 throw new Exception("Account with that email does not exist!");
             }
 
-            account.IsDeleted = true;
+            account.Delete();
             await _unitOfWork.SaveChangesAsync();
         }
 

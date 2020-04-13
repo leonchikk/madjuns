@@ -16,7 +16,7 @@ namespace Auth.API.EventsHandlers
 
         public async Task HandleAsync(UserDeletedEvent @event)
         {
-            await _accountService.DeleteUserAsync(@event.AcountId);
+            await _accountService.DeleteUserAsync(@event.AccountId);
         }
     }
 }

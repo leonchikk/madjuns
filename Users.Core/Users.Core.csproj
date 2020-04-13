@@ -5,11 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Common.Infrastructure.Core" Version="1.4.0" />
-    <!--PackageReference Include="Common.Messaging" Version="1.0.2" /-->
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\Common.Core\Common.Core.csproj" />
     <ProjectReference Include="..\Common.Messaging\Common.Messaging.csproj" />
   </ItemGroup>
   

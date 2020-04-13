@@ -39,7 +39,7 @@ namespace Users.Services.Services
                 AccountId = id
             });
 
-            user.IsDeleted = true;
+            user.Delete();
             await UnitOfWork.SaveChangesAsync();
         }
 
