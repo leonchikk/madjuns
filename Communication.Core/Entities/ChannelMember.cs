@@ -1,5 +1,6 @@
 ﻿using Common.Core.Models;
 using System;
+using System.Collections.Generic;
 
 namespace Communication.Core.Entities
 {
@@ -10,5 +11,8 @@ namespace Communication.Core.Entities
 
         public User User { get; set; }
         public Channel Channel { get; set; }
+
+        public ICollection<Room> OwnedRooms { get; set; }
+        public ICollection<ChannelMemberRole> Roles { get; set; }
     }
 }

@@ -8,6 +8,7 @@ namespace Communication.Core.Entities
     {
         public string Name { get; set; }
         public ICollection<Room> Rooms { get; set; }
-        public ICollection<ChannelMember> ChannelMembers{ get; set; }
+        public ICollection<ChannelMember> ChannelMembers { get; set; }
+        public ICollection<Role> ChannelRoles { get; set; }
     }
 }

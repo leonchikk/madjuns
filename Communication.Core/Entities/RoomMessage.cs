@@ -5,8 +5,11 @@ namespace Communication.Core.Entities
 {
     public class RoomMessage : BaseEntity
     {
-        public Guid FromChannelMemberId { get; set; }
+        public Guid ChannelMemberId { get; set; }
         public ChannelMember ChannelMember { get; set; }
+
+        public Guid RoomId { get; set; }
+        public Room Room { get; set; }
 
         public string Message { get; set; }
         public bool IsRead { get; set; }
