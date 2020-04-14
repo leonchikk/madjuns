@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 namespace ApiGateway.Web.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Area("api/users-api")]
+    [Route("[area]/[controller]")]
     [ApiController]
     public class BansController : ControllerBase
     {

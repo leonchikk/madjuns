@@ -11,7 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApiGateway.Web.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Area("api/users-api")]
+    [Route("[area]/[controller]")]
     [ApiController]
     public class SubscribersController : ControllerBase
     {
