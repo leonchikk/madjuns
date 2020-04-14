@@ -4,6 +4,7 @@ using ApiGateway.Web.HttpClients.Implementations;
 using ApiGateway.Web.HttpClients.Interfaces;
 using ApiGateway.Web.Infrastructure.Extensions;
 using ApiGateway.Web.Settings;
+using Common.Networking.Extensions;
 using Common.Networking.Implementations;
 using Common.Networking.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -38,7 +39,7 @@ namespace ApiGateway.Web
             );
 
             services.Configure<GatewaySettings>(Configuration.GetSection("GatewaySettings"));
-            services.AddScoped<IHttpBaseClient, HttpBaseClient>();
+            services.AddCustomHttpClient();
 
             services.AddScoped<IHttpAuthClient, HttpAuthClient>();
             services.AddScoped<IHttpUsersClient, HttpUsersClient>();

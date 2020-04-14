@@ -14,41 +14,43 @@ using System.Threading.Tasks;
 
 namespace ApiGateway.Web.HttpClients.Implementations
 {
-    public class HttpAuthClient : BaseClient, IHttpAuthClient
+    public class HttpAuthClient :  IHttpAuthClient
     {
         private readonly string _clientName = "auth";
         private readonly IOptionsMonitor<GatewaySettings> _gatewaySettings;
+        private readonly IHttpBaseClient _httpBaseClient;
 
-        public HttpAuthClient(IHttpBaseClient httpBaseClient, IHttpContextAccessor httpAccessor, IOptionsMonitor<GatewaySettings> gatewaySettings) : base(httpBaseClient, httpAccessor)
+        public HttpAuthClient(IHttpBaseClient httpBaseClient, IOptionsMonitor<GatewaySettings> gatewaySettings) 
         {
             _gatewaySettings = gatewaySettings;
+            _httpBaseClient = httpBaseClient;
         }
 
         public async Task ForgotPasswordAsync(ForgotPasswordRequestModel requestModel)
         {
-            await HttpClient.PostAsync(_clientName, "api/auth/forgot-password", requestModel, Headers);
+            await _httpBaseClient.PostAsync(_clientName, "api/auth/forgot-password", requestModel);
         }
 
         public async Task ResetPasswordAsync(ResetPasswordRequestModel requestModel)
         {
-            await HttpClient.PostAsync(_clientName, "api/auth/reset-password", requestModel, Headers);
+            await _httpBaseClient.PostAsync(_clientName, "api/auth/reset-password", requestModel);
         }
 
         public async Task<SignInResponseModel> SignInAsync(SignInRequestModel requestModel)
         {
-            return await HttpClient.PostAsync<SignInResponseModel, SignInRequestModel>(_clientName, "api/auth/sign-in", requestModel, Headers);
+            return await _httpBaseClient.PostAsync<SignInResponseModel, SignInRequestModel>(_clientName, "api/auth/sign-in", requestModel);
         }
 
         public async Task SignUpAsync(SignUpRequestModel requestModel)
         {
-            await HttpClient.PostAsync(_clientName, "api/auth/sign-up", requestModel, Headers);
+            await _httpBaseClient.PostAsync(_clientName, "api/auth/sign-up", requestModel);
         }
 
         public async Task<VerifyEmailResponseModel> VerifyEmailAsync(VerifyEmailRequestModel requestModel)
         {
             var url = $"{_gatewaySettings.CurrentValue.AuthApiUrl}api/auth/verify-email".AddUrlParameters(requestModel);
 
-            return await HttpClient.GetAsync<VerifyEmailResponseModel>(_clientName, url, Headers);
+            return await _httpBaseClient.GetAsync<VerifyEmailResponseModel>(_clientName, url);
         }
     }
 }
