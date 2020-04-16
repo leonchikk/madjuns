@@ -4,14 +4,16 @@ using Communication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Communication.Data.Migrations
 {
     [DbContext(typeof(CommunicationsContext))]
-    partial class CommunicationsContextModelSnapshot : ModelSnapshot
+    [Migration("20200416074724_AddLogoUrlAndVisibilityToChannel")]
+    partial class AddLogoUrlAndVisibilityToChannel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -15,8 +15,16 @@ namespace Communication.Core.Entities
         }
 
         public string Name { get; set; }
+        public string LogoUrl { get; set; }
+        public ChannelVisibility Visibility { get; set; }
         public ICollection<Room> Rooms { get; set; }
         public ICollection<ChannelMember> ChannelMembers { get; set; }
         public ICollection<Role> ChannelRoles { get; set; }
+    }
+
+    public enum ChannelVisibility
+    {
+        Public,
+        Private
     }
 }
