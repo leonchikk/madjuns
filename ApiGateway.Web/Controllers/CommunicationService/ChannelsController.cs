@@ -17,7 +17,7 @@ namespace ApiGateway.Web.Controllers.CommunicationService
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateChannelAsync(CreateChannelRequest request)
+        public async Task<IActionResult> CreateChannelAsync([FromBody] CreateChannelRequest request)
         {
             var result = await _httpClient.CreateChannelAsync(request);
 

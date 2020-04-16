@@ -19,7 +19,7 @@ namespace Communication.API.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateChannelAsync([FromBody] CreateChannelRequestModel request)
         {
-            var createChannelCommand = new CreateChannelCommand(request.Name);
+            var createChannelCommand = new CreateChannelCommand(request.Name, request.LogoUrl, request.Visibility);
 
             var result = await _mediator.Send(createChannelCommand);
 

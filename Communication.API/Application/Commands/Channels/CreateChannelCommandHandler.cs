@@ -30,7 +30,9 @@ namespace Communication.API.Application.Commands.Channels
 
             var newChannel = new Channel()
             {
-                Name = request.Name
+                Name = request.Name,
+                Visibility = request.Visibility,
+                LogoUrl = request.LogoUrl
             };
 
             newChannel.ChannelMembers.Add(new ChannelMember()
@@ -44,7 +46,9 @@ namespace Communication.API.Application.Commands.Channels
 
             return new ChannelViewModel()
             { 
-                Name = newChannel.Name 
+                Name = newChannel.Name ,
+                Visibility = newChannel.Visibility,
+                LogoUrl = newChannel.LogoUrl
             };
         }
     }
