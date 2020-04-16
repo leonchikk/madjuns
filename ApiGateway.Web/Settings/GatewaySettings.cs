@@ -4,5 +4,6 @@
     {
         public string AuthApiUrl { get; set; }
         public string UsersApiUrl { get; set; }
+        public string CommunicationApiUrl { get; set; }
     }
 }

@@ -6,6 +6,13 @@ namespace Communication.Core.Entities
 {
     public class ChannelMember : BaseEntity
     {
+        public ChannelMember()
+        {
+            Id = Guid.NewGuid();
+            Roles = new HashSet<ChannelMemberRole>();
+            OwnedRooms = new HashSet<Room>();
+        }
+
         public Guid UserId { get; set; }
         public Guid ChannelId { get; set; }
 

@@ -17,12 +17,10 @@ namespace ApiGateway.Web.HttpClients.Implementations
     public class HttpAuthClient :  IHttpAuthClient
     {
         private readonly string _clientName = "auth";
-        private readonly IOptionsMonitor<GatewaySettings> _gatewaySettings;
         private readonly IHttpBaseClient _httpBaseClient;
 
-        public HttpAuthClient(IHttpBaseClient httpBaseClient, IOptionsMonitor<GatewaySettings> gatewaySettings) 
+        public HttpAuthClient(IHttpBaseClient httpBaseClient) 
         {
-            _gatewaySettings = gatewaySettings;
             _httpBaseClient = httpBaseClient;
         }
 
@@ -48,7 +46,7 @@ namespace ApiGateway.Web.HttpClients.Implementations
 
         public async Task<VerifyEmailResponseModel> VerifyEmailAsync(VerifyEmailRequestModel requestModel)
         {
-            var url = $"{_gatewaySettings.CurrentValue.AuthApiUrl}api/auth/verify-email".AddUrlParameters(requestModel);
+            var url = $"api/auth/verify-email".AddUrlParameters(requestModel);
 
             return await _httpBaseClient.GetAsync<VerifyEmailResponseModel>(_clientName, url);
         }

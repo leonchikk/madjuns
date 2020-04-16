@@ -38,11 +38,16 @@ namespace ApiGateway.Web
                 c.BaseAddress = new Uri(Configuration.GetSection("GatewaySettings:UsersApiUrl").Value)
             );
 
+            services.AddHttpClient("communication", c =>
+                c.BaseAddress = new Uri(Configuration.GetSection("GatewaySettings:CommunicationApiUrl").Value)
+            );
+
             services.Configure<GatewaySettings>(Configuration.GetSection("GatewaySettings"));
             services.AddCustomHttpClient();
 
             services.AddScoped<IHttpAuthClient, HttpAuthClient>();
             services.AddScoped<IHttpUsersClient, HttpUsersClient>();
+            services.AddScoped<IHttpCommunicationClient, HttpCommunicationClient>();
 
             services.AddHttpContextAccessor();
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();

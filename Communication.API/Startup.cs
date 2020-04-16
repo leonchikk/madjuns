@@ -2,6 +2,8 @@ using Common.Core.Interfaces;
 using Common.Messaging.Abstractions;
 using Common.Messaging.Extensions;
 using Communication.API.Application.EventHandlers;
+using Communication.API.Infrastructure.Extensions;
+using Communication.API.Services;
 using Communication.Core.Events;
 using Communication.Data;
 using Communication.Data.Repositories;
@@ -30,7 +32,12 @@ namespace Communication.API
             services.AddMvc(option => option.EnableEndpointRouting = false);
             services.AddDbContext<CommunicationsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("local")));
             services.AddMediatR(typeof(Startup).Assembly);
-            
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddHttpContextAccessor();
+
+            services.ConfigureAuthentication(Configuration);
+            services.AddSwaggerDocumentation();
+
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             
@@ -50,6 +57,7 @@ namespace Communication.API
 
             ConfigureEventHandlers(app.ApplicationServices);
 
+            app.UseAuthentication();
             app.UseMvc();
         }
 
